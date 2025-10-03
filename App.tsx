@@ -1,8 +1,9 @@
 import { StatusBar } from "expo-status-bar";
-import { Text, View } from "react-native";
+import React from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { AppNavigator } from "./src/navigation/AppNavigator";
 
 /*
 IMPORTANT NOTICE: DO NOT REMOVE
@@ -27,15 +28,24 @@ const openai_api_key = Constants.expoConfig.extra.apikey;
 
 export default function App() {
   return (
-    <GestureHandlerRootView>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <NavigationContainer>
-          <View className="flex-1 items-center justify-center">
-            <Text className="text-center text-red-500">
-              This screen will be replaced with your app when the agent is done building it.
-            </Text>
-            <StatusBar style="auto" />
-          </View>
+        <NavigationContainer
+          linking={{
+            prefixes: [],
+            config: {
+              screens: {
+                Onboarding: "onboarding",
+                Home: "home",
+                PropertyDetail: "property/:id",
+                Settings: "settings",
+                Favorites: "favorites",
+              },
+            },
+          }}
+        >
+          <AppNavigator />
+          <StatusBar style="auto" />
         </NavigationContainer>
       </SafeAreaProvider>
     </GestureHandlerRootView>
