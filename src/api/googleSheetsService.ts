@@ -77,81 +77,194 @@ function parseCSVLine(line: string): string[] {
 
 /**
  * Převede řádek z Google Sheets na Property objekt
+ * Podporuje DVĚ struktury:
+ * 1. Manuální struktura (ID, Název, Popis, Cena, Plocha, Lokalita, Typ, Dispozice, Sleva %, ...)
+ * 2. Scraper struktura (hash_id, url, titulek, lokalita, dispozice, plocha_m2, cena, ...)
  */
-function rowToProperty(row: string[], index: number): Property | null {
+function rowToProperty(row: string[], index: number, headers: string[]): Property | null {
   try {
-    const [
-      id,
-      title,
-      description,
-      priceStr,
-      areaStr,
-      location,
-      type,
-      disposition,
-      discountStr,
-      imageUrl,
-      sourceUrl,
-      agentName,
-      agentPhone,
-      agentEmail,
-      agentCompany,
-    ] = row;
+    // Detekce struktury podle prvního sloupce v headeru
+    const isScraperFormat = headers[0]?.toLowerCase().includes("hash_id");
+    
+    if (isScraperFormat) {
+      // Scraper formát: hash_id, url, titulek, lokalita, dispozice, plocha_m2, cena, cena_za_m2, patro, stav_objektu, image_url, telefon, vlozeno_at, upraveno_at, first_seen_at, last_seen_at, last_price, price_changed_at, status, hypo_mesic
+      const [
+        hash_id,
+        url,
+        titulek,
+        lokalita,
+        dispozice,
+        plocha_m2,
+        cena,
+        cena_za_m2,
+        patro,
+        stav_objektu,
+        image_url,
+        telefon,
+        vlozeno_at,
+        upraveno_at,
+        first_seen_at,
+        last_seen_at,
+        last_price,
+        price_changed_at,
+        status,
+        hypo_mesic,
+      ] = row;
 
-    // Validace povinných polí
-    if (!id || !title || !priceStr || !areaStr || !location) {
-      console.warn(`Řádek ${index + 2} přeskočen - chybí povinná pole`);
-      return null;
-    }
+      // Validace povinných polí
+      if (!hash_id || !titulek || !cena || !plocha_m2 || !lokalita) {
+        console.warn(`Řádek ${index + 2} přeskočen - chybí povinná pole`);
+        return null;
+      }
 
-    const price = parseFloat(priceStr.replace(/[^\d.-]/g, ""));
-    const area = parseFloat(areaStr.replace(/[^\d.-]/g, ""));
-    const discountPercentage = parseFloat(discountStr.replace(/[^\d.-]/g, "") || "0");
-    const pricePerM2 = Math.round(price / area);
+      const price = parseFloat(cena.replace(/[^\d.-]/g, ""));
+      const area = parseFloat(plocha_m2.replace(/[^\d.-]/g, ""));
+      const pricePerM2 = parseFloat(cena_za_m2?.replace(/[^\d.-]/g, "") || "0") || Math.round(price / area);
+      
+      // Vypočítat slevu z price history
+      let discountPercentage = 0;
+      if (last_price && price_changed_at) {
+        const lastPriceNum = parseFloat(last_price.replace(/[^\d.-]/g, ""));
+        if (lastPriceNum > price) {
+          discountPercentage = Math.round(((lastPriceNum - price) / lastPriceNum) * 100);
+        }
+      }
 
-    // Validace typu a dispozice
-    const validTypes = ["byt", "dům", "pozemek", "komerční"];
-    const propertyType = validTypes.includes(type.toLowerCase())
-      ? (type.toLowerCase() as PropertyType)
-      : "byt";
+      // Detekovat typ z URL nebo lokality
+      let propertyType: PropertyType = "byt";
+      if (url?.includes("/dum/") || titulek?.toLowerCase().includes("dům")) {
+        propertyType = "dům";
+      } else if (url?.includes("/pozemek/")) {
+        propertyType = "pozemek";
+      } else if (url?.includes("/komercni/")) {
+        propertyType = "komerční";
+      }
 
-    const validDispositions = [
-      "1+kk", "1+1", "2+kk", "2+1", "3+kk", "3+1",
-      "4+kk", "4+1", "5+kk", "5+1", "6+kk", "6+1", "atypický"
-    ];
-    const propertyDisposition = validDispositions.includes(disposition)
-      ? (disposition as PropertyDisposition)
-      : "2+kk";
+      // Validace dispozice
+      const validDispositions = [
+        "1+kk", "1+1", "2+kk", "2+1", "3+kk", "3+1",
+        "4+kk", "4+1", "5+kk", "5+1", "6+kk", "6+1", "atypický"
+      ];
+      const propertyDisposition = validDispositions.includes(dispozice)
+        ? (dispozice as PropertyDisposition)
+        : "2+kk";
 
-    const property: Property = {
-      id: id.trim(),
-      title: title.trim(),
-      description: description?.trim() || "Popis není k dispozici",
-      price,
-      area,
-      pricePerM2,
-      location: location.trim(),
-      type: propertyType,
-      disposition: propertyDisposition,
-      rating: calculatePropertyRating(discountPercentage),
-      discountPercentage,
-      imageUrl: imageUrl?.trim() || "https://via.placeholder.com/800x600?text=Bez+obrázku",
-      source: "google_sheets",
-      sourceUrl: sourceUrl?.trim() || "",
-      createdAt: new Date(),
-    };
-
-    // Přidat kontakt na makléře, pokud je k dispozici
-    if (agentName || agentPhone || agentEmail) {
-      property.agent = {
-        name: agentName?.trim() || "Kontakt není k dispozici",
-        phone: agentPhone?.trim(),
-        email: agentEmail?.trim(),
-        company: agentCompany?.trim(),
+      const property: Property = {
+        id: hash_id.trim(),
+        title: titulek.trim(),
+        description: `${stav_objektu || "Popis není k dispozici"}${patro ? `, ${patro}` : ""}`,
+        price,
+        area,
+        pricePerM2,
+        location: lokalita.trim(),
+        type: propertyType,
+        disposition: propertyDisposition,
+        rating: calculatePropertyRating(discountPercentage),
+        discountPercentage,
+        imageUrl: image_url?.trim() || "https://via.placeholder.com/800x600?text=Bez+obrázku",
+        source: "sreality",
+        sourceUrl: url?.trim() || "",
+        createdAt: vlozeno_at ? new Date(vlozeno_at) : new Date(),
+        isNew: status === "new",
       };
-    }
 
-    return property;
+      // Přidat price history pokud existuje
+      if (last_price && price_changed_at) {
+        const lastPriceNum = parseFloat(last_price.replace(/[^\d.-]/g, ""));
+        if (lastPriceNum !== price) {
+          property.priceHistory = {
+            oldPrice: lastPriceNum,
+            newPrice: price,
+            changedAt: new Date(price_changed_at),
+          };
+        }
+      }
+
+      // Přidat kontakt na makléře
+      if (telefon) {
+        property.agent = {
+          name: "Makléř",
+          phone: telefon.trim(),
+        };
+      }
+
+      return property;
+      
+    } else {
+      // Manuální formát: ID, Název, Popis, Cena, Plocha, Lokalita, Typ, Dispozice, Sleva v %, URL obrázku, URL inzerátu, Jméno makléře, Telefon makléře, Email makléře, Společnost
+      const [
+        id,
+        title,
+        description,
+        priceStr,
+        areaStr,
+        location,
+        type,
+        disposition,
+        discountStr,
+        imageUrl,
+        sourceUrl,
+        agentName,
+        agentPhone,
+        agentEmail,
+        agentCompany,
+      ] = row;
+
+      // Validace povinných polí
+      if (!id || !title || !priceStr || !areaStr || !location) {
+        console.warn(`Řádek ${index + 2} přeskočen - chybí povinná pole`);
+        return null;
+      }
+
+      const price = parseFloat(priceStr.replace(/[^\d.-]/g, ""));
+      const area = parseFloat(areaStr.replace(/[^\d.-]/g, ""));
+      const discountPercentage = parseFloat(discountStr?.replace(/[^\d.-]/g, "") || "0");
+      const pricePerM2 = Math.round(price / area);
+
+      // Validace typu a dispozice
+      const validTypes = ["byt", "dům", "pozemek", "komerční"];
+      const propertyType = validTypes.includes(type?.toLowerCase())
+        ? (type.toLowerCase() as PropertyType)
+        : "byt";
+
+      const validDispositions = [
+        "1+kk", "1+1", "2+kk", "2+1", "3+kk", "3+1",
+        "4+kk", "4+1", "5+kk", "5+1", "6+kk", "6+1", "atypický"
+      ];
+      const propertyDisposition = validDispositions.includes(disposition)
+        ? (disposition as PropertyDisposition)
+        : "2+kk";
+
+      const property: Property = {
+        id: id.trim(),
+        title: title.trim(),
+        description: description?.trim() || "Popis není k dispozici",
+        price,
+        area,
+        pricePerM2,
+        location: location.trim(),
+        type: propertyType,
+        disposition: propertyDisposition,
+        rating: calculatePropertyRating(discountPercentage),
+        discountPercentage,
+        imageUrl: imageUrl?.trim() || "https://via.placeholder.com/800x600?text=Bez+obrázku",
+        source: "google_sheets",
+        sourceUrl: sourceUrl?.trim() || "",
+        createdAt: new Date(),
+      };
+
+      // Přidat kontakt na makléře, pokud je k dispozici
+      if (agentName || agentPhone || agentEmail) {
+        property.agent = {
+          name: agentName?.trim() || "Kontakt není k dispozici",
+          phone: agentPhone?.trim(),
+          email: agentEmail?.trim(),
+          company: agentCompany?.trim(),
+        };
+      }
+
+      return property;
+    }
   } catch (error) {
     console.error(`Chyba při parsování řádku ${index + 2}:`, error);
     return null;
@@ -224,7 +337,9 @@ export async function fetchPropertiesFromGoogleSheets(): Promise<Property[]> {
       return [];
     }
 
-    // Přeskočit první řádek (header)
+    // Přeskočit první řádek (header) ale uložit ho pro detekci formátu
+    const headerLine = lines[0];
+    const headers = parseCSVLine(headerLine);
     const dataLines = lines.slice(1);
 
     if (dataLines.length === 0) {
@@ -236,7 +351,7 @@ export async function fetchPropertiesFromGoogleSheets(): Promise<Property[]> {
 
     for (let i = 0; i < dataLines.length; i++) {
       const row = parseCSVLine(dataLines[i]);
-      const property = rowToProperty(row, i);
+      const property = rowToProperty(row, i, headers);
 
       if (property) {
         properties.push(property);
