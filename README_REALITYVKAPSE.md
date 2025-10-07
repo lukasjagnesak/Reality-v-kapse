@@ -102,6 +102,48 @@ Aplikace používá **bottom tab navigaci** se třemi hlavními záložkami:
 2. **Kritéria** ⚙️ - Nastavení kritérií pro vyhledávání
 3. **Nastavení** 👤 - Uživatelský profil a správa předplatného
 
+## 📊 Google Sheets integrace
+
+Aplikace podporuje načítání dat z Google Sheets! To umožňuje snadnou správu inzerátů bez nutnosti backendu.
+
+### Rychlý start:
+
+1. Vytvořte Google Sheets tabulku
+2. Zkopírujte strukturu ze souboru `google-sheets-template.csv`
+3. Sdílejte tabulku jako "Anyone with the link can view"
+4. Přidejte Sheet ID do `.env` souboru:
+   ```
+   EXPO_PUBLIC_GOOGLE_SHEETS_ID=vaše_sheet_id
+   ```
+5. Restartujte aplikaci
+
+### Podrobný návod:
+Viz [GOOGLE_SHEETS_NAVOD.md](./GOOGLE_SHEETS_NAVOD.md)
+
+### Struktura tabulky:
+- **ID** - Unikátní identifikátor
+- **Název, Popis** - Informace o nemovitosti
+- **Cena, Plocha, Lokalita** - Základní údaje
+- **Typ, Dispozice** - Kategorie
+- **Sleva v %** - Pro hodnocení (A+, A, B, C)
+- **URL obrázku** - Odkaz na hlavní obrázek
+- **URL inzerátu** - Odkaz na původní inzerát
+- **Kontakt na makléře** - Jméno, telefon, email, společnost
+
+### Výhody:
+✅ Žádný backend  
+✅ Okamžité aktualizace  
+✅ Snadná správa dat  
+✅ Týmová spolupráce v Google Sheets  
+✅ Export/Import dat  
+
+## 📞 Kontakt na makléře
+
+Každá nemovitost může obsahovat kontaktní údaje makléře:
+- 👤 Jméno a společnost
+- 📞 Telefon (kliknutelný - přímé volání)
+- 📧 Email (kliknutelný - otevře emailového klienta)
+
 ## Spuštění aplikace
 
 ```bash

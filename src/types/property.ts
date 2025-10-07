@@ -17,7 +17,14 @@ export type PropertyDisposition =
 
 export type PropertyRating = "C" | "B" | "A" | "A+";
 
-export type PropertySource = "sreality" | "annonce" | "bezrealitky";
+export type PropertySource = "sreality" | "annonce" | "bezrealitky" | "google_sheets";
+
+export interface AgentContact {
+  name: string;
+  phone?: string;
+  email?: string;
+  company?: string;
+}
 
 export interface Property {
   id: string;
@@ -37,6 +44,7 @@ export interface Property {
   createdAt: Date;
   latitude?: number;
   longitude?: number;
+  agent?: AgentContact; // Kontakt na makléře
 }
 
 export interface UserPreferences {

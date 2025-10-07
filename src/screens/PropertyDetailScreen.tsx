@@ -183,26 +183,80 @@ export default function PropertyDetailScreen() {
             </View>
           </View>
 
+          {/* Agent Contact */}
+          {property.agent && (
+            <View className="bg-white rounded-xl border-2 border-blue-100 p-5 mb-6">
+              <View className="flex-row items-center mb-4">
+                <View className="w-12 h-12 bg-blue-100 rounded-full items-center justify-center mr-3">
+                  <Ionicons name="person" size={24} color="#3b82f6" />
+                </View>
+                <View className="flex-1">
+                  <Text className="text-lg font-bold text-gray-900">
+                    {property.agent.name}
+                  </Text>
+                  {property.agent.company && (
+                    <Text className="text-sm text-gray-600">
+                      {property.agent.company}
+                    </Text>
+                  )}
+                </View>
+              </View>
+
+              {property.agent.phone && (
+                <Pressable
+                  onPress={() => {
+                    const phone = property.agent?.phone?.replace(/\s/g, "");
+                    Linking.openURL(`tel:${phone}`);
+                  }}
+                  className="flex-row items-center bg-green-50 rounded-lg p-4 mb-3"
+                >
+                  <Ionicons name="call" size={20} color="#10b981" />
+                  <Text className="text-green-700 font-semibold ml-3 flex-1">
+                    {property.agent.phone}
+                  </Text>
+                  <Ionicons name="chevron-forward" size={20} color="#10b981" />
+                </Pressable>
+              )}
+
+              {property.agent.email && (
+                <Pressable
+                  onPress={() => {
+                    Linking.openURL(`mailto:${property.agent?.email}`);
+                  }}
+                  className="flex-row items-center bg-blue-50 rounded-lg p-4"
+                >
+                  <Ionicons name="mail" size={20} color="#3b82f6" />
+                  <Text className="text-blue-700 font-semibold ml-3 flex-1">
+                    {property.agent.email}
+                  </Text>
+                  <Ionicons name="chevron-forward" size={20} color="#3b82f6" />
+                </Pressable>
+              )}
+            </View>
+          )}
+
           {/* Source Info */}
           <View className="bg-gray-50 rounded-xl p-4 mb-6">
             <Text className="text-sm text-gray-600 mb-1">Zdroj</Text>
             <Text className="text-base font-semibold text-gray-900 capitalize">
-              {property.source}.cz
+              {property.source === "google_sheets" ? "Google Sheets" : `${property.source}.cz`}
             </Text>
           </View>
 
           {/* Open Source Button */}
-          <Pressable
-            onPress={handleOpenSource}
-            className="bg-blue-500 rounded-xl py-4 items-center mb-4"
-          >
-            <View className="flex-row items-center">
-              <Text className="text-white text-lg font-semibold mr-2">
-                Zobrazit na {property.source}.cz
-              </Text>
-              <Ionicons name="open-outline" size={20} color="white" />
-            </View>
-          </Pressable>
+          {property.sourceUrl && (
+            <Pressable
+              onPress={handleOpenSource}
+              className="bg-blue-500 rounded-xl py-4 items-center mb-4"
+            >
+              <View className="flex-row items-center">
+                <Text className="text-white text-lg font-semibold mr-2">
+                  Zobrazit původní inzerát
+                </Text>
+                <Ionicons name="open-outline" size={20} color="white" />
+              </View>
+            </Pressable>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>

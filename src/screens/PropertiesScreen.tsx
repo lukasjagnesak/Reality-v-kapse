@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
-import { View, Text, Pressable, ScrollView, RefreshControl } from "react-native";
+import { View, Text, ScrollView, RefreshControl, ActivityIndicator, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../navigation/AppNavigator";
 import { usePropertyStore } from "../state/propertyStore";
 import { mockProperties } from "../api/mockData";
+import { fetchPropertiesFromGoogleSheets } from "../api/googleSheetsService";
 import { Ionicons } from "@expo/vector-icons";
 import { PropertyCard } from "../components/PropertyCard";
 
@@ -22,24 +23,55 @@ export default function PropertiesScreen() {
   } = usePropertyStore();
 
   const [refreshing, setRefreshing] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
+
+  const loadProperties = async () => {
+    try {
+      console.log("Načítám data z Google Sheets...");
+      const properties = await fetchPropertiesFromGoogleSheets();
+      
+      if (properties.length > 0) {
+        setProperties(properties);
+        console.log(`Úspěšně načteno ${properties.length} nemovitostí`);
+      } else {
+        console.log("Google Sheets nevrátil žádná data, používám mock data");
+        setProperties(mockProperties);
+      }
+    } catch (error) {
+      console.error("Chyba při načítání nemovitostí:", error);
+      Alert.alert(
+        "Chyba při načítání",
+        "Nepodařilo se načíst data. Používám testovací data.",
+        [{ text: "OK" }]
+      );
+      setProperties(mockProperties);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // Load mock properties on mount
-    setProperties(mockProperties);
-  }, [setProperties]);
+    loadProperties();
+  }, []);
 
-  const onRefresh = React.useCallback(() => {
+  const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
-    // Simulate API call
-    setTimeout(() => {
-      setProperties(mockProperties);
-      setRefreshing(false);
-    }, 1000);
-  }, [setProperties]);
+    await loadProperties();
+    setRefreshing(false);
+  }, []);
 
   const handlePropertyPress = (property: typeof filteredProperties[0]) => {
     navigation.navigate("PropertyDetail", { property });
   };
+
+  if (loading) {
+    return (
+      <SafeAreaView className="flex-1 bg-gray-50 items-center justify-center" edges={["bottom"]}>
+        <ActivityIndicator size="large" color="#3b82f6" />
+        <Text className="text-gray-600 mt-4">Načítám nemovitosti...</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50" edges={["bottom"]}>
