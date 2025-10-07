@@ -165,27 +165,57 @@ export async function fetchPropertiesFromGoogleSheets(): Promise<Property[]> {
   const sheetId = getGoogleSheetsId();
 
   if (!sheetId) {
-    console.error(
-      "GOOGLE_SHEETS_ID není nastaveno. Přidejte EXPO_PUBLIC_GOOGLE_SHEETS_ID do .env souboru."
+    console.warn(
+      "⚠️  GOOGLE_SHEETS_ID není nastaveno. Přidejte EXPO_PUBLIC_GOOGLE_SHEETS_ID do .env souboru."
     );
     return [];
   }
 
   try {
     const url = getGoogleSheetsUrl(sheetId);
-    console.log("Načítám data z Google Sheets:", sheetId);
+    console.log("📊 Načítám data z Google Sheets...");
+    console.log(`   Sheet ID: ${sheetId.substring(0, 20)}...`);
 
     const response = await fetch(url);
+
+    if (response.status === 401 || response.status === 403) {
+      console.error("❌ Google Sheets není veřejně přístupný!");
+      console.error("📝 Postupujte takto:");
+      console.error("   1. Otevřete Google Sheets");
+      console.error("   2. Klikněte na 'Sdílet' (Share)");
+      console.error("   3. Změňte na 'Anyone with the link can view'");
+      console.error("   4. Klikněte 'Done'");
+      console.error("   5. Restartujte aplikaci");
+      return [];
+    }
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const csvText = await response.text();
+    
+    // Zkontrolovat, zda se nejedná o HTML (error page)
+    if (csvText.trim().startsWith('<!DOCTYPE') || csvText.trim().startsWith('<html')) {
+      console.error("❌ Google Sheets vrátil HTML místo CSV - tabulka není veřejně přístupná!");
+      console.error("📝 Otevřete tabulku a nastavte sdílení na 'Anyone with the link can view'");
+      return [];
+    }
+    
     const lines = csvText.split("\n").filter((line) => line.trim());
+
+    if (lines.length === 0) {
+      console.warn("⚠️  Google Sheets je prázdný");
+      return [];
+    }
 
     // Přeskočit první řádek (header)
     const dataLines = lines.slice(1);
+
+    if (dataLines.length === 0) {
+      console.warn("⚠️  Google Sheets obsahuje pouze header, žádná data");
+      return [];
+    }
 
     const properties: Property[] = [];
 
@@ -198,10 +228,10 @@ export async function fetchPropertiesFromGoogleSheets(): Promise<Property[]> {
       }
     }
 
-    console.log(`Načteno ${properties.length} nemovitostí z Google Sheets`);
+    console.log(`✅ Načteno ${properties.length} nemovitostí z Google Sheets`);
     return properties;
   } catch (error) {
-    console.error("Chyba při načítání dat z Google Sheets:", error);
+    console.error("❌ Chyba při načítání dat z Google Sheets:", error);
     return [];
   }
 }
