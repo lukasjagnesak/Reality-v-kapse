@@ -144,6 +144,52 @@ Každá nemovitost může obsahovat kontaktní údaje makléře:
 - 📞 Telefon (kliknutelný - přímé volání)
 - 📧 Email (kliknutelný - otevře emailového klienta)
 
+## 🤖 Automatický Scraper
+
+Aplikace obsahuje **plně funkční scraper** pro Sreality.cz!
+
+### Funkce:
+- ✅ Automatické stahování inzerátů z Sreality.cz
+- ✅ Nahrávání do Google Sheets
+- ✅ Detekce nových inzerátů
+- ✅ Detekce změn cen (škrtnutá stará cena)
+- ✅ Nastavitelné filtrační parametry
+- ✅ Podpora pro cron job (každých 10 minut)
+
+### Rychlý start:
+
+```bash
+cd scraper
+npm install
+node sreality-scraper-puppeteer.js
+```
+
+### Podrobný návod:
+Viz [scraper/README.md](./scraper/README.md)
+
+### Co scraper umí:
+1. **Prohledá prvních 10 stránek** (200 inzerátů)
+2. **Extrahuje všechna data** (cena, plocha, lokace, obrázky)
+3. **Nahraje do Google Sheets** automaticky
+4. **Detekuje změny:**
+   - 🆕 Nové inzeráty
+   - 💰 Změny cen (zobrazí škrtnutou starou cenu)
+   - 🗑️ Odebrané inzeráty
+
+### Automatické spouštění:
+
+**Cron (Linux/Mac):**
+```bash
+*/10 * * * * cd /path/to/project && node scraper/sreality-scraper-puppeteer.js
+```
+
+**GitHub Actions (Cloud - ZDARMA):**
+```yaml
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+```
+
 ## Spuštění aplikace
 
 ```bash
@@ -160,28 +206,7 @@ bun ios
 bun android
 ```
 
-## Budoucí implementace
-
-### Backend požadavky
-
-Pro plnou funkcionalitu je potřeba implementovat backend server, který bude:
-
-1. **Scraping realitních serverů**
-   - Pravidelné skenování sreality.cz, bezrealitky.cz, annonce.cz
-   - Ukládání inzerátů do databáze
-   - Sledování změn a nových nabídek
-
-2. **Analýza trhu**
-   - Výpočet průměrných cen za m² podle lokality
-   - Historická data pro lepší analýzu
-   - Machine learning pro predikci cen
-
-3. **Push notifikace**
-   - Expo Push Notification service
-   - Filtrování nabídek podle uživatelských preferencí
-   - Okamžité notifikace při nalezení výhodné nabídky
-
-4. **API Endpoints**
+## Budoucí vylepšení
    ```
    GET /api/properties - Získání nemovitostí
    GET /api/properties/:id - Detail nemovitosti

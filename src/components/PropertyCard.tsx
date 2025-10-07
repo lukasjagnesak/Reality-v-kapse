@@ -89,9 +89,44 @@ export function PropertyCard({
         </View>
 
         <View className="border-t border-gray-200 pt-3">
-          <Text className="text-2xl font-bold text-blue-600">
-            {formatPrice(property.price)}
-          </Text>
+          {property.priceHistory ? (
+            <View>
+              <View className="flex-row items-center mb-1">
+                <Text className="text-lg text-gray-500 line-through mr-2">
+                  {formatPrice(property.priceHistory.oldPrice)}
+                </Text>
+                {property.priceHistory.newPrice < property.priceHistory.oldPrice ? (
+                  <View className="bg-green-100 rounded px-2 py-1">
+                    <Text className="text-green-700 text-xs font-bold">
+                      📉 Sleva!
+                    </Text>
+                  </View>
+                ) : (
+                  <View className="bg-red-100 rounded px-2 py-1">
+                    <Text className="text-red-700 text-xs font-bold">
+                      📈 Zdražení
+                    </Text>
+                  </View>
+                )}
+              </View>
+              <Text className="text-2xl font-bold text-blue-600">
+                {formatPrice(property.price)}
+              </Text>
+            </View>
+          ) : (
+            <View>
+              <Text className="text-2xl font-bold text-blue-600">
+                {formatPrice(property.price)}
+              </Text>
+              {property.isNew && (
+                <View className="bg-green-100 rounded px-2 py-1 mt-2 self-start">
+                  <Text className="text-green-700 text-xs font-bold">
+                    🆕 Nový inzerát
+                  </Text>
+                </View>
+              )}
+            </View>
+          )}
         </View>
       </View>
     </Pressable>

@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+scraper.log
+
+# Google Service Account (DŮLEŽITÉ - NIKDY NECOMMITUJTE!)
+service-account.json
+service-account-*.json
+*.json
+
+# Environment variables
+.env
+.env.local
+
+# Puppeteer cache
+.cache/

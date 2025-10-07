@@ -26,6 +26,12 @@ export interface AgentContact {
   company?: string;
 }
 
+export interface PriceHistory {
+  oldPrice: number;
+  newPrice: number;
+  changedAt: Date;
+}
+
 export interface Property {
   id: string;
   title: string;
@@ -45,6 +51,8 @@ export interface Property {
   latitude?: number;
   longitude?: number;
   agent?: AgentContact; // Kontakt na makléře
+  priceHistory?: PriceHistory; // Změna ceny
+  isNew?: boolean; // Nový inzerát (méně než 24h)
 }
 
 export interface UserPreferences {
