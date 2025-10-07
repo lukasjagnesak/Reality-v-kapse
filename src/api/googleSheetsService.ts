@@ -176,7 +176,15 @@ export async function fetchPropertiesFromGoogleSheets(): Promise<Property[]> {
     console.log("📊 Načítám data z Google Sheets...");
     console.log(`   Sheet ID: ${sheetId.substring(0, 20)}...`);
 
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'text/csv, application/csv, text/plain',
+      },
+    });
+
+    console.log(`📡 Response status: ${response.status}`);
+    console.log(`📡 Response headers:`, response.headers);
 
     if (response.status === 401 || response.status === 403) {
       console.error("❌ Google Sheets není veřejně přístupný!");
@@ -186,11 +194,18 @@ export async function fetchPropertiesFromGoogleSheets(): Promise<Property[]> {
       console.error("   3. Změňte na 'Anyone with the link can view'");
       console.error("   4. Klikněte 'Done'");
       console.error("   5. Restartujte aplikaci");
+      console.error("   ");
+      console.error("🔧 Alternativa: Zkopírujte testovací data z google-sheets-template.csv do Google Sheets");
       return [];
     }
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      console.error(`❌ HTTP error! status: ${response.status}`);
+      console.error("📝 Zkontrolujte, že:");
+      console.error("   1. Google Sheets existuje");
+      console.error("   2. Je sdílený jako 'Anyone with the link can view'");
+      console.error("   3. Sheet ID v .env je správné");
+      return [];
     }
 
     const csvText = await response.text();
