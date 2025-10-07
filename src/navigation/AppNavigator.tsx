@@ -1,35 +1,95 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons } from "@expo/vector-icons";
 import type { Property } from "../types/property";
 import { usePropertyStore } from "../state/propertyStore";
 
 // Import screens
 import OnboardingScreen from "../screens/OnboardingScreen";
-import HomeScreen from "../screens/HomeScreen";
+import PropertiesScreen from "../screens/PropertiesScreen";
+import CriteriaScreen from "../screens/CriteriaScreen";
+import ProfileScreen from "../screens/ProfileScreen";
 import PropertyDetailScreen from "../screens/PropertyDetailScreen";
-import SettingsScreen from "../screens/SettingsScreen";
 import FavoritesScreen from "../screens/FavoritesScreen";
 
 export type RootStackParamList = {
   Onboarding: undefined;
-  Home: undefined;
+  MainTabs: undefined;
   PropertyDetail: { property: Property };
-  Settings: undefined;
   Favorites: undefined;
 };
 
+export type MainTabsParamList = {
+  Properties: undefined;
+  Criteria: undefined;
+  Profile: undefined;
+};
+
 const Stack = createNativeStackNavigator<RootStackParamList>();
+const Tab = createBottomTabNavigator<MainTabsParamList>();
+
+function MainTabs() {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerLargeTitle: true,
+        headerTransparent: false,
+        headerBlurEffect: "systemChromeMaterial",
+        tabBarActiveTintColor: "#3b82f6",
+        tabBarInactiveTintColor: "#9ca3af",
+        tabBarStyle: {
+          borderTopWidth: 1,
+          borderTopColor: "#e5e7eb",
+        },
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName: keyof typeof Ionicons.glyphMap = "home";
+
+          if (route.name === "Properties") {
+            iconName = focused ? "home" : "home-outline";
+          } else if (route.name === "Criteria") {
+            iconName = focused ? "options" : "options-outline";
+          } else if (route.name === "Profile") {
+            iconName = focused ? "person" : "person-outline";
+          }
+
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+      })}
+    >
+      <Tab.Screen
+        name="Properties"
+        component={PropertiesScreen}
+        options={{
+          title: "Nemovitosti",
+        }}
+      />
+      <Tab.Screen
+        name="Criteria"
+        component={CriteriaScreen}
+        options={{
+          title: "Kritéria",
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          title: "Nastavení",
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
 
 export function AppNavigator() {
   const hasCompletedSetup = usePropertyStore((state) => state.hasCompletedSetup);
 
   return (
     <Stack.Navigator
-      initialRouteName={hasCompletedSetup ? "Home" : "Onboarding"}
+      initialRouteName={hasCompletedSetup ? "MainTabs" : "Onboarding"}
       screenOptions={{
-        headerLargeTitle: true,
-        headerTransparent: false,
-        headerBlurEffect: "systemChromeMaterial",
+        headerShown: true,
       }}
     >
       <Stack.Screen
@@ -38,26 +98,15 @@ export function AppNavigator() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{
-          title: "Reality v Kapse",
-          headerLargeTitle: true,
-        }}
+        name="MainTabs"
+        component={MainTabs}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="PropertyDetail"
         component={PropertyDetailScreen}
         options={{
           title: "Detail nemovitosti",
-          presentation: "modal",
-        }}
-      />
-      <Stack.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={{
-          title: "Nastavení",
           presentation: "modal",
         }}
       />

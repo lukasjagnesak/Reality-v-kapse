@@ -81,7 +81,7 @@ export default function OnboardingScreen() {
       minDiscountPercentage: Number(minDiscount) || 5,
     });
     completeSetup();
-    navigation.replace("Home");
+    navigation.replace("MainTabs");
   };
 
   return (

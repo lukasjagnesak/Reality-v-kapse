@@ -11,7 +11,7 @@ import { PropertyCard } from "../components/PropertyCard";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-export default function HomeScreen() {
+export default function PropertiesScreen() {
   const navigation = useNavigation<NavigationProp>();
   const {
     filteredProperties,
@@ -43,22 +43,6 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50" edges={["bottom"]}>
-      {/* Header Buttons */}
-      <View className="flex-row justify-between items-center px-4 py-2 bg-white border-b border-gray-200">
-        <Pressable
-          onPress={() => navigation.navigate("Favorites")}
-          className="p-2"
-        >
-          <Ionicons name="heart" size={24} color="#ef4444" />
-        </Pressable>
-        <Pressable
-          onPress={() => navigation.navigate("Settings")}
-          className="p-2"
-        >
-          <Ionicons name="settings-outline" size={24} color="#6b7280" />
-        </Pressable>
-      </View>
-
       <ScrollView
         className="flex-1"
         refreshControl={
@@ -88,16 +72,8 @@ export default function HomeScreen() {
               Žádné nabídky
             </Text>
             <Text className="text-gray-600 mt-2 text-center">
-              Zkuste upravit vaše preference v nastavení
+              Zkuste upravit vaše kritéria v záložce Kritéria
             </Text>
-            <Pressable
-              onPress={() => navigation.navigate("Settings")}
-              className="bg-blue-500 rounded-lg px-6 py-3 mt-4"
-            >
-              <Text className="text-white font-semibold">
-                Upravit preference
-              </Text>
-            </Pressable>
           </View>
         ) : (
           <View className="pb-4">

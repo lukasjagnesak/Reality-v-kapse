@@ -9,11 +9,13 @@ Reality v Kapse je aplikace, která skenuje realitní servery (sreality.cz, bezr
 ### Hlavní funkce
 
 - 🔍 **Sledování realitních serverů** - Sreality.cz, Bezrealitky.cz, Annonce.cz
-- 🎯 **Personalizované preference** - Lokalita, typ nemovitosti, dispozice, cenové rozmezí
+- 🎯 **Personalizovaná kritéria** - Lokalita, typ nemovitosti, dispozice, cenové rozmezí
 - 📊 **Hodnocení nabídek** - Systém hodnocení C, B, A, A+ podle výhodnosti ceny
 - 💰 **Kalkulátor hypotéky** - Okamžitý výpočet měsíční splátky
 - ❤️ **Oblíbené** - Ukládání zajímavých nemovitostí
 - 🔔 **Push notifikace** - Upozornění na nové výhodné nabídky
+- 👤 **Uživatelský profil** - Správa účtu a předplatného
+- 💎 **Předplatné** - 4 úrovně předplatného (Free, Basic, Premium, Pro)
 
 ## Technologie
 
@@ -31,18 +33,24 @@ src/
 ├── api/
 │   ├── mockData.ts           # Mock data pro vývoj
 │   └── realtyService.ts      # API služba pro scraping (připraveno)
+├── components/
+│   ├── Badges.tsx            # Rating a Discount badges
+│   └── PropertyCard.tsx      # Karta nemovitosti
 ├── navigation/
-│   └── AppNavigator.tsx      # Navigační struktura
+│   └── AppNavigator.tsx      # Navigační struktura s bottom tabs
 ├── screens/
-│   ├── OnboardingScreen.tsx  # Úvodní nastavení preferencí
-│   ├── HomeScreen.tsx        # Hlavní feed s nabídkami
-│   ├── PropertyDetailScreen.tsx  # Detail nemovitosti
-│   ├── SettingsScreen.tsx    # Nastavení preferencí
-│   └── FavoritesScreen.tsx   # Oblíbené nemovitosti
+│   ├── OnboardingScreen.tsx       # Úvodní nastavení kritérií
+│   ├── PropertiesScreen.tsx       # Hlavní feed s nabídkami
+│   ├── CriteriaScreen.tsx         # Nastavení kritérií hledání
+│   ├── ProfileScreen.tsx          # Uživatelský profil a předplatné
+│   ├── PropertyDetailScreen.tsx   # Detail nemovitosti
+│   └── FavoritesScreen.tsx        # Oblíbené nemovitosti
 ├── state/
-│   └── propertyStore.ts      # Zustand store
+│   ├── propertyStore.ts      # Zustand store pro nemovitosti
+│   └── userStore.ts          # Zustand store pro uživatele
 ├── types/
-│   └── property.ts           # TypeScript typy
+│   ├── property.ts           # TypeScript typy pro nemovitosti
+│   └── user.ts               # TypeScript typy pro uživatele
 └── utils/
     └── propertyUtils.ts      # Utility funkce
 ```
@@ -55,6 +63,44 @@ Aplikace hodnotí nemovitosti na základě porovnání ceny za m² s průměrem 
 - **A** - Sleva 10-15% (modrá)
 - **B** - Sleva 5-10% (oranžová)
 - **C** - Sleva 0-5% (červená)
+
+## Předplatné
+
+Aplikace nabízí 4 úrovně předplatného:
+
+### Free (Zdarma)
+- Sledování 1 lokality
+- Až 10 oblíbených nemovitostí
+- Základní filtrování
+
+### Basic (99 Kč/měsíc)
+- Sledování 3 lokalit
+- Až 50 oblíbených nemovitostí
+- Push notifikace
+- Pokročilé filtrování
+
+### Premium (199 Kč/měsíc)
+- Sledování 10 lokalit
+- Neomezené oblíbené
+- Push notifikace
+- Cenové upozornění
+- Analýza trhu
+
+### Pro (399 Kč/měsíc)
+- Neomezené lokality
+- Neomezené oblíbené
+- Prioritní notifikace
+- Pokročilá analýza trhu
+- Export dat
+- API přístup
+
+## Navigace
+
+Aplikace používá **bottom tab navigaci** se třemi hlavními záložkami:
+
+1. **Nemovitosti** 🏠 - Seznam nemovitostí splňujících vaše kritéria
+2. **Kritéria** ⚙️ - Nastavení kritérií pro vyhledávání
+3. **Nastavení** 👤 - Uživatelský profil a správa předplatného
 
 ## Spuštění aplikace
 

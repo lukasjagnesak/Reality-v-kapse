@@ -36,9 +36,8 @@ export default function App() {
             config: {
               screens: {
                 Onboarding: "onboarding",
-                Home: "home",
+                MainTabs: "tabs",
                 PropertyDetail: "property/:id",
-                Settings: "settings",
                 Favorites: "favorites",
               },
             },

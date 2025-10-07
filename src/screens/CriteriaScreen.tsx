@@ -26,7 +26,7 @@ const DISPOSITIONS: { value: PropertyDisposition; label: string }[] = [
   { value: "5+1", label: "5+1" },
 ];
 
-export default function SettingsScreen() {
+export default function CriteriaScreen() {
   const navigation = useNavigation();
   const { preferences, updatePreferences } = usePropertyStore();
   
