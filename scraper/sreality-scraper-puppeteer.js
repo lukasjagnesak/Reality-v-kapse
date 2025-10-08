@@ -232,36 +232,55 @@ function fetchSrealityPage(page) {
 function parseEstate(estate) {
   const hash_id = estate.hash_id || String(estate.id || Math.random()).slice(2);
   
-  // URL
+  // URL - správný formát pro Sreality.cz
   const seoLocality = estate.seo?.locality || 'praha';
-  const url = `https://www.sreality.cz/detail/${seoLocality}/${hash_id}`;
+  const categoryMain = estate.seo?.category_main_cb || 1; // 1 = byty
+  const categorySub = estate.seo?.category_sub_cb || 2; // 2 = 1+kk, 3 = 2+kk, atd.
+  const categoryType = estate.seo?.category_type_cb || 1; // 1 = prodej
   
-  // Základní info
+  let categoryName = 'byt';
+  let dispositionName = '';
+  
+  // Parsovat dispozici a plochu z názvu
+  // Formát: "Prodej bytu 3+kk 104 m²" nebo "Prodej bytu 2+1 58 m²"
   const titulek = estate.name || 'Bez názvu';
   const lokalita = estate.locality || 'Praha';
   
-  // Dispozice
+  // Extrahovat dispozici (1+kk, 2+kk, 3+1, atd.)
   let dispozice = '2+kk';
-  const dispoziceItem = estate.items?.find(item => item.name === 'Dispozice');
-  if (dispoziceItem?.value) {
-    dispozice = dispoziceItem.value;
+  const dispoziceMatch = titulek.match(/(\d+\+(?:kk|1))/i);
+  if (dispoziceMatch) {
+    dispozice = dispoziceMatch[1].toLowerCase();
+    dispositionName = dispozice;
   }
   
-  // Plocha
+  // Extrahovat plochu (číslo před "m²")
   let plocha_m2 = 0;
-  const plochaItem = estate.items?.find(item => 
-    item.name === 'Užitná plocha' || item.name === 'Plocha'
-  );
-  if (plochaItem?.value) {
-    const match = plochaItem.value.match(/(\d+)/);
-    if (match) {
-      plocha_m2 = parseInt(match[1], 10);
+  const plochaMatch = titulek.match(/(\d+)\s*m²/i);
+  if (plochaMatch) {
+    plocha_m2 = parseInt(plochaMatch[1], 10);
+  }
+  
+  // Pokud plocha nebyla nalezena, zkusit z items (fallback)
+  if (plocha_m2 === 0 && estate.items) {
+    const plochaItem = estate.items.find(item => 
+      item.name === 'Užitná plocha' || item.name === 'Plocha'
+    );
+    if (plochaItem?.value) {
+      const match = plochaItem.value.match(/(\d+)/);
+      if (match) {
+        plocha_m2 = parseInt(match[1], 10);
+      }
     }
   }
   
   // Cena
   const cena = estate.price || 0;
   const cena_za_m2 = plocha_m2 > 0 ? Math.round(cena / plocha_m2) : 0;
+  
+  // Sestavit správnou URL
+  // Formát: https://www.sreality.cz/detail/prodej/byt/2+kk/brno-veveri-slovakova/hash_id
+  const url = `https://www.sreality.cz/detail/prodej/byt/${dispositionName}/${seoLocality}/${hash_id}`;
   
   // Patro
   let patro = '';

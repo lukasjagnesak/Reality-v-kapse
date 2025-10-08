@@ -27,23 +27,28 @@ export default function PropertiesScreen() {
 
   const loadProperties = async () => {
     try {
-      console.log("Načítám data z Google Sheets...");
+      console.log("📡 Načítám data z Google Sheets...");
       const properties = await fetchPropertiesFromGoogleSheets();
+      
+      console.log(`📊 Načteno ${properties.length} nemovitostí ze serveru`);
+      console.log(`🔍 Aktuální filtry:`, {
+        locations: preferences.locations,
+        priceRange: preferences.priceRange,
+        areaRange: preferences.areaRange,
+        minDiscount: preferences.minDiscountPercentage,
+        propertyTypes: preferences.propertyTypes,
+        dispositions: preferences.dispositions,
+      });
       
       if (properties.length > 0) {
         setProperties(properties);
-        console.log(`Úspěšně načteno ${properties.length} nemovitostí`);
+        console.log(`✅ Data nastavena, filtrovaných: ${filteredProperties.length}`);
       } else {
-        console.log("Google Sheets nevrátil žádná data, používám mock data");
+        console.log("⚠️  Google Sheets nevrátil žádná data, používám mock data");
         setProperties(mockProperties);
       }
     } catch (error) {
-      console.error("Chyba při načítání nemovitostí:", error);
-      Alert.alert(
-        "Chyba při načítání",
-        "Nepodařilo se načíst data. Používám testovací data.",
-        [{ text: "OK" }]
-      );
+      console.error("❌ Chyba při načítání nemovitostí:", error);
       setProperties(mockProperties);
     } finally {
       setLoading(false);

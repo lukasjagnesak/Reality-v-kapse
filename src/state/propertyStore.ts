@@ -35,16 +35,16 @@ interface PropertyState {
 const defaultPreferences: UserPreferences = {
   locations: [],
   propertyTypes: ["byt", "dům"],
-  dispositions: ["2+kk", "2+1", "3+kk", "3+1"],
+  dispositions: ["1+kk", "1+1", "2+kk", "2+1", "3+kk", "3+1", "4+kk", "4+1"],
   priceRange: {
     min: 0,
-    max: 10000000,
+    max: 50000000,
   },
   areaRange: {
-    min: 30,
-    max: 150,
+    min: 0,
+    max: 500,
   },
-  minDiscountPercentage: 5,
+  minDiscountPercentage: 0, // Zobrazit všechny nemovitosti
   notificationsEnabled: true,
 };
 
