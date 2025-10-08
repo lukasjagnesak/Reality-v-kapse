@@ -93,6 +93,8 @@ function MainTabs() {
 
 export function AppNavigator() {
   const hasCompletedSetup = usePropertyStore((state) => state.hasCompletedSetup);
+  const syncPreferencesFromDatabase = usePropertyStore((state) => state.syncPreferencesFromDatabase);
+  const syncFavoritesFromDatabase = usePropertyStore((state) => state.syncFavoritesFromDatabase);
   const { isLoggedIn, setProfile, clearProfile } = useUserStore();
   const [isLoading, setIsLoading] = useState(true);
   const [initialRoute, setInitialRoute] = useState<keyof RootStackParamList>("Login");
@@ -137,6 +139,11 @@ export function AppNavigator() {
               phone: profile.phone || "",
               subscription: profile.subscription_type,
             });
+            
+            // Synchronizovat preference z databáze
+            console.log('🔄 Synchronizuji preference z databáze...');
+            await syncPreferencesFromDatabase(profile.id);
+            await syncFavoritesFromDatabase(profile.id);
           } else {
             console.log('⚠️ Profil neexistuje, ale uživatel je autentizován');
             // Set minimal profile from auth user
@@ -192,6 +199,11 @@ export function AppNavigator() {
             phone: profile.phone || "",
             subscription: profile.subscription_type,
           });
+          
+          // Synchronizovat preference po přihlášení
+          console.log('🔄 Synchronizuji preference po přihlášení...');
+          await syncPreferencesFromDatabase(profile.id);
+          await syncFavoritesFromDatabase(profile.id);
         } else {
           // Create minimal profile
           setProfile({
