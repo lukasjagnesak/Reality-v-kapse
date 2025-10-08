@@ -220,8 +220,21 @@ async function migrateToSupabase() {
   console.log('\n🚀 Začínám migraci dat z Google Sheets do Supabase...\n');
 
   try {
+    // KROK 0: Vyčistit existující data (fresh start)
+    console.log('🗑️  Krok 0/5: Mažu existující data...');
+    const { error: deleteError } = await supabase
+      .from('properties')
+      .delete()
+      .neq('id', ''); // Delete all rows
+    
+    if (deleteError) {
+      console.warn('⚠️  Varování při mazání:', deleteError.message);
+    } else {
+      console.log('✅ Existující data smazána\n');
+    }
+
     // KROK 1: Načíst data z Google Sheets
-    console.log('📊 Krok 1/4: Načítám data z Google Sheets...');
+    console.log('📊 Krok 1/5: Načítám data z Google Sheets...');
     const properties = await fetchPropertiesFromGoogleSheets();
     console.log(`✅ Načteno ${properties.length} nemovitostí\n`);
 
@@ -231,7 +244,7 @@ async function migrateToSupabase() {
     }
 
     // KROK 2: Insert do Supabase (po dávkách)
-    console.log('💾 Krok 2/4: Ukládám do Supabase...');
+    console.log('💾 Krok 2/5: Ukládám do Supabase...');
     const batchSize = 50; // Supabase doporučuje max 50-100 per batch
     let inserted = 0;
     let errors = 0;
@@ -242,10 +255,7 @@ async function migrateToSupabase() {
       try {
         const { data, error } = await supabase
           .from('properties')
-          .upsert(batch, {
-            onConflict: 'id',
-            ignoreDuplicates: false
-          });
+          .insert(batch); // Changed from upsert to insert for fresh data
 
         if (error) {
           console.error(`❌ Chyba při ukládání batch ${i}-${i + batch.length}:`, error.message);
@@ -267,7 +277,7 @@ async function migrateToSupabase() {
     console.log(`   ❌ Chyby: ${errors}\n`);
 
     // KROK 3: Verifikace
-    console.log('🔍 Krok 3/4: Verifikuji data v Supabase...');
+    console.log('🔍 Krok 3/5: Verifikuji data v Supabase...');
     const { count, error: countError } = await supabase
       .from('properties')
       .select('*', { count: 'exact', head: true });
@@ -285,7 +295,7 @@ async function migrateToSupabase() {
     }
 
     // KROK 4: Zobrazit statistiky
-    console.log('\n📈 Krok 4/4: Statistiky:');
+    console.log('\n📈 Krok 4/5: Statistiky:');
     const { data: stats } = await supabase
       .from('properties_stats')
       .select('*')
@@ -298,6 +308,22 @@ async function migrateToSupabase() {
       console.log(`   • Průměrná cena: ${Math.round(stats.avg_price).toLocaleString()} Kč`);
       console.log(`   • Průměrná cena/m²: ${Math.round(stats.avg_price_per_m2).toLocaleString()} Kč/m²`);
       console.log(`   • Lokalit: ${stats.unique_locations}`);
+    }
+
+    // KROK 5: Test fetch
+    console.log('\n🧪 Krok 5/5: Testuji načtení dat...');
+    const { data: testData, error: testError } = await supabase
+      .from('properties')
+      .select('id, title, price, location')
+      .limit(3);
+    
+    if (testError) {
+      console.error('❌ Chyba při testu:', testError);
+    } else if (testData && testData.length > 0) {
+      console.log('✅ První 3 nemovitosti:');
+      testData.forEach(p => {
+        console.log(`   📍 ${p.title.substring(0, 40)}... | ${p.location} | ${p.price.toLocaleString()} Kč`);
+      });
     }
 
     console.log('\n✅ Migrace HOTOVA!');
