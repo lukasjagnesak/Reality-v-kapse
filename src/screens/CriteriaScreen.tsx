@@ -6,6 +6,7 @@ import { usePropertyStore } from "../state/propertyStore";
 import { useUserStore } from "../state/userStore";
 import { Ionicons } from "@expo/vector-icons";
 import type { PropertyType, PropertyDisposition } from "../types/property";
+import { LocationPicker } from "../components/LocationPicker";
 
 const PROPERTY_TYPES: { value: PropertyType; label: string }[] = [
   { value: "byt", label: "Byt" },
@@ -33,7 +34,6 @@ export default function CriteriaScreen() {
   const profile = useUserStore((state) => state.profile);
   
   const [locations, setLocations] = useState<string[]>(preferences.locations);
-  const [locationInput, setLocationInput] = useState("");
   const [selectedTypes, setSelectedTypes] = useState<PropertyType[]>(preferences.propertyTypes);
   const [selectedDispositions, setSelectedDispositions] = useState<PropertyDisposition[]>(
     preferences.dispositions
@@ -58,10 +58,9 @@ export default function CriteriaScreen() {
     );
   };
 
-  const addLocation = () => {
-    if (locationInput.trim() && !locations.includes(locationInput.trim())) {
-      setLocations([...locations, locationInput.trim()]);
-      setLocationInput("");
+  const addLocation = (location: string) => {
+    if (location.trim() && !locations.includes(location.trim())) {
+      setLocations([...locations, location.trim()]);
     }
   };
 
@@ -103,7 +102,6 @@ export default function CriteriaScreen() {
   const handleResetFilters = () => {
     // Reset všech filtrů
     setLocations([]);
-    setLocationInput("");
     setSelectedTypes(["byt", "dům"]);
     setSelectedDispositions(["1+kk", "1+1", "2+kk", "2+1", "3+kk", "3+1", "4+kk", "4+1"]);
     setMinPrice("0");
@@ -177,36 +175,11 @@ export default function CriteriaScreen() {
               Lokalita
             </Text>
             
-            <View className="flex-row mb-3">
-              <TextInput
-                className="flex-1 bg-gray-100 rounded-lg px-4 py-3 text-base"
-                placeholder="např. Praha, Brno..."
-                value={locationInput}
-                onChangeText={setLocationInput}
-                onSubmitEditing={addLocation}
-                returnKeyType="done"
-              />
-              <Pressable
-                onPress={addLocation}
-                className="ml-2 bg-blue-500 rounded-lg px-4 justify-center"
-              >
-                <Ionicons name="add" size={24} color="white" />
-              </Pressable>
-            </View>
-
-            <View className="flex-row flex-wrap">
-              {locations.map((location) => (
-                <View
-                  key={location}
-                  className="bg-blue-100 rounded-full px-4 py-2 mr-2 mb-2 flex-row items-center"
-                >
-                  <Text className="text-blue-700 mr-2">{location}</Text>
-                  <Pressable onPress={() => removeLocation(location)}>
-                    <Ionicons name="close-circle" size={18} color="#1d4ed8" />
-                  </Pressable>
-                </View>
-              ))}
-            </View>
+            <LocationPicker
+              selectedLocations={locations}
+              onAddLocation={addLocation}
+              onRemoveLocation={removeLocation}
+            />
           </View>
 
           {/* Property Types */}
