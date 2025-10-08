@@ -36,6 +36,7 @@ export default function RegisterScreen() {
     }
 
     setLoading(true);
+    console.log('🔵 Začínám registraci...');
     try {
       // Registrace uživatele
       const { data, error } = await supabase.auth.signUp({
@@ -45,22 +46,48 @@ export default function RegisterScreen() {
           data: {
             full_name: fullName,
           },
+          emailRedirectTo: undefined, // Disable email confirmation redirect
         },
       });
 
-      if (error) throw error;
+      console.log('📊 Supabase odpověď:', { data, error });
+
+      if (error) {
+        console.error('❌ Supabase error:', error);
+        throw error;
+      }
 
       if (data.user) {
-        // Úspěšná registrace - auth state listener v AppNavigatoru automaticky přesměruje na Onboarding
-        console.log('✅ Registrace úspěšná');
+        console.log('✅ Registrace úspěšná, user:', data.user.id);
+        
+        // Check if email confirmation is required
+        if (data.session) {
+          console.log('✅ Session vytvořena, přihlášení úspěšné');
+          Alert.alert(
+            'Registrace úspěšná!',
+            'Váš účet byl vytvořen a jste přihlášeni.',
+            [{ text: 'OK' }]
+          );
+        } else {
+          console.log('⚠️ Session není, pravděpodobně vyžadována email konfirmace');
+          Alert.alert(
+            'Registrace úspěšná!',
+            'Zkontrolujte svůj email a potvrďte registraci. Poté se můžete přihlásit.',
+            [
+              {
+                text: 'OK',
+                onPress: () => navigation.goBack(),
+              },
+            ]
+          );
+        }
       }
     } catch (error: any) {
       console.error('❌ Chyba registrace:', error);
+      const errorMessage = error.message || JSON.stringify(error);
       Alert.alert(
         'Chyba registrace',
-        error.message === 'User already registered'
-          ? 'Tento email je již registrován'
-          : 'Nepodařilo se vytvořit účet. Zkuste to znovu.'
+        `${errorMessage}\n\nZkuste to znovu nebo kontaktujte podporu.`
       );
     } finally {
       setLoading(false);

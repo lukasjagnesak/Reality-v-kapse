@@ -6,15 +6,45 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../api/supabase';
 import type { RootStackParamList } from '../navigation/AppNavigator';
+import { usePropertyStore } from '../state/propertyStore';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
+// DEBUG MODE - Umožní přeskočit autentizaci
+const DEBUG_MODE = true;
+
 export default function LoginScreen() {
   const navigation = useNavigation<NavigationProp>();
+  const completeSetup = usePropertyStore((state) => state.completeSetup);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const handleDebugSkip = () => {
+    Alert.alert(
+      'DEBUG MODE',
+      'Přeskočit přihlášení a jít rovnou do aplikace?',
+      [
+        { text: 'Zrušit', style: 'cancel' },
+        {
+          text: 'Přeskočit na Onboarding',
+          onPress: () => {
+            console.log('🐛 DEBUG: Přeskok na Onboarding');
+            navigation.replace('Onboarding');
+          },
+        },
+        {
+          text: 'Přeskočit do aplikace',
+          onPress: () => {
+            console.log('🐛 DEBUG: Přeskok do aplikace');
+            completeSetup();
+            navigation.replace('MainTabs');
+          },
+        },
+      ]
+    );
+  };
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -23,25 +53,32 @@ export default function LoginScreen() {
     }
 
     setLoading(true);
+    console.log('🔵 Začínám přihlášení...');
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim().toLowerCase(),
         password,
       });
 
-      if (error) throw error;
+      console.log('📊 Supabase odpověď:', { data, error });
+
+      if (error) {
+        console.error('❌ Supabase error:', error);
+        throw error;
+      }
 
       if (data.user) {
-        // Úspěšné přihlášení - navigace se provede automaticky přes auth state listener v AppNavigator
-        console.log('✅ Přihlášení úspěšné');
+        console.log('✅ Přihlášení úspěšné, user:', data.user.id);
+        console.log('✅ Session:', data.session ? 'ANO' : 'NE');
       }
     } catch (error: any) {
       console.error('❌ Chyba přihlášení:', error);
+      const errorMessage = error.message || JSON.stringify(error);
       Alert.alert(
         'Chyba přihlášení',
-        error.message === 'Invalid login credentials'
+        errorMessage.includes('Invalid login credentials')
           ? 'Nesprávný email nebo heslo'
-          : 'Nepodařilo se přihlásit. Zkuste to znovu.'
+          : `${errorMessage}\n\nZkuste to znovu.`
       );
     } finally {
       setLoading(false);
@@ -130,12 +167,24 @@ export default function LoginScreen() {
             </Pressable>
 
             {/* Register Link */}
-            <View className="flex-row items-center justify-center">
+            <View className="flex-row items-center justify-center mb-4">
               <Text className="text-gray-600">Ještě nemáte účet? </Text>
               <Pressable onPress={handleRegister} disabled={loading}>
                 <Text className="text-blue-500 font-semibold">Zaregistrujte se</Text>
               </Pressable>
             </View>
+
+            {/* DEBUG MODE Button */}
+            {DEBUG_MODE && (
+              <Pressable
+                onPress={handleDebugSkip}
+                className="bg-orange-500 rounded-lg py-3 items-center mt-4"
+              >
+                <Text className="text-white font-semibold">
+                  🐛 DEBUG: Přeskočit přihlášení
+                </Text>
+              </Pressable>
+            )}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

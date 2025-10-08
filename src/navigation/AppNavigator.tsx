@@ -99,17 +99,35 @@ export function AppNavigator() {
     // Check initial auth state
     const checkAuthState = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        console.log('🔍 Kontroluji auth state...');
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('❌ Chyba při načítání session:', error);
+          // Na chybu reaguj, ale nepřeruš aplikaci
+          setInitialRoute("Login");
+          setIsLoading(false);
+          return;
+        }
+        
+        console.log('📊 Session:', session ? `User: ${session.user.id}` : 'Žádná session');
         
         if (session?.user) {
+          console.log('✅ Uživatel je přihlášený');
           // User is logged in, fetch their profile
-          const { data: profile, error } = await supabase
+          const { data: profile, error: profileError } = await supabase
             .from("user_profiles")
             .select("*")
             .eq("id", session.user.id)
             .single();
 
-          if (profile && !error) {
+          if (profileError) {
+            console.error('❌ Chyba při načítání profilu:', profileError);
+            // Profile doesn't exist yet - continue anyway
+          }
+
+          if (profile) {
+            console.log('✅ Profil načten:', profile.email);
             setProfile({
               id: profile.id,
               email: profile.email,
@@ -117,19 +135,32 @@ export function AppNavigator() {
               phone: profile.phone || "",
               subscription: profile.subscription_type,
             });
+          } else {
+            console.log('⚠️ Profil neexistuje, ale uživatel je autentizován');
+            // Set minimal profile from auth user
+            setProfile({
+              id: session.user.id,
+              email: session.user.email || "",
+              fullName: "",
+              phone: "",
+              subscription: "free",
+            });
+          }
 
-            // Check if user has completed onboarding
-            if (!hasCompletedSetup) {
-              setInitialRoute("Onboarding");
-            } else {
-              setInitialRoute("MainTabs");
-            }
+          // Check if user has completed onboarding
+          if (!hasCompletedSetup) {
+            console.log('➡️ Přesměrování na Onboarding');
+            setInitialRoute("Onboarding");
+          } else {
+            console.log('➡️ Přesměrování na MainTabs');
+            setInitialRoute("MainTabs");
           }
         } else {
+          console.log('➡️ Žádný přihlášený uživatel, přesměrování na Login');
           setInitialRoute("Login");
         }
       } catch (error) {
-        console.error("❌ Error checking auth state:", error);
+        console.error("❌ Neočekávaná chyba při checkAuthState:", error);
         setInitialRoute("Login");
       } finally {
         setIsLoading(false);
@@ -140,9 +171,10 @@ export function AppNavigator() {
 
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("🔐 Auth state changed:", event);
+      console.log("🔐 Auth state změna:", event);
 
       if (event === "SIGNED_IN" && session?.user) {
+        console.log('✅ Uživatel se přihlásil:', session.user.id);
         // User just signed in
         const { data: profile } = await supabase
           .from("user_profiles")
@@ -158,8 +190,18 @@ export function AppNavigator() {
             phone: profile.phone || "",
             subscription: profile.subscription_type,
           });
+        } else {
+          // Create minimal profile
+          setProfile({
+            id: session.user.id,
+            email: session.user.email || "",
+            fullName: "",
+            phone: "",
+            subscription: "free",
+          });
         }
       } else if (event === "SIGNED_OUT") {
+        console.log('✅ Uživatel se odhlásil');
         // User signed out
         clearProfile();
       }
