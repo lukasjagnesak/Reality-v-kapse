@@ -51,16 +51,8 @@ export default function RegisterScreen() {
       if (error) throw error;
 
       if (data.user) {
-        Alert.alert(
-          'Registrace úspěšná!',
-          'Váš účet byl vytvořen. Nyní se můžete přihlásit.',
-          [
-            {
-              text: 'OK',
-              onPress: () => navigation.goBack(),
-            },
-          ]
-        );
+        // Úspěšná registrace - auth state listener v AppNavigatoru automaticky přesměruje na Onboarding
+        console.log('✅ Registrace úspěšná');
       }
     } catch (error: any) {
       console.error('❌ Chyba registrace:', error);

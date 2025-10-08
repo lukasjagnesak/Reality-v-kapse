@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, Pressable, ScrollView, TextInput, KeyboardAvoidingView, Platform } from "react-native";
+import { View, Text, Pressable, ScrollView, TextInput, KeyboardAvoidingView, Platform, ActivityIndicator, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { usePropertyStore } from "../state/propertyStore";
+import { useUserStore } from "../state/userStore";
 import { Ionicons } from "@expo/vector-icons";
 import type { PropertyType, PropertyDisposition } from "../types/property";
 
@@ -28,7 +29,8 @@ const DISPOSITIONS: { value: PropertyDisposition; label: string }[] = [
 
 export default function CriteriaScreen() {
   const navigation = useNavigation();
-  const { preferences, updatePreferences } = usePropertyStore();
+  const { preferences, updatePreferences, savePreferencesToDatabase } = usePropertyStore();
+  const profile = useUserStore((state) => state.profile);
   
   const [locations, setLocations] = useState<string[]>(preferences.locations);
   const [locationInput, setLocationInput] = useState("");
@@ -40,6 +42,7 @@ export default function CriteriaScreen() {
   const [maxPrice, setMaxPrice] = useState(String(preferences.priceRange.max));
   const [minDiscount, setMinDiscount] = useState(String(preferences.minDiscountPercentage));
   const [notificationsEnabled, setNotificationsEnabled] = useState(preferences.notificationsEnabled);
+  const [saving, setSaving] = useState(false);
 
   const toggleType = (type: PropertyType) => {
     setSelectedTypes((prev) =>
@@ -66,19 +69,35 @@ export default function CriteriaScreen() {
     setLocations(locations.filter((loc) => loc !== location));
   };
 
-  const handleSave = () => {
-    updatePreferences({
-      locations,
-      propertyTypes: selectedTypes,
-      dispositions: selectedDispositions,
-      priceRange: {
-        min: Number(minPrice) || 0,
-        max: Number(maxPrice) || 50000000,
-      },
-      minDiscountPercentage: Number(minDiscount) || 0,
-      notificationsEnabled,
-    });
-    navigation.goBack();
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      updatePreferences({
+        locations,
+        propertyTypes: selectedTypes,
+        dispositions: selectedDispositions,
+        priceRange: {
+          min: Number(minPrice) || 0,
+          max: Number(maxPrice) || 50000000,
+        },
+        minDiscountPercentage: Number(minDiscount) || 0,
+        notificationsEnabled,
+      });
+
+      // Save to database if user is logged in
+      if (profile?.id) {
+        await savePreferencesToDatabase(profile.id);
+        console.log("✅ Preferences saved to database");
+      }
+
+      navigation.goBack();
+    } catch (error) {
+      console.error("❌ Error saving preferences:", error);
+      Alert.alert("Chyba", "Nepodařilo se uložit preference do databáze");
+      navigation.goBack();
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleResetFilters = () => {
@@ -298,11 +317,18 @@ export default function CriteriaScreen() {
         <View className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-6 py-4">
           <Pressable
             onPress={handleSave}
-            className="bg-blue-500 rounded-xl py-4 items-center"
+            disabled={saving}
+            className={`bg-blue-500 rounded-xl py-4 items-center ${
+              saving ? "opacity-50" : ""
+            }`}
           >
-            <Text className="text-white text-lg font-semibold">
-              Uložit změny
-            </Text>
+            {saving ? (
+              <ActivityIndicator color="white" />
+            ) : (
+              <Text className="text-white text-lg font-semibold">
+                Uložit změny
+              </Text>
+            )}
           </Pressable>
         </View>
       </KeyboardAvoidingView>

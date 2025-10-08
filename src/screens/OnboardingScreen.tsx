@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, Pressable, ScrollView, TextInput, KeyboardAvoidingView, Platform } from "react-native";
+import { View, Text, Pressable, ScrollView, TextInput, KeyboardAvoidingView, Platform, ActivityIndicator, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../navigation/AppNavigator";
 import { usePropertyStore } from "../state/propertyStore";
+import { useUserStore } from "../state/userStore";
 import { Ionicons } from "@expo/vector-icons";
 import type { PropertyType, PropertyDisposition } from "../types/property";
 
@@ -32,7 +33,8 @@ const DISPOSITIONS: { value: PropertyDisposition; label: string }[] = [
 
 export default function OnboardingScreen() {
   const navigation = useNavigation<NavigationProp>();
-  const { preferences, updatePreferences, completeSetup } = usePropertyStore();
+  const { preferences, updatePreferences, completeSetup, savePreferencesToDatabase } = usePropertyStore();
+  const profile = useUserStore((state) => state.profile);
   
   const [locations, setLocations] = useState<string[]>(preferences.locations);
   const [locationInput, setLocationInput] = useState("");
@@ -43,6 +45,7 @@ export default function OnboardingScreen() {
   const [minPrice, setMinPrice] = useState(String(preferences.priceRange.min));
   const [maxPrice, setMaxPrice] = useState(String(preferences.priceRange.max));
   const [minDiscount, setMinDiscount] = useState(String(preferences.minDiscountPercentage));
+  const [saving, setSaving] = useState(false);
 
   const toggleType = (type: PropertyType) => {
     setSelectedTypes((prev) =>
@@ -69,19 +72,55 @@ export default function OnboardingScreen() {
     setLocations(locations.filter((loc) => loc !== location));
   };
 
-  const handleComplete = () => {
-    updatePreferences({
-      locations,
-      propertyTypes: selectedTypes,
-      dispositions: selectedDispositions,
-      priceRange: {
-        min: Number(minPrice) || 0,
-        max: Number(maxPrice) || 50000000,
-      },
-      minDiscountPercentage: Number(minDiscount) || 5,
-    });
-    completeSetup();
-    navigation.replace("MainTabs");
+  const handleComplete = async () => {
+    if (locations.length === 0 || selectedTypes.length === 0) {
+      Alert.alert("Chyba", "Vyberte prosím alespoň jednu lokalitu a typ nemovitosti");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      // Update local preferences
+      updatePreferences({
+        locations,
+        propertyTypes: selectedTypes,
+        dispositions: selectedDispositions,
+        priceRange: {
+          min: Number(minPrice) || 0,
+          max: Number(maxPrice) || 50000000,
+        },
+        minDiscountPercentage: Number(minDiscount) || 0,
+      });
+
+      // Save to database if user is logged in
+      if (profile?.id) {
+        await savePreferencesToDatabase(profile.id);
+        console.log("✅ Preferences saved to database");
+      }
+
+      // Mark setup as complete
+      completeSetup();
+      
+      // Navigate to main app
+      navigation.replace("MainTabs");
+    } catch (error) {
+      console.error("❌ Error saving preferences:", error);
+      Alert.alert(
+        "Chyba",
+        "Nepodařilo se uložit preference. Pokračujeme s lokálním nastavením.",
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              completeSetup();
+              navigation.replace("MainTabs");
+            },
+          },
+        ]
+      );
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -258,12 +297,18 @@ export default function OnboardingScreen() {
         <View className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-6 py-4">
           <Pressable
             onPress={handleComplete}
-            className="bg-blue-500 rounded-xl py-4 items-center"
-            disabled={locations.length === 0 || selectedTypes.length === 0}
+            disabled={locations.length === 0 || selectedTypes.length === 0 || saving}
+            className={`bg-blue-500 rounded-xl py-4 items-center ${
+              (locations.length === 0 || selectedTypes.length === 0 || saving) ? "opacity-50" : ""
+            }`}
           >
-            <Text className="text-white text-lg font-semibold">
-              Pokračovat
-            </Text>
+            {saving ? (
+              <ActivityIndicator color="white" />
+            ) : (
+              <Text className="text-white text-lg font-semibold">
+                Pokračovat
+              </Text>
+            )}
           </Pressable>
         </View>
       </KeyboardAvoidingView>

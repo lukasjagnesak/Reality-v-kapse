@@ -2,12 +2,11 @@ export type SubscriptionType = "free" | "basic" | "premium" | "pro";
 
 export interface UserProfile {
   id: string;
-  firstName: string;
-  lastName: string;
   email: string;
+  fullName: string;
   phone?: string;
-  createdAt: Date;
   subscription: SubscriptionType;
+  createdAt?: Date;
 }
 
 export interface SubscriptionPlan {

@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
+import { View, ActivityIndicator } from "react-native";
 import type { Property } from "../types/property";
 import { usePropertyStore } from "../state/propertyStore";
+import { useUserStore } from "../state/userStore";
+import { supabase } from "../api/supabase";
 
 // Import screens
 import OnboardingScreen from "../screens/OnboardingScreen";
@@ -88,9 +91,93 @@ function MainTabs() {
 
 export function AppNavigator() {
   const hasCompletedSetup = usePropertyStore((state) => state.hasCompletedSetup);
-  
-  // Pro teď začínáme vždy na Login (později přidáme auth state check)
-  const initialRoute = "Login";
+  const { isLoggedIn, setProfile, clearProfile } = useUserStore();
+  const [isLoading, setIsLoading] = useState(true);
+  const [initialRoute, setInitialRoute] = useState<keyof RootStackParamList>("Login");
+
+  useEffect(() => {
+    // Check initial auth state
+    const checkAuthState = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session?.user) {
+          // User is logged in, fetch their profile
+          const { data: profile, error } = await supabase
+            .from("user_profiles")
+            .select("*")
+            .eq("id", session.user.id)
+            .single();
+
+          if (profile && !error) {
+            setProfile({
+              id: profile.id,
+              email: profile.email,
+              fullName: profile.full_name || "",
+              phone: profile.phone || "",
+              subscription: profile.subscription_type,
+            });
+
+            // Check if user has completed onboarding
+            if (!hasCompletedSetup) {
+              setInitialRoute("Onboarding");
+            } else {
+              setInitialRoute("MainTabs");
+            }
+          }
+        } else {
+          setInitialRoute("Login");
+        }
+      } catch (error) {
+        console.error("❌ Error checking auth state:", error);
+        setInitialRoute("Login");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuthState();
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("🔐 Auth state changed:", event);
+
+      if (event === "SIGNED_IN" && session?.user) {
+        // User just signed in
+        const { data: profile } = await supabase
+          .from("user_profiles")
+          .select("*")
+          .eq("id", session.user.id)
+          .single();
+
+        if (profile) {
+          setProfile({
+            id: profile.id,
+            email: profile.email,
+            fullName: profile.full_name || "",
+            phone: profile.phone || "",
+            subscription: profile.subscription_type,
+          });
+        }
+      } else if (event === "SIGNED_OUT") {
+        // User signed out
+        clearProfile();
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [hasCompletedSetup]);
+
+  // Show loading screen while checking auth state
+  if (isLoading) {
+    return (
+      <View className="flex-1 items-center justify-center bg-white">
+        <ActivityIndicator size="large" color="#3b82f6" />
+      </View>
+    );
+  }
 
   return (
     <Stack.Navigator

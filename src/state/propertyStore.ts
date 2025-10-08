@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { Property, UserPreferences } from "../types/property";
+import { supabase } from "../api/supabase";
 
 interface PropertyState {
   // User preferences
@@ -30,6 +31,12 @@ interface PropertyState {
   // First time setup
   hasCompletedSetup: boolean;
   completeSetup: () => void;
+
+  // Supabase sync methods
+  syncPreferencesFromDatabase: (userId: string) => Promise<void>;
+  savePreferencesToDatabase: (userId: string) => Promise<void>;
+  syncFavoritesFromDatabase: (userId: string) => Promise<void>;
+  saveFavoriteToDatabase: (userId: string, propertyId: string, isAdding: boolean) => Promise<void>;
 }
 
 const defaultPreferences: UserPreferences = {
@@ -176,6 +183,120 @@ export const usePropertyStore = create<PropertyState>()(
       
       completeSetup: () => {
         set({ hasCompletedSetup: true });
+      },
+
+      // Sync preferences from Supabase database
+      syncPreferencesFromDatabase: async (userId: string) => {
+        try {
+          const { data, error } = await supabase
+            .from("user_preferences")
+            .select("*")
+            .eq("user_id", userId)
+            .single();
+
+          if (error) throw error;
+
+          if (data) {
+            const preferences: UserPreferences = {
+              locations: data.locations || [],
+              propertyTypes: data.property_types || ["byt", "dům"],
+              dispositions: data.dispositions || ["1+kk", "1+1", "2+kk", "2+1", "3+kk", "3+1", "4+kk", "4+1"],
+              priceRange: {
+                min: data.price_min || 0,
+                max: data.price_max || 50000000,
+              },
+              areaRange: {
+                min: data.area_min || 0,
+                max: data.area_max || 500,
+              },
+              minDiscountPercentage: data.min_discount_percentage || 0,
+              notificationsEnabled: data.notifications_enabled ?? true,
+            };
+            set({ preferences });
+            get().applyFilters();
+            console.log("✅ Preferences synced from database");
+          }
+        } catch (error) {
+          console.error("❌ Error syncing preferences from database:", error);
+        }
+      },
+
+      // Save preferences to Supabase database
+      savePreferencesToDatabase: async (userId: string) => {
+        const { preferences } = get();
+        try {
+          const { error } = await supabase
+            .from("user_preferences")
+            .upsert({
+              user_id: userId,
+              locations: preferences.locations,
+              property_types: preferences.propertyTypes,
+              dispositions: preferences.dispositions,
+              price_min: preferences.priceRange.min,
+              price_max: preferences.priceRange.max,
+              area_min: preferences.areaRange.min,
+              area_max: preferences.areaRange.max,
+              min_discount_percentage: preferences.minDiscountPercentage,
+              notifications_enabled: preferences.notificationsEnabled,
+            }, {
+              onConflict: "user_id",
+            });
+
+          if (error) throw error;
+          console.log("✅ Preferences saved to database");
+        } catch (error) {
+          console.error("❌ Error saving preferences to database:", error);
+          throw error;
+        }
+      },
+
+      // Sync favorites from Supabase database
+      syncFavoritesFromDatabase: async (userId: string) => {
+        try {
+          const { data, error } = await supabase
+            .from("user_favorites")
+            .select("property_id")
+            .eq("user_id", userId);
+
+          if (error) throw error;
+
+          if (data) {
+            const favoriteIds = data.map((fav) => fav.property_id);
+            set({ favoriteIds });
+            console.log(`✅ Synced ${favoriteIds.length} favorites from database`);
+          }
+        } catch (error) {
+          console.error("❌ Error syncing favorites from database:", error);
+        }
+      },
+
+      // Save or remove favorite in database
+      saveFavoriteToDatabase: async (userId: string, propertyId: string, isAdding: boolean) => {
+        try {
+          if (isAdding) {
+            const { error } = await supabase
+              .from("user_favorites")
+              .insert({
+                user_id: userId,
+                property_id: propertyId,
+              });
+
+            if (error) throw error;
+            console.log(`✅ Favorite ${propertyId} added to database`);
+          } else {
+            const { error } = await supabase
+              .from("user_favorites")
+              .delete()
+              .eq("user_id", userId)
+              .eq("property_id", propertyId);
+
+            if (error) throw error;
+            console.log(`✅ Favorite ${propertyId} removed from database`);
+          }
+        } catch (error) {
+          console.error("❌ Error saving favorite to database:", error);
+          throw error;
+        }
       },
     }),
     {

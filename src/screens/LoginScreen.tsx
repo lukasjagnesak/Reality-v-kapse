@@ -32,7 +32,7 @@ export default function LoginScreen() {
       if (error) throw error;
 
       if (data.user) {
-        // Úspěšné přihlášení - navigace se provede automaticky přes auth state listener
+        // Úspěšné přihlášení - navigace se provede automaticky přes auth state listener v AppNavigator
         console.log('✅ Přihlášení úspěšné');
       }
     } catch (error: any) {

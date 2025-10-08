@@ -5,6 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../navigation/AppNavigator";
 import { usePropertyStore } from "../state/propertyStore";
+import { useUserStore } from "../state/userStore";
 import { mockProperties } from "../api/mockData";
 import { fetchPropertiesFromGoogleSheets } from "../api/googleSheetsService";
 import { Ionicons } from "@expo/vector-icons";
@@ -14,6 +15,7 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 export default function PropertiesScreen() {
   const navigation = useNavigation<NavigationProp>();
+  const profile = useUserStore((state) => state.profile);
   const {
     filteredProperties,
     properties,
@@ -21,6 +23,8 @@ export default function PropertiesScreen() {
     toggleFavorite,
     isFavorite,
     preferences,
+    saveFavoriteToDatabase,
+    syncFavoritesFromDatabase,
   } = usePropertyStore();
 
   const [refreshing, setRefreshing] = React.useState(false);
@@ -59,7 +63,12 @@ export default function PropertiesScreen() {
 
   useEffect(() => {
     loadProperties();
-  }, []);
+    
+    // Sync favorites from database if user is logged in
+    if (profile?.id) {
+      syncFavoritesFromDatabase(profile.id);
+    }
+  }, [profile?.id]);
 
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
@@ -69,6 +78,29 @@ export default function PropertiesScreen() {
 
   const handlePropertyPress = (property: typeof filteredProperties[0]) => {
     navigation.navigate("PropertyDetail", { property });
+  };
+
+  const handleToggleFavorite = async (propertyId: string) => {
+    const wasFavorite = isFavorite(propertyId);
+    const isAdding = !wasFavorite;
+    
+    // Toggle locally first for instant feedback
+    toggleFavorite(propertyId);
+
+    // Sync with database if user is logged in
+    if (profile?.id) {
+      try {
+        await saveFavoriteToDatabase(profile.id, propertyId, isAdding);
+      } catch (error) {
+        console.error("❌ Failed to sync favorite with database:", error);
+        // Revert the local change on error
+        toggleFavorite(propertyId);
+        Alert.alert(
+          "Chyba",
+          "Nepodařilo se uložit oblíbenou nemovitost. Zkuste to znovu."
+        );
+      }
+    }
   };
 
   if (loading) {
@@ -127,7 +159,7 @@ export default function PropertiesScreen() {
                 key={property.id}
                 property={property}
                 onPress={() => handlePropertyPress(property)}
-                onFavoritePress={() => toggleFavorite(property.id)}
+                onFavoritePress={() => handleToggleFavorite(property.id)}
                 isFavorite={isFavorite(property.id)}
               />
             ))}

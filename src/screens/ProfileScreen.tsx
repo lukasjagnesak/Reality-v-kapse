@@ -1,56 +1,45 @@
 import React, { useState } from "react";
-import { View, Text, Pressable, ScrollView, TextInput, Alert } from "react-native";
+import { View, Text, Pressable, ScrollView, TextInput, Alert, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useUserStore } from "../state/userStore";
 import { SUBSCRIPTION_PLANS, type SubscriptionType } from "../types/user";
+import { supabase } from "../api/supabase";
 
 export default function ProfileScreen() {
-  const { profile, setProfile, updateProfile, updateSubscription } = useUserStore();
+  const { profile, clearProfile, updateProfileInDatabase } = useUserStore();
 
   // Local state for editing
   const [isEditing, setIsEditing] = useState(false);
-  const [firstName, setFirstName] = useState(profile?.firstName || "");
-  const [lastName, setLastName] = useState(profile?.lastName || "");
-  const [email, setEmail] = useState(profile?.email || "");
+  const [fullName, setFullName] = useState(profile?.fullName || "");
   const [phone, setPhone] = useState(profile?.phone || "");
+  const [saving, setSaving] = useState(false);
 
-  // Initialize profile if doesn't exist
-  React.useEffect(() => {
-    if (!profile) {
-      setProfile({
-        id: "demo-user-" + Date.now(),
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-        createdAt: new Date(),
-        subscription: "free",
-      });
-    }
-  }, [profile, setProfile]);
-
-  const handleSave = () => {
-    if (!email || !firstName || !lastName) {
-      Alert.alert("Chyba", "Vyplňte prosím všechna povinná pole");
+  const handleSave = async () => {
+    if (!fullName) {
+      Alert.alert("Chyba", "Vyplňte prosím celé jméno");
       return;
     }
 
-    updateProfile({
-      firstName,
-      lastName,
-      email,
-      phone,
-    });
-    setIsEditing(false);
-    Alert.alert("Uloženo", "Váš profil byl úspěšně aktualizován");
+    setSaving(true);
+    try {
+      await updateProfileInDatabase({
+        fullName,
+        phone,
+      });
+      setIsEditing(false);
+      Alert.alert("Uloženo", "Váš profil byl úspěšně aktualizován");
+    } catch (error) {
+      console.error("❌ Error saving profile:", error);
+      Alert.alert("Chyba", "Nepodařilo se uložit profil. Zkuste to znovu.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleCancel = () => {
     // Reset to current profile values
-    setFirstName(profile?.firstName || "");
-    setLastName(profile?.lastName || "");
-    setEmail(profile?.email || "");
+    setFullName(profile?.fullName || "");
     setPhone(profile?.phone || "");
     setIsEditing(false);
   };
@@ -63,9 +52,37 @@ export default function ProfileScreen() {
         { text: "Zrušit", style: "cancel" },
         {
           text: "Potvrdit",
-          onPress: () => {
-            updateSubscription(newSubscription);
-            Alert.alert("Úspěch", "Vaše předplatné bylo změněno");
+          onPress: async () => {
+            try {
+              await updateProfileInDatabase({ subscription: newSubscription });
+              Alert.alert("Úspěch", "Vaše předplatné bylo změněno");
+            } catch (error) {
+              Alert.alert("Chyba", "Nepodařilo se změnit předplatné");
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const handleLogout = () => {
+    Alert.alert(
+      "Odhlásit se",
+      "Opravdu se chcete odhlásit?",
+      [
+        { text: "Zrušit", style: "cancel" },
+        {
+          text: "Odhlásit",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await supabase.auth.signOut();
+              clearProfile();
+              console.log("✅ Odhlášení úspěšné");
+            } catch (error) {
+              console.error("❌ Chyba při odhlášení:", error);
+              Alert.alert("Chyba", "Nepodařilo se odhlásit. Zkuste to znovu.");
+            }
           },
         },
       ]
@@ -99,9 +116,14 @@ export default function ProfileScreen() {
             <View className="w-24 h-24 bg-blue-100 rounded-full items-center justify-center mb-2">
               <Ionicons name="person" size={48} color="#3b82f6" />
             </View>
-            {profile?.firstName && profile?.lastName && (
+            {profile?.fullName && (
               <Text className="text-xl font-semibold text-gray-900">
-                {profile.firstName} {profile.lastName}
+                {profile.fullName}
+              </Text>
+            )}
+            {profile?.email && (
+              <Text className="text-sm text-gray-600 mt-1">
+                {profile.email}
               </Text>
             )}
           </View>
@@ -110,49 +132,31 @@ export default function ProfileScreen() {
           <View className="space-y-4">
             <View>
               <Text className="text-sm font-medium text-gray-700 mb-1">
-                Jméno *
+                Celé jméno *
               </Text>
               <TextInput
                 className={`bg-gray-100 rounded-lg px-4 py-3 text-base ${
                   !isEditing ? "text-gray-600" : "text-gray-900"
                 }`}
-                placeholder="Zadejte jméno"
-                value={firstName}
-                onChangeText={setFirstName}
+                placeholder="Jan Novák"
+                value={fullName}
+                onChangeText={setFullName}
                 editable={isEditing}
               />
             </View>
 
             <View>
               <Text className="text-sm font-medium text-gray-700 mb-1">
-                Příjmení *
+                Email
               </Text>
               <TextInput
-                className={`bg-gray-100 rounded-lg px-4 py-3 text-base ${
-                  !isEditing ? "text-gray-600" : "text-gray-900"
-                }`}
-                placeholder="Zadejte příjmení"
-                value={lastName}
-                onChangeText={setLastName}
-                editable={isEditing}
+                className="bg-gray-100 rounded-lg px-4 py-3 text-base text-gray-600"
+                value={profile?.email || ""}
+                editable={false}
               />
-            </View>
-
-            <View>
-              <Text className="text-sm font-medium text-gray-700 mb-1">
-                Email *
+              <Text className="text-xs text-gray-500 mt-1">
+                Email nelze změnit
               </Text>
-              <TextInput
-                className={`bg-gray-100 rounded-lg px-4 py-3 text-base ${
-                  !isEditing ? "text-gray-600" : "text-gray-900"
-                }`}
-                placeholder="vas@email.cz"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                editable={isEditing}
-              />
             </View>
 
             <View>
@@ -175,15 +179,23 @@ export default function ProfileScreen() {
               <View className="flex-row space-x-3 mt-4">
                 <Pressable
                   onPress={handleCancel}
+                  disabled={saving}
                   className="flex-1 bg-gray-200 rounded-lg py-3 items-center"
                 >
                   <Text className="text-gray-700 font-semibold">Zrušit</Text>
                 </Pressable>
                 <Pressable
                   onPress={handleSave}
-                  className="flex-1 bg-blue-500 rounded-lg py-3 items-center"
+                  disabled={saving}
+                  className={`flex-1 bg-blue-500 rounded-lg py-3 items-center ${
+                    saving ? "opacity-50" : ""
+                  }`}
                 >
-                  <Text className="text-white font-semibold">Uložit</Text>
+                  {saving ? (
+                    <ActivityIndicator color="white" />
+                  ) : (
+                    <Text className="text-white font-semibold">Uložit</Text>
+                  )}
                 </Pressable>
               </View>
             )}
@@ -284,7 +296,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* Account Actions */}
-        <View className="bg-white px-6 py-6 mb-4">
+        <View className="bg-white px-6 py-6 mb-2">
           <Text className="text-xl font-bold text-gray-900 mb-4">
             Nastavení účtu
           </Text>
@@ -319,7 +331,7 @@ export default function ProfileScreen() {
             <Ionicons name="chevron-forward" size={24} color="#6b7280" />
           </Pressable>
 
-          <Pressable className="flex-row items-center justify-between py-4">
+          <Pressable className="flex-row items-center justify-between py-4 border-b border-gray-200">
             <View className="flex-row items-center">
               <Ionicons name="help-circle-outline" size={24} color="#6b7280" />
               <Text className="text-base text-gray-900 ml-3">
@@ -328,10 +340,24 @@ export default function ProfileScreen() {
             </View>
             <Ionicons name="chevron-forward" size={24} color="#6b7280" />
           </Pressable>
+
+          {/* Logout Button */}
+          <Pressable 
+            onPress={handleLogout}
+            className="flex-row items-center justify-between py-4"
+          >
+            <View className="flex-row items-center">
+              <Ionicons name="log-out-outline" size={24} color="#ef4444" />
+              <Text className="text-base text-red-500 ml-3 font-semibold">
+                Odhlásit se
+              </Text>
+            </View>
+            <Ionicons name="chevron-forward" size={24} color="#ef4444" />
+          </Pressable>
         </View>
 
         {/* Version Info */}
-        <View className="px-6 py-4 items-center">
+        <View className="px-6 py-4 items-center mb-8">
           <Text className="text-sm text-gray-500">Reality v Kapse</Text>
           <Text className="text-xs text-gray-400 mt-1">Verze 1.0.0</Text>
         </View>
