@@ -6,8 +6,9 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../navigation/AppNavigator";
 import { usePropertyStore } from "../state/propertyStore";
 import { useUserStore } from "../state/userStore";
+import { fetchPropertiesFromSupabase } from "../api/realtyService"; // NOVÉ - Supabase
+import { fetchPropertiesFromGoogleSheets } from "../api/googleSheetsService"; // FALLBACK
 import { mockProperties } from "../api/mockData";
-import { fetchPropertiesFromGoogleSheets } from "../api/googleSheetsService";
 import { Ionicons } from "@expo/vector-icons";
 import { PropertyCard } from "../components/PropertyCard";
 
@@ -32,10 +33,27 @@ export default function PropertiesScreen() {
 
   const loadProperties = async () => {
     try {
-      console.log("📡 Načítám data z Google Sheets...");
+      console.log("📡 Načítám data z Supabase...");
+      
+      // TRY: Načíst z Supabase (rychlejší)
+      try {
+        const properties = await fetchPropertiesFromSupabase();
+        
+        if (properties.length > 0) {
+          console.log(`✅ Načteno ${properties.length} nemovitostí z Supabase`);
+          setProperties(properties);
+          console.log(`📍 První nemovitost:`, properties[0]);
+          return; // Success, exit
+        }
+      } catch (supabaseError) {
+        console.warn("⚠️  Supabase nedostupný, zkouším Google Sheets:", supabaseError);
+      }
+      
+      // FALLBACK: Google Sheets pokud Supabase selže nebo je prázdný
+      console.log("📡 Fallback: Načítám data z Google Sheets...");
       const properties = await fetchPropertiesFromGoogleSheets();
       
-      console.log(`📊 Načteno ${properties.length} nemovitostí ze serveru`);
+      console.log(`📊 Načteno ${properties.length} nemovitostí ze Google Sheets`);
       console.log(`🔍 Aktuální filtry:`, {
         locations: preferences.locations,
         priceRange: preferences.priceRange,
@@ -50,7 +68,7 @@ export default function PropertiesScreen() {
         console.log(`✅ Data nastavena do store`);
         console.log(`📍 První nemovitost:`, properties[0]);
       } else {
-        console.log("⚠️  Google Sheets nevrátil žádná data, používám mock data");
+        console.log("⚠️  Žádná data, používám mock data");
         setProperties(mockProperties);
       }
     } catch (error) {

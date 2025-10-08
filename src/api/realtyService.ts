@@ -1,126 +1,181 @@
-import type { Property } from "../types/property";
+// Realty Service - Supabase API
+// Služba pro načítání nemovitostí z Supabase databáze
+import { supabase } from './supabase';
+import type { Property, PropertyType, PropertyDisposition, PropertyRating } from '../types/property';
 
 /**
- * API service for fetching properties from real estate websites
- * 
- * Note: This is a placeholder for future implementation.
- * Real scraping would require backend services as web scraping
- * is not feasible directly from mobile apps due to CORS and other restrictions.
- * 
- * For production, you would need:
- * 1. A backend server that scrapes the websites
- * 2. API endpoints to fetch the scraped data
- * 3. Regular cron jobs to update the data
- * 4. Database to store property listings
- * 5. Push notification service for alerts
+ * Načte všechny aktivní nemovitosti z Supabase
  */
-
-export interface FetchPropertiesParams {
-  locations?: string[];
-  propertyTypes?: string[];
-  dispositions?: string[];
-  minPrice?: number;
-  maxPrice?: number;
-  minArea?: number;
-  maxArea?: number;
-}
-
-/**
- * Fetches properties from sreality.cz
- * This is a placeholder - actual implementation would require a backend
- */
-export async function fetchFromSreality(
-  params: FetchPropertiesParams
-): Promise<Property[]> {
-  // TODO: Implement backend API call
-  console.log("Fetching from sreality.cz with params:", params);
-  return [];
-}
-
-/**
- * Fetches properties from bezrealitky.cz
- * This is a placeholder - actual implementation would require a backend
- */
-export async function fetchFromBezrealitky(
-  params: FetchPropertiesParams
-): Promise<Property[]> {
-  // TODO: Implement backend API call
-  console.log("Fetching from bezrealitky.cz with params:", params);
-  return [];
-}
-
-/**
- * Fetches properties from annonce.cz
- * This is a placeholder - actual implementation would require a backend
- */
-export async function fetchFromAnnonce(
-  params: FetchPropertiesParams
-): Promise<Property[]> {
-  // TODO: Implement backend API call
-  console.log("Fetching from annonce.cz with params:", params);
-  return [];
-}
-
-/**
- * Fetches properties from all sources
- * This is a placeholder - actual implementation would require a backend
- */
-export async function fetchAllProperties(
-  params: FetchPropertiesParams
-): Promise<Property[]> {
+export async function fetchPropertiesFromSupabase(): Promise<Property[]> {
+  console.log('📡 Načítám nemovitosti z Supabase...');
+  
   try {
-    const [srealityProps, bezrealitkyProps, annonceProps] = await Promise.all([
-      fetchFromSreality(params),
-      fetchFromBezrealitky(params),
-      fetchFromAnnonce(params),
-    ]);
+    const { data, error } = await supabase
+      .from('properties')
+      .select('*')
+      .in('status', ['active', 'new'])
+      .order('created_at', { ascending: false });
 
-    return [...srealityProps, ...bezrealitkyProps, ...annonceProps];
+    if (error) {
+      console.error('❌ Supabase error:', error);
+      throw error;
+    }
+
+    if (!data || data.length === 0) {
+      console.log('⚠️  Žádná data v Supabase');
+      return [];
+    }
+
+    console.log(`✅ Načteno ${data.length} nemovitostí z Supabase`);
+
+    // Transform database rows to Property objects
+    const properties: Property[] = data.map(row => ({
+      id: row.id,
+      title: row.title,
+      description: row.description || 'Popis není k dispozici',
+      price: row.price,
+      area: row.area,
+      pricePerM2: row.price_per_m2 || Math.round(row.price / row.area),
+      location: row.location,
+      type: row.type as PropertyType,
+      disposition: row.disposition as PropertyDisposition,
+      rating: row.rating as PropertyRating,
+      discountPercentage: row.discount_percentage || 0,
+      imageUrl: row.image_url || 'https://via.placeholder.com/800x600?text=Bez+obrázku',
+      source: row.source || 'sreality',
+      sourceUrl: row.source_url || '',
+      createdAt: new Date(row.created_at),
+      isNew: row.status === 'new',
+      priceHistory: row.last_price ? {
+        oldPrice: row.last_price,
+        newPrice: row.price,
+        changedAt: new Date(row.price_changed_at),
+      } : undefined,
+      agent: row.agent_name ? {
+        name: row.agent_name,
+        phone: row.agent_phone || '',
+        email: row.agent_email,
+      } : undefined,
+    }));
+
+    return properties;
   } catch (error) {
-    console.error("Error fetching properties:", error);
-    return [];
+    console.error('❌ Chyba při načítání z Supabase:', error);
+    throw error;
   }
 }
 
 /**
- * Calculates if a property is a good deal based on market data
- * This would need historical pricing data from your backend
+ * Vyhledá nemovitosti podle lokace
  */
-export function analyzePropertyValue(
-  property: Property,
-  marketAverage: number
-): {
-  isGoodDeal: boolean;
-  discountPercentage: number;
-  rating: "C" | "B" | "A" | "A+";
-} {
-  const discount = ((marketAverage - property.pricePerM2) / marketAverage) * 100;
+export async function searchPropertiesByLocation(location: string): Promise<Property[]> {
+  console.log(`🔍 Hledám nemovitosti v lokaci: ${location}`);
   
-  let rating: "C" | "B" | "A" | "A+" = "C";
-  if (discount >= 15) rating = "A+";
-  else if (discount >= 10) rating = "A";
-  else if (discount >= 5) rating = "B";
+  const { data, error } = await supabase
+    .from('properties')
+    .select('*')
+    .ilike('location', `%${location}%`)
+    .in('status', ['active', 'new'])
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
   
-  return {
-    isGoodDeal: discount >= 5,
-    discountPercentage: Math.max(0, discount),
-    rating,
+  // Transform same as above
+  return data.map(row => ({
+    id: row.id,
+    title: row.title,
+    description: row.description,
+    price: row.price,
+    area: row.area,
+    pricePerM2: row.price_per_m2,
+    location: row.location,
+    type: row.type as PropertyType,
+    disposition: row.disposition as PropertyDisposition,
+    rating: row.rating as PropertyRating,
+    discountPercentage: row.discount_percentage,
+    imageUrl: row.image_url,
+    source: row.source,
+    sourceUrl: row.source_url,
+    createdAt: new Date(row.created_at),
+    isNew: row.status === 'new',
+  }));
+}
+
+/**
+ * Full-text search napříč titulky a popisy
+ */
+export async function searchPropertiesByText(query: string): Promise<Property[]> {
+  console.log(`🔍 Full-text search: ${query}`);
+  
+  const { data, error } = await supabase
+    .from('properties')
+    .select('*')
+    .textSearch('search_vector', query)
+    .in('status', ['active', 'new'])
+    .limit(50);
+
+  if (error) throw error;
+  
+  return data.map(row => ({
+    id: row.id,
+    title: row.title,
+    description: row.description,
+    price: row.price,
+    area: row.area,
+    pricePerM2: row.price_per_m2,
+    location: row.location,
+    type: row.type as PropertyType,
+    disposition: row.disposition as PropertyDisposition,
+    rating: row.rating as PropertyRating,
+    discountPercentage: row.discount_percentage,
+    imageUrl: row.image_url,
+    source: row.source,
+    sourceUrl: row.source_url,
+    createdAt: new Date(row.created_at),
+    isNew: row.status === 'new',
+  }));
+}
+
+/**
+ * Načte statistiky nemovitostí
+ */
+export async function getPropertiesStats() {
+  const { data, error } = await supabase
+    .from('properties_stats')
+    .select('*')
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+/**
+ * Real-time subscription na změny v properties tabulce
+ */
+export function subscribeToPropertyChanges(
+  callback: (payload: any) => void
+) {
+  console.log('🔔 Subscribing to property changes...');
+  
+  const channel = supabase
+    .channel('properties-changes')
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'properties'
+      },
+      (payload) => {
+        console.log('🔔 Property changed:', payload);
+        callback(payload);
+      }
+    )
+    .subscribe();
+
+  // Return unsubscribe function
+  return () => {
+    console.log('🔕 Unsubscribing from property changes');
+    supabase.removeChannel(channel);
   };
-}
-
-/**
- * Setup push notifications for new properties
- * This would require Expo Notifications and a backend service
- */
-export async function setupPushNotifications() {
-  // TODO: Implement push notification setup
-  console.log("Setting up push notifications...");
-}
-
-/**
- * Sends a push notification when a matching property is found
- */
-export async function sendPropertyAlert(property: Property) {
-  // TODO: Implement push notification sending
-  console.log("Sending alert for property:", property.title);
 }
