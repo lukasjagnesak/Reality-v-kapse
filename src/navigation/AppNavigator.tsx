@@ -7,6 +7,8 @@ import { usePropertyStore } from "../state/propertyStore";
 
 // Import screens
 import OnboardingScreen from "../screens/OnboardingScreen";
+import LoginScreen from "../screens/LoginScreen";
+import RegisterScreen from "../screens/RegisterScreen";
 import PropertiesScreen from "../screens/PropertiesScreen";
 import CriteriaScreen from "../screens/CriteriaScreen";
 import ProfileScreen from "../screens/ProfileScreen";
@@ -14,6 +16,8 @@ import PropertyDetailScreen from "../screens/PropertyDetailScreen";
 import FavoritesScreen from "../screens/FavoritesScreen";
 
 export type RootStackParamList = {
+  Login: undefined;
+  Register: undefined;
   Onboarding: undefined;
   MainTabs: undefined;
   PropertyDetail: { property: Property };
@@ -84,14 +88,27 @@ function MainTabs() {
 
 export function AppNavigator() {
   const hasCompletedSetup = usePropertyStore((state) => state.hasCompletedSetup);
+  
+  // Pro teď začínáme vždy na Login (později přidáme auth state check)
+  const initialRoute = "Login";
 
   return (
     <Stack.Navigator
-      initialRouteName={hasCompletedSetup ? "MainTabs" : "Onboarding"}
+      initialRouteName={initialRoute}
       screenOptions={{
         headerShown: true,
       }}
     >
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Register"
+        component={RegisterScreen}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="Onboarding"
         component={OnboardingScreen}
