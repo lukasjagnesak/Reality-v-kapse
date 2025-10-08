@@ -165,7 +165,7 @@ function rowToProperty(row: string[], index: number, headers: string[]): Propert
         : "2+kk";
 
       const property: Property = {
-        id: hash_id.trim(),
+        id: `${hash_id.trim()}-${index}`, // Přidán index pro unikátnost
         title: titulek.trim(),
         description: `${stav_objektu || "Popis není k dispozici"}${patro ? `, ${patro}` : ""}`,
         price,
@@ -251,7 +251,7 @@ function rowToProperty(row: string[], index: number, headers: string[]): Propert
         : "2+kk";
 
       const property: Property = {
-        id: id.trim(),
+        id: `${id.trim()}-${index}`, // Přidán index pro unikátnost
         title: title.trim(),
         description: description?.trim() || "Popis není k dispozici",
         price,
