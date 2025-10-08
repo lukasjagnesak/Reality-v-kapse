@@ -75,10 +75,31 @@ export default function CriteriaScreen() {
         min: Number(minPrice) || 0,
         max: Number(maxPrice) || 50000000,
       },
-      minDiscountPercentage: Number(minDiscount) || 5,
+      minDiscountPercentage: Number(minDiscount) || 0,
       notificationsEnabled,
     });
     navigation.goBack();
+  };
+
+  const handleResetFilters = () => {
+    // Reset všech filtrů
+    setLocations([]);
+    setLocationInput("");
+    setSelectedTypes(["byt", "dům"]);
+    setSelectedDispositions(["1+kk", "1+1", "2+kk", "2+1", "3+kk", "3+1", "4+kk", "4+1"]);
+    setMinPrice("0");
+    setMaxPrice("50000000");
+    setMinDiscount("0");
+    
+    // Okamžitě uložit
+    updatePreferences({
+      locations: [],
+      propertyTypes: ["byt", "dům"],
+      dispositions: ["1+kk", "1+1", "2+kk", "2+1", "3+kk", "3+1", "4+kk", "4+1"],
+      priceRange: { min: 0, max: 50000000 },
+      minDiscountPercentage: 0,
+      notificationsEnabled,
+    });
   };
 
   return (
@@ -92,6 +113,19 @@ export default function CriteriaScreen() {
           contentContainerStyle={{ paddingBottom: 100 }}
           keyboardShouldPersistTaps="handled"
         >
+          {/* Reset Button */}
+          <View className="px-6 py-3 bg-gray-50 border-b border-gray-200">
+            <Pressable
+              onPress={handleResetFilters}
+              className="bg-red-50 border border-red-200 rounded-lg p-3 flex-row items-center justify-center"
+            >
+              <Ionicons name="refresh" size={20} color="#dc2626" />
+              <Text className="text-red-600 font-semibold ml-2">
+                Resetovat všechny filtry
+              </Text>
+            </Pressable>
+          </View>
+
           {/* Notifications */}
           <View className="px-6 py-4 mb-2 bg-white border-b border-gray-200">
             <View className="flex-row items-center justify-between">

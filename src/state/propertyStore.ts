@@ -87,44 +87,62 @@ export const usePropertyStore = create<PropertyState>()(
       applyFilters: () => {
         const { properties, preferences } = get();
         
+        console.log(`🔍 Aplikuji filtry na ${properties.length} nemovitostí`);
+        console.log(`📋 Filtry:`, preferences);
+        
         const filtered = properties.filter((property) => {
           // Filter by location
           if (preferences.locations.length > 0) {
             const matchesLocation = preferences.locations.some((loc) =>
               property.location.toLowerCase().includes(loc.toLowerCase())
             );
-            if (!matchesLocation) return false;
+            if (!matchesLocation) {
+              console.log(`❌ ${property.id} vyfiltrováno - lokalita ${property.location} neodpovídá ${preferences.locations}`);
+              return false;
+            }
           }
           
           // Filter by property type
           if (preferences.propertyTypes.length > 0) {
-            if (!preferences.propertyTypes.includes(property.type)) return false;
+            if (!preferences.propertyTypes.includes(property.type)) {
+              console.log(`❌ ${property.id} vyfiltrováno - typ ${property.type} není v ${preferences.propertyTypes}`);
+              return false;
+            }
           }
           
           // Filter by disposition
           if (preferences.dispositions.length > 0) {
-            if (!preferences.dispositions.includes(property.disposition)) return false;
+            if (!preferences.dispositions.includes(property.disposition)) {
+              console.log(`❌ ${property.id} vyfiltrováno - dispozice ${property.disposition} není v ${preferences.dispositions}`);
+              return false;
+            }
           }
           
           // Filter by price range
           if (property.price < preferences.priceRange.min || 
               property.price > preferences.priceRange.max) {
+            console.log(`❌ ${property.id} vyfiltrováno - cena ${property.price} mimo rozsah ${preferences.priceRange.min}-${preferences.priceRange.max}`);
             return false;
           }
           
           // Filter by area range
           if (property.area < preferences.areaRange.min || 
               property.area > preferences.areaRange.max) {
+            console.log(`❌ ${property.id} vyfiltrováno - plocha ${property.area} mimo rozsah ${preferences.areaRange.min}-${preferences.areaRange.max}`);
             return false;
           }
           
           // Filter by minimum discount
           if (property.discountPercentage < preferences.minDiscountPercentage) {
+            console.log(`❌ ${property.id} vyfiltrováno - sleva ${property.discountPercentage}% < ${preferences.minDiscountPercentage}%`);
             return false;
           }
           
+          console.log(`✅ ${property.id} prošel všemi filtry`);
           return true;
         });
+        
+        console.log(`✅ Po filtrování: ${filtered.length} nemovitostí`);
         
         // Sort by rating and discount
         filtered.sort((a, b) => {

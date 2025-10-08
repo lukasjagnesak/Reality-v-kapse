@@ -113,13 +113,28 @@ function rowToProperty(row: string[], index: number, headers: string[]): Propert
 
       // Validace povinných polí
       if (!hash_id || !titulek || !cena || !plocha_m2 || !lokalita) {
-        console.warn(`Řádek ${index + 2} přeskočen - chybí povinná pole`);
+        console.warn(`⚠️  Řádek ${index + 2} přeskočen - chybí povinná pole:`, {
+          hash_id: !!hash_id,
+          titulek: !!titulek,
+          cena: !!cena,
+          plocha_m2: !!plocha_m2,
+          lokalita: !!lokalita,
+        });
         return null;
       }
 
       const price = parseFloat(cena.replace(/[^\d.-]/g, ""));
       const area = parseFloat(plocha_m2.replace(/[^\d.-]/g, ""));
       const pricePerM2 = parseFloat(cena_za_m2?.replace(/[^\d.-]/g, "") || "0") || Math.round(price / area);
+      
+      console.log(`✅ Parsování řádku ${index + 2}:`, {
+        hash_id,
+        titulek: titulek.substring(0, 30) + '...',
+        price,
+        area,
+        pricePerM2,
+        lokalita,
+      });
       
       // Vypočítat slevu z price history
       let discountPercentage = 0;
@@ -347,6 +362,8 @@ export async function fetchPropertiesFromGoogleSheets(): Promise<Property[]> {
       return [];
     }
 
+    console.log(`📊 Celkem řádků dat: ${dataLines.length}`);
+
     const properties: Property[] = [];
 
     for (let i = 0; i < dataLines.length; i++) {
@@ -358,7 +375,20 @@ export async function fetchPropertiesFromGoogleSheets(): Promise<Property[]> {
       }
     }
 
-    console.log(`✅ Načteno ${properties.length} nemovitostí z Google Sheets`);
+    console.log(`✅ Úspěšně zparsováno ${properties.length} z ${dataLines.length} nemovitostí`);
+    
+    if (properties.length > 0) {
+      console.log(`📍 První nemovitost:`, {
+        id: properties[0].id,
+        title: properties[0].title,
+        price: properties[0].price,
+        area: properties[0].area,
+        location: properties[0].location,
+        type: properties[0].type,
+        disposition: properties[0].disposition,
+      });
+    }
+    
     return properties;
   } catch (error) {
     console.error("❌ Chyba při načítání dat z Google Sheets:", error);

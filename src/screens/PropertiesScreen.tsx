@@ -16,6 +16,7 @@ export default function PropertiesScreen() {
   const navigation = useNavigation<NavigationProp>();
   const {
     filteredProperties,
+    properties,
     setProperties,
     toggleFavorite,
     isFavorite,
@@ -42,7 +43,8 @@ export default function PropertiesScreen() {
       
       if (properties.length > 0) {
         setProperties(properties);
-        console.log(`✅ Data nastavena, filtrovaných: ${filteredProperties.length}`);
+        console.log(`✅ Data nastavena do store`);
+        console.log(`📍 První nemovitost:`, properties[0]);
       } else {
         console.log("⚠️  Google Sheets nevrátil žádná data, používám mock data");
         setProperties(mockProperties);
@@ -94,11 +96,17 @@ export default function PropertiesScreen() {
           <Text className="text-3xl font-bold text-gray-900">
             {filteredProperties.length}
           </Text>
+          <Text className="text-xs text-gray-400 mt-1">
+            (celkem načteno: {properties.length})
+          </Text>
           {preferences.locations.length > 0 && (
             <Text className="text-sm text-gray-500 mt-2">
               v lokalitách: {preferences.locations.join(", ")}
             </Text>
           )}
+          <Text className="text-xs text-gray-400 mt-2">
+            Filtry: sleva ≥{preferences.minDiscountPercentage}%, cena {preferences.priceRange.min/1000000}M-{preferences.priceRange.max/1000000}M Kč
+          </Text>
         </View>
 
         {/* Properties List */}
