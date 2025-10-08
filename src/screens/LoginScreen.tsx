@@ -174,6 +174,13 @@ export default function LoginScreen() {
               </Pressable>
             </View>
 
+            {/* Forgot Password Link */}
+            <View className="items-center mb-4">
+              <Pressable onPress={() => navigation.navigate('ForgotPassword')} disabled={loading}>
+                <Text className="text-blue-500 font-semibold">Zapomněli jste heslo?</Text>
+              </Pressable>
+            </View>
+
             {/* DEBUG MODE Button */}
             {DEBUG_MODE && (
               <Pressable

@@ -12,6 +12,7 @@ import { supabase } from "../api/supabase";
 import OnboardingScreen from "../screens/OnboardingScreen";
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
+import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
 import PropertiesScreen from "../screens/PropertiesScreen";
 import CriteriaScreen from "../screens/CriteriaScreen";
 import ProfileScreen from "../screens/ProfileScreen";
@@ -21,6 +22,7 @@ import FavoritesScreen from "../screens/FavoritesScreen";
 export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
+  ForgotPassword: undefined;
   Onboarding: undefined;
   MainTabs: undefined;
   PropertyDetail: { property: Property };
@@ -236,6 +238,11 @@ export function AppNavigator() {
       <Stack.Screen
         name="Register"
         component={RegisterScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ForgotPassword"
+        component={ForgotPasswordScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen
