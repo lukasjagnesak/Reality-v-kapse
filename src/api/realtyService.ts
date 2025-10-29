@@ -17,7 +17,7 @@ export async function fetchPropertiesFromSupabase(): Promise<Property[]> {
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('❌ Supabase error:', error);
+      console.log('❌ Supabase error:', error);
       throw error;
     }
 
