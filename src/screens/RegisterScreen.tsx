@@ -53,7 +53,7 @@ export default function RegisterScreen() {
       console.log('📊 Supabase odpověď:', { data, error });
 
       if (error) {
-        console.error('❌ Supabase error:', error);
+        console.log('❌ Supabase error:', error);
         throw error;
       }
 
@@ -83,7 +83,7 @@ export default function RegisterScreen() {
         }
       }
     } catch (error: any) {
-      console.error('❌ Chyba registrace:', error);
+      console.log('❌ Chyba registrace:', error);
       const errorMessage = error.message || JSON.stringify(error);
       Alert.alert(
         'Chyba registrace',

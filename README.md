@@ -1,6 +1,26 @@
 # Reality v Kapse - Vibecode App
 
+**🚀 APLIKACE JE PŘIPRAVENA NA BETA TEST!**
+
 Aplikace pro vyhledávání nemovitostí s podporou různých metod autentizace a pokročilého porovnávání nemovitostí.
+
+---
+
+## 📖 QUICK START - Beta Test
+
+**Chcete okamžitě otestovat aplikaci?**
+
+👉 **Přečtěte si [BETA-TEST-SETUP.md](./BETA-TEST-SETUP.md)** - kompletní průvodce krok za krokem!
+
+### Rychlé kroky:
+1. ✅ Spustit 3 SQL skripty v Supabase (trvá 2 minuty)
+2. ✅ Vypnout email confirmation
+3. ✅ Restartovat aplikaci
+4. ✅ Zaregistrovat se a testovat!
+
+**15 testovacích nemovitostí** je připraveno k načtení!
+
+---
 
 ## Funkce
 

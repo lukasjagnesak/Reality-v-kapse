@@ -107,7 +107,7 @@ export function AppNavigator() {
         const { data: { session }, error } = await supabase.auth.getSession();
         
         if (error) {
-          console.error('❌ Chyba při načítání session:', error);
+          console.log('❌ Chyba při načítání session:', error);
           // Na chybu reaguj, ale nepřeruš aplikaci
           setInitialRoute("Login");
           setIsLoading(false);
@@ -126,7 +126,7 @@ export function AppNavigator() {
             .single();
 
           if (profileError) {
-            console.error('❌ Chyba při načítání profilu:', profileError);
+            console.log('❌ Chyba při načítání profilu:', profileError);
             // Profile doesn't exist yet - continue anyway
           }
 
@@ -169,7 +169,7 @@ export function AppNavigator() {
           setInitialRoute("Login");
         }
       } catch (error) {
-        console.error("❌ Neočekávaná chyba při checkAuthState:", error);
+        console.log("❌ Neočekávaná chyba při checkAuthState:", error);
         setInitialRoute("Login");
       } finally {
         setIsLoading(false);
