@@ -1,0 +1,7 @@
++ exec gosu vibecode node node_modules/.bin/expo start --localhost
+env: load .env
+env: export EXPO_PUBLIC_VIBECODE_OPENAI_API_KEY EXPO_PUBLIC_VIBECODE_ANTHROPIC_API_KEY EXPO_PUBLIC_VIBECODE_GROK_API_KEY EXPO_PUBLIC_VIBECODE_GOOGLE_API_KEY EXPO_PUBLIC_VIBECODE_ELEVENLABS_API_KEY EXPO_PUBLIC_GOOGLE_SHEETS_ID EXPO_PUBLIC_SUPABASE_URL EXPO_PUBLIC_SUPABASE_ANON_KEY SUPABASE_SERVICE_KEY
+Starting project at /home/user/workspace
+Starting Metro Bundler
+Waiting on http://localhost:8081
+Logs for your project will appear below.

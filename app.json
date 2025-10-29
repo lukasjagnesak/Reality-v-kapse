@@ -8,7 +8,9 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.vibecode.app",
+      "usesAppleSignIn": true
     },
     "android": {
       "edgeToEdgeEnabled": true

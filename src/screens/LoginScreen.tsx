@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Pressable, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import { supabase } from '../api/supabase';
 import type { RootStackParamList } from '../navigation/AppNavigator';
 import { usePropertyStore } from '../state/propertyStore';
@@ -20,6 +21,22 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isAppleSignInAvailable, setIsAppleSignInAvailable] = useState(false);
+
+  useEffect(() => {
+    checkAppleSignInAvailability();
+  }, []);
+
+  const checkAppleSignInAvailability = async () => {
+    try {
+      const available = await AppleAuthentication.isAvailableAsync();
+      setIsAppleSignInAvailable(available);
+      console.log('🍎 Apple Sign-In dostupné:', available);
+    } catch (error) {
+      console.log('🍎 Apple Sign-In není dostupné:', error);
+      setIsAppleSignInAvailable(false);
+    }
+  };
 
   const handleDebugSkip = () => {
     Alert.alert(
@@ -87,6 +104,59 @@ export default function LoginScreen() {
 
   const handleRegister = () => {
     navigation.navigate('Register');
+  };
+
+  const handleAppleSignIn = async () => {
+    try {
+      setLoading(true);
+      console.log('🍎 Začínám Apple Sign-In...');
+
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+
+      console.log('🍎 Apple credential získán:', credential);
+
+      // Přihlášení do Supabase pomocí Apple ID tokenu
+      if (credential.identityToken) {
+        const { data, error } = await supabase.auth.signInWithIdToken({
+          provider: 'apple',
+          token: credential.identityToken,
+        });
+
+        console.log('📊 Supabase odpověď:', { data, error });
+
+        if (error) {
+          console.error('❌ Supabase error:', error);
+          throw error;
+        }
+
+        if (data.user) {
+          console.log('✅ Apple Sign-In úspěšné, user:', data.user.id);
+          console.log('✅ Session:', data.session ? 'ANO' : 'NE');
+        }
+      } else {
+        throw new Error('Nepodařilo se získat Apple ID token');
+      }
+    } catch (error: any) {
+      console.error('❌ Chyba Apple Sign-In:', error);
+
+      if (error.code === 'ERR_REQUEST_CANCELED') {
+        // Uživatel zrušil přihlášení
+        console.log('🍎 Uživatel zrušil Apple Sign-In');
+      } else {
+        const errorMessage = error.message || JSON.stringify(error);
+        Alert.alert(
+          'Chyba Apple Sign-In',
+          `${errorMessage}\n\nZkuste to znovu.`
+        );
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -180,6 +250,25 @@ export default function LoginScreen() {
                 <Text className="text-blue-500 font-semibold">Zapomněli jste heslo?</Text>
               </Pressable>
             </View>
+
+            {/* Apple Sign-In Button */}
+            {isAppleSignInAvailable && (
+              <View className="mb-4">
+                <View className="flex-row items-center mb-4">
+                  <View className="flex-1 h-px bg-gray-300" />
+                  <Text className="mx-4 text-gray-500">nebo</Text>
+                  <View className="flex-1 h-px bg-gray-300" />
+                </View>
+
+                <AppleAuthentication.AppleAuthenticationButton
+                  buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+                  buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+                  cornerRadius={8}
+                  style={{ width: '100%', height: 50 }}
+                  onPress={handleAppleSignIn}
+                />
+              </View>
+            )}
 
             {/* DEBUG MODE Button */}
             {DEBUG_MODE && (
