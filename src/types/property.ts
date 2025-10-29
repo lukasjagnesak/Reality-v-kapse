@@ -40,6 +40,9 @@ export interface Property {
   area: number; // Rozloha v m²
   pricePerM2: number; // Cena za m²
   location: string; // Např. "Praha 3, Žižkov"
+  microLocation?: string; // Např. "Žižkov", "Vinohrady" - přesná microlocalita
+  city?: string; // Např. "Praha"
+  district?: string; // Např. "Praha 3"
   type: PropertyType;
   disposition: PropertyDisposition;
   rating: PropertyRating; // C, B, A, A+

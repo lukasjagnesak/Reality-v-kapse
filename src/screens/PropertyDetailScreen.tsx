@@ -1,8 +1,9 @@
 import React from "react";
 import { View, Text, Pressable, ScrollView, Image, Linking } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRoute } from "@react-navigation/native";
+import { useRoute, useNavigation } from "@react-navigation/native";
 import type { RouteProp } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../navigation/AppNavigator";
 import { usePropertyStore } from "../state/propertyStore";
 import {
@@ -10,15 +11,19 @@ import {
   getRatingColor,
   getRatingBackgroundColor,
   calculateMortgage,
+  parseLocation,
+  getMicroLocationComparison,
 } from "../utils/propertyUtils";
 import { Ionicons } from "@expo/vector-icons";
 
 type PropertyDetailRouteProp = RouteProp<RootStackParamList, "PropertyDetail">;
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 export default function PropertyDetailScreen() {
   const route = useRoute<PropertyDetailRouteProp>();
+  const navigation = useNavigation<NavigationProp>();
   const { property } = route.params;
-  const { toggleFavorite, isFavorite, currentInterestRate } = usePropertyStore();
+  const { toggleFavorite, isFavorite, currentInterestRate, properties } = usePropertyStore();
 
   const downPaymentPercent = 20;
   const loanTermYears = 30;
@@ -30,8 +35,15 @@ export default function PropertyDetailScreen() {
     loanTermYears
   );
 
+  const locationInfo = parseLocation(property.location);
+  const comparison = getMicroLocationComparison(property, properties);
+
   const handleOpenSource = () => {
     Linking.openURL(property.sourceUrl);
+  };
+
+  const handleComparePropertyPress = (compareProperty: typeof properties[0]) => {
+    navigation.push("PropertyDetail", { property: compareProperty });
   };
 
   return (
@@ -231,6 +243,121 @@ export default function PropertyDetailScreen() {
                   </Text>
                   <Ionicons name="chevron-forward" size={20} color="#3b82f6" />
                 </Pressable>
+              )}
+            </View>
+          )}
+
+          {/* MicroLocation Comparison */}
+          {comparison.totalCount > 0 && (
+            <View className="mb-6">
+              <Text className="text-xl font-bold text-gray-900 mb-3">
+                Porovnání v {locationInfo.microLocation || locationInfo.district || locationInfo.city}
+              </Text>
+
+              {/* Statistics */}
+              <View className="bg-blue-50 rounded-xl p-4 mb-4">
+                <View className="flex-row justify-between items-center mb-3">
+                  <Text className="text-sm text-gray-600">Podobných nabídek</Text>
+                  <Text className="text-xl font-bold text-gray-900">{comparison.totalCount}</Text>
+                </View>
+
+                <View className="flex-row justify-between items-center mb-3">
+                  <Text className="text-sm text-gray-600">Průměrná cena za m²</Text>
+                  <Text className="text-base font-semibold text-gray-900">
+                    {formatPrice(comparison.averagePricePerM2)}
+                  </Text>
+                </View>
+
+                <View className="flex-row justify-between items-center mb-3">
+                  <Text className="text-sm text-gray-600">Vaše cena za m²</Text>
+                  <Text
+                    className="text-base font-semibold"
+                    style={{
+                      color: property.pricePerM2 < comparison.averagePricePerM2 ? '#10b981' : '#ef4444'
+                    }}
+                  >
+                    {formatPrice(property.pricePerM2)}
+                    {property.pricePerM2 < comparison.averagePricePerM2 && ' ✓'}
+                  </Text>
+                </View>
+
+                <View className="flex-row justify-between items-center">
+                  <Text className="text-sm text-gray-600">Lepších nabídek</Text>
+                  <Text className="text-base font-semibold text-gray-900">
+                    {comparison.betterDealsCount} z {comparison.totalCount}
+                  </Text>
+                </View>
+              </View>
+
+              {/* Price Comparison Bar */}
+              <View className="bg-gray-100 rounded-xl p-4 mb-4">
+                <Text className="text-sm text-gray-600 mb-2">Cenové srovnání</Text>
+                <View className="flex-row items-center">
+                  <Text className="text-xs text-gray-500 mr-2">Nejlevnější</Text>
+                  <View className="flex-1 h-2 bg-gray-300 rounded-full overflow-hidden">
+                    <View
+                      className="h-full bg-blue-500"
+                      style={{ width: `${comparison.pricePercentile}%` }}
+                    />
+                  </View>
+                  <Text className="text-xs text-gray-500 ml-2">Nejdražší</Text>
+                </View>
+                <Text className="text-center text-xs text-gray-600 mt-2">
+                  Tato nemovitost je levnější než {Math.round(comparison.pricePercentile)}% podobných nabídek
+                </Text>
+              </View>
+
+              {/* Similar Properties */}
+              {comparison.similarProperties.length > 0 && (
+                <View>
+                  <Text className="text-base font-semibold text-gray-900 mb-3">
+                    Podobné nemovitosti v okolí (seřazeno podle ceny)
+                  </Text>
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-6 px-6">
+                    {comparison.similarProperties.slice(0, 5).map((p) => (
+                      <Pressable
+                        key={p.id}
+                        onPress={() => handleComparePropertyPress(p)}
+                        className="mr-3 w-64 bg-white rounded-xl border border-gray-200 overflow-hidden"
+                      >
+                        <Image
+                          source={{ uri: p.imageUrl }}
+                          className="w-full h-32"
+                          resizeMode="cover"
+                        />
+                        <View className="p-3">
+                          <Text className="text-sm font-semibold text-gray-900 mb-1" numberOfLines={1}>
+                            {p.title}
+                          </Text>
+                          <Text className="text-xs text-gray-500 mb-2" numberOfLines={1}>
+                            {p.location}
+                          </Text>
+                          <View className="flex-row justify-between items-center">
+                            <View>
+                              <Text className="text-lg font-bold text-blue-600">
+                                {formatPrice(p.price)}
+                              </Text>
+                              <Text className="text-xs text-gray-500">
+                                {formatPrice(p.pricePerM2)}/m²
+                              </Text>
+                            </View>
+                            <View
+                              className="rounded-lg px-2 py-1"
+                              style={{ backgroundColor: getRatingBackgroundColor(p.rating) }}
+                            >
+                              <Text
+                                className="text-sm font-bold"
+                                style={{ color: getRatingColor(p.rating) }}
+                              >
+                                {p.rating}
+                              </Text>
+                            </View>
+                          </View>
+                        </View>
+                      </Pressable>
+                    ))}
+                  </ScrollView>
+                </View>
               )}
             </View>
           )}

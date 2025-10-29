@@ -2,6 +2,7 @@
 // Služba pro načítání nemovitostí z Supabase databáze
 import { supabase } from './supabase';
 import type { Property, PropertyType, PropertyDisposition, PropertyRating } from '../types/property';
+import { parseLocation } from '../utils/propertyUtils';
 
 /**
  * Načte všechny aktivní nemovitosti z Supabase
@@ -29,34 +30,41 @@ export async function fetchPropertiesFromSupabase(): Promise<Property[]> {
     console.log(`✅ Načteno ${data.length} nemovitostí z Supabase`);
 
     // Transform database rows to Property objects
-    const properties: Property[] = data.map(row => ({
-      id: row.id,
-      title: row.title,
-      description: row.description || 'Popis není k dispozici',
-      price: row.price,
-      area: row.area,
-      pricePerM2: row.price_per_m2 || Math.round(row.price / row.area),
-      location: row.location,
-      type: row.type as PropertyType,
-      disposition: row.disposition as PropertyDisposition,
-      rating: row.rating as PropertyRating,
-      discountPercentage: row.discount_percentage || 0,
-      imageUrl: row.image_url || 'https://via.placeholder.com/800x600?text=Bez+obrázku',
-      source: row.source || 'sreality',
-      sourceUrl: row.source_url || '',
-      createdAt: new Date(row.created_at),
-      isNew: row.status === 'new',
-      priceHistory: row.last_price ? {
-        oldPrice: row.last_price,
-        newPrice: row.price,
-        changedAt: new Date(row.price_changed_at),
-      } : undefined,
-      agent: row.agent_name ? {
-        name: row.agent_name,
-        phone: row.agent_phone || '',
-        email: row.agent_email,
-      } : undefined,
-    }));
+    const properties: Property[] = data.map(row => {
+      const locationInfo = parseLocation(row.location);
+
+      return {
+        id: row.id,
+        title: row.title,
+        description: row.description || 'Popis není k dispozici',
+        price: row.price,
+        area: row.area,
+        pricePerM2: row.price_per_m2 || Math.round(row.price / row.area),
+        location: row.location,
+        city: locationInfo.city,
+        district: locationInfo.district,
+        microLocation: locationInfo.microLocation,
+        type: row.type as PropertyType,
+        disposition: row.disposition as PropertyDisposition,
+        rating: row.rating as PropertyRating,
+        discountPercentage: row.discount_percentage || 0,
+        imageUrl: row.image_url || 'https://via.placeholder.com/800x600?text=Bez+obrázku',
+        source: row.source || 'sreality',
+        sourceUrl: row.source_url || '',
+        createdAt: new Date(row.created_at),
+        isNew: row.status === 'new',
+        priceHistory: row.last_price ? {
+          oldPrice: row.last_price,
+          newPrice: row.price,
+          changedAt: new Date(row.price_changed_at),
+        } : undefined,
+        agent: row.agent_name ? {
+          name: row.agent_name,
+          phone: row.agent_phone || '',
+          email: row.agent_email,
+        } : undefined,
+      };
+    });
 
     return properties;
   } catch (error) {

@@ -6,12 +6,890 @@ Starting Metro Bundler
 Waiting on http://localhost:8081
 Logs for your project will appear below.
 iOS ./index.ts ░░░░░░░░░░░░░░░░  0.0% (0/1)
-iOS Bundled 1114ms index.ts (1374 modules)
-iOS Bundled 55ms index.ts (1 module)
- WARN  The native view manager for module(ExpoAppleAuthentication) ) from NativeViewManagerAdapter isn't exported by expo-modules-core. Views of this type may not render correctly. Exported view managers: [ExpoVideo, ExpoContactAccessButton_ExpoContactAccessButton, Galeria, ExpoMeshGradient_MeshGradientView, SymbolModule_SymbolView, ExpoContactAccessButton, ExpoClipboard, ExponentGLView_GLView, ExponentGLView, ExpoLinearGradient, ExpoBlurView, ExpoImage_ImageView, ExpoClipboard_ClipboardPasteButton, ExpoVideoView, Galeria_GaleriaView, ExpoVideoView_ExpoVideoView, ExpoImage, ExpoVideo_VideoView, SymbolModule, ExpoCamera, ExpoLinearGradient_LinearGradientView, ExpoCamera_CameraView, ExpoLivePhoto_LivePhotoView, ExpoLivePhoto, ExpoBlurView_BlurView, ExpoMeshGradient].
+iOS Bundled 1080ms index.ts (1355 modules)
+iOS Bundled 52ms index.ts (1 module)
+ WARN  The native view manager for module(ExpoAppleAuthentication) ) from NativeViewManagerAdapter isn't exported by expo-modules-core. Views of this type may not render correctly. Exported view managers: [ExpoVideo, ExpoContactAccessButton_ExpoContactAccessButton, Galeria, ExpoClipboard, SymbolModule_SymbolView, ExpoMeshGradient_MeshGradientView, ExpoContactAccessButton, ExponentGLView_GLView, ExponentGLView, ExpoLinearGradient, ExpoBlurView, ExpoImage_ImageView, ExpoClipboard_ClipboardPasteButton, ExpoVideoView, Galeria_GaleriaView, ExpoVideoView_ExpoVideoView, ExpoImage, ExpoCamera, SymbolModule, ExpoLivePhoto_LivePhotoView, ExpoLinearGradient_LinearGradientView, ExpoVideo_VideoView, ExpoCamera_CameraView, ExpoLivePhoto, ExpoBlurView_BlurView, ExpoMeshGradient].
  LOG  [index] Project ID is:  0476d70a-8839-44d6-8cd5-da6633251a86
  LOG  🔍 Kontroluji auth state...
  LOG  📊 Session: Žádná session
  LOG  ➡️ Žádný přihlášený uživatel, přesměrování na Login
  LOG  🔐 Auth state změna: INITIAL_SESSION
  LOG  🍎 Apple Sign-In dostupné: false
+ LOG  🐛 DEBUG: Přeskok do aplikace
+ LOG  📡 Načítám data z Supabase...
+ LOG  📡 Načítám nemovitosti z Supabase...
+ LOG  ❌ Supabase error: {"code": "", "details": "TypeError: Network request failed
+    at anonymous (http://34.186.111.67:8081/index.ts.bundle//&platform=ios&dev=true&hot=false&transform.engine=hermes&transform.bytecode=1&transform.routerRoot=app&unstable_transformProfile=hermes-stable:8129:33)", "hint": "", "message": "TypeError: Network request failed"}
+ LOG  ❌ Chyba při načítání z Supabase: {"code": "", "details": "TypeError: Network request failed
+    at anonymous (http://34.186.111.67:8081/index.ts.bundle//&platform=ios&dev=true&hot=false&transform.engine=hermes&transform.bytecode=1&transform.routerRoot=app&unstable_transformProfile=hermes-stable:8129:33)", "hint": "", "message": "TypeError: Network request failed"}
+ LOG  📡 Fallback: Načítám data z Google Sheets...
+ LOG  📊 Načítám data z Google Sheets...
+ LOG     Sheet ID: 12ZhQXFF_h-xyCB-nByN...
+ LOG  📡 Response status: 200
+ LOG  📡 Response headers: {"map": {"access-control-allow-origin": "*", "access-control-expose-headers": "Cache-Control,Content-Disposition,Content-Encoding,Content-Length,Content-Type,Date,Expires,Pragma,Server,Transfer-Encoding", "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000", "cache-control": "no-cache, no-store, max-age=0, must-revalidate", "content-disposition": "attachment; filename=\"RealityvKapse-Rawlistings.csv\"; filename*=UTF-8''Reality%20v%20Kapse%20-%20Raw%20listings.csv", "content-encoding": "gzip", "content-security-policy": "require-trusted-types-for 'script';report-uri https://csp.withgoogle.com/csp/docs-tt, frame-ancestors 'self' https://docs.google.com, base-uri 'self';object-src 'self';report-uri https://doc-14-58-sheets.googleusercontent.com/spreadsheets/cspreport;script-src 'report-sample' 'nonce-8CkjIhFOjmZN91nSNOhsgQ' 'unsafe-inline' 'strict-dynamic' https: http: 'unsafe-eval';worker-src 'self' blob:", "content-type": "text/csv", "date": "Wed, 29 Oct 2025 12:12:00 GMT", "document-policy": "include-js-call-stacks-in-crash-reports", "expires": "Mon, 01 Jan 1990 00:00:00 GMT", "pragma": "no-cache", "reporting-endpoints": "default=\"/web-reports?bl=editors.spreadsheets-frontend_20251022.02_p2&context=eJwV1nlU1NUCB_DrzO9-3UCWkR2GZWDABQRMJQFhGNYkzLJ-k2Y9F8wNNNx3XDKS55JmaIbwZFVwzyeuz8DUXHFNQ3NpQFCQ1DDU0vftj8-5937P3c-559wux_wvvPxAFHRShaazKrZ3VcVeG1WE2auiiN53UIXeURWBTqo4TiWuqjjmroruHqr4wFMVwXpVFNNYgyqOGlXxsqcqbHurwoF6BatibYgqloepIq-vKjbRvghVNL2pisoYVRyh-wmqaE9RxYk0VVyjQIsqBpD2Q1XoqHa4Ku7Qz6PYl3xGq6LzWFW40RuTVBFPutmquJ6tikaKX6qKYRSxUhXJNHSVKkbRz3SfVnyjim8pIE8V_ahigyoO0SvqtlEVw4u4z2LmVFOmisu0YIcqcqj7LlX4U80h5hR5WBWDyXSG65BLLfdPt6-popUqfubc9N8bPB9V_6qKS6S_q4oQyrOqoowM9aroS3uomk7QNWps4N3QmOeqmEYmrUUMpRmKRXxOfbpYRAy9trcIOweLyHKziCU0wmgRk8j2TYvwomMDLaKWRkQxJ12cRRjoRpJFNJFuMNu0Ms0i8qnvLIswk3G2RfSnSXMtYh71zLaIgXTb6aII7_lQM5Cu1jzW3KI5xieaurtPNL_RrZCnmnqyHfxU40RtYW2avykxuU2TRvHZbZpUem9Jm2YEpU_6U5NB-6LaNUcoO7pdk0OJ49o1aeSd264JpMtzn2vqaMXp55q1FFb7XPMmDXF8oVHp1pIXmno6X_hCc4304rXGSNmerzU5VDX7teYY7bUT2kOkuSu0Xf6R3kFbv6WDtr2og1YUd9DuLdRoD5HmR4326yCt9jtKek-rHUKXh2m1dbR6sVabR29_odVaaG69VruETF0UbQ9fRRtG_24dqHxN-Y8ilRKa1BapTKO2IVHKibwo5Ty1VUYpf1P7gGhFREQrDXnRymMa4D9IiaEcNVZZQ9WeJuU0OaWYFB-69ZZJqae2r03K39S3xaRE0sS4OCWLtPPjlK5UXBGntFTGcZ04ZZeLWaki41CzEkK5M83KOrpablbq6dFOs_KMMvaYlRl0dZ9ZueQbr_xC84zxSi4FlccroVTTGq-cof6_xyuDyEQplE05dIR-JJfH8Yo39aK-tJry_sl6JyiBlDoxQRlGMz5LUBbQ3qwEpYY2r01QSsnmaILSnWaeTFCONSQopyi-X6KSSrWZicod2tOYpFTTJ-1Jyqd0wClZeXdSsjKc8nQpSgH97ZqidHJLUQo7vqWU04ghBbLm3QJ5hmrGs6TyCQWyinL2F8g1ZHO0QHrShaRCeZvW3i6Uz58Wyg5_FMr9dJJCPv6P_MBji_yY3hiyRUbR5e5Fso4WuBTJlfR3XZGUN4vkV61FciN19C6WLrSfTtLzQcVyyoRiOYsaJhfLR6SbVSwNZKKhdLGqWN6l4WeK5UTaeLFYxlmL5Vvkpy2R4eT1eYkMoKXlJXIdVe0ukcdo8M0SOYJ2mkrl_yg4rVT2o2VHSuVqejq3TL6krcvK5G4KryyTcTTtbplcSrdEuWwh6V0ubck5qlwa6eaH5dJKIV-Wy_4UW7tVvkObm7bJUppgXyHn0LLgCrmaOg-ukA4UllYh36RzYyvkVTIvrJBp9Pn6CrmSLpZXyBukq66QBhKOldKenmRXSs3iSnllRaW8TWFNldJEL3tul9pe26Vv3-0yjAIGbJf9qGrGdnmKbH_YLp1o-ZgdchW9ytghkblDFi58IHdR0qoHMmzrA2miV9sfSOx4ICN_eigTKfT0QxlB4b88lNV1D-Vp6hTTLO3p4IFmWU3e1c0ykJbXNMvvaOyzZjmdiiwtsoKebWyRr2jpty0yl_zyW2Q4OaS3Sl-a-OyJnEuy5LXsSEf6dcU50u3pivOnu-JXev9sV6RTzZWuuEzvvegKC4VNtkFtpg2uk1xmg_2bbHCY8r-zwRZqtdrgT7puZ4s7ZLPPFt3JscoW7jTtoS1mU2pEN3xE_17XDd_RrB-7YRFtDrdDKd0YZ4eAAjsEk3hoB3sa7GaPEWRwt0cvKoi1x07Sv2OPb0rssZlqt9rjKi3dZo8c-umGPc6TtqcDulJKrAOqRzjgNHXd6wAdlV90QBUdDnbEWfIIdYSBhiQ4QqVFoxzxBU2Y64g5NK_WEUUUVe-IVLrhq8Ndau6pwx_0Q7AOYwboMIlcI3TwoYmROsyl5aN06DVah740bpwOfhd16Enpl3Vw-b47Aungze6opo3Pu2MraW2doKNXDk6AoxM85zjBn87PdcI1ylvuhAIKX-mEOHKscII77Wp0wrZmJ3Tc4gw7MhxxRiBtrHPGf-jkTWdcoPA2Z8TRe6NdYD_GBa6kn-wCI2XMdMEC-tc6F4ynTze4YBaFCFf0p1E-rphA-eNcUUIek1xxc7srrBR7yhXJ_zjtinfour8bGulIghvO0UW6S78XuqGdGrewTo7vusOFZixyxwLasdQdR2nMCndMosxWd8yk6HZ3JND8OA8so8pMD-wmlyke8KSMzzywgLbleuAgzVnlgcX0wWoPfEy1azxwnZxNnvCgTm95wpb27fXEj5R2wBMfUPRxTySQ3U1PdCfjLU_0omFhXhhLtz7yQj1lzvfCQvp-oRfkOi840aXdXviZYq95IZmO13vhJ3r6wgval164rNUjyEaPCLrRS48m8umjRwC1punxB815R4-FtHKyHvlUNFOPCor5Ro8h1GmrHraUvE2Pt6lPpR6NZ_T4-hc9NtKmm3oU0uxWPbLJ7bEeenI0eMOPxqV6I5NuD_VGK60f4Y27y7zxmBz3ecOd7sMHrVQ3wAe_UfRwHyTQ6wk-yN3og2FlPphIgw74IJF2nvLBfjI-80F_WhDmi5U0c7EvFlLZV76opJgiXyRRaB8_RFBqhB9G08gklpQ-ww8ZtKjQD1_Q_HN-WExvn_fDu7SEvqBNF_xQSIeb_XCWaukOIdyAbhQQbUAw5cQYsIbOv2_AZbo-wYA71CvLgEjynmlAH-oy1wA7SqeJtGKeAatpVKkB4yjnAOchw1WOJeeXBnjQqk7-2Eyfmf2xmFbs8MdaMuz0Ry8K3eePCBr_yh-z6UW3AHSxC8CZ0QGoo6z1AZhLU-2MyKY1_kZsoG6qEc7Ux2LEAPprlBE2o424sdaIJrq4xYi7ZF0WiCbqWBkIG5oqgpBNE5UgZNGXMghfkX_HIPSmRvsgtFDhgCDsogsLg3CFJmwOQiaNvxaE2bSLqujbhiBsIbPSA4Opj-yBGFpj1wMbyMexB_J1PVBCS7v3QC79yzIQU2nk3YHIoD1tA1FNp0Qk6jMi0UY1yyNxmbK-jcQS-m5rJCppXWUkNpHdkUh4U4V9FHbR_bQovo8oBLwfhX508rMoXKA7C6PQQLNPRCGH4k9GYRjdq4_CA6oR0ThDuW7RsK6PRjPdvh6NVopdNwjJ1OvSIETS9D8HYRmt18bgW7LTx8CbUrxj8CGNpAxaTt_Qef8YXKPc0hhsIreDMfjkXgym0Pe9Y3GYRubHYjTtpO_pRzpNi7bGYhl9cTwWq-nYvVjU0ooAE9ZT0xsmPKetZhN205ufM88xIZ-GrzRhIvnlm9CTzJtN6PzABAfKczOjgDQBZjjShQQzbpMp0QzndDNcyS3DDF_Kpy2kyWJOLbPMaKPUxWYMo7--MaNDnhkPD5jxO_2vzozjdLTRjPO0eUQ8SunQ5_E4Q52_iocbDbkUD5XWUwk9eRSPFzQ-OAEZ9PjLBNwqSUALZVYmYCaF7k5ABL1yTAR0ifh0TCImU_DCRMzLTsRS-rIgERvp8LFEHKdujxOho5y_EuFrSkIYRU1Ngok6zEhCZ5r_VRKuFCTBSg0VSXhEv25nnaxnktBMr24mAbeS8PwFx7xMguWvJFwIScbPZN8_GU50ks6SX2kyQiuTcYzW3E5GIXndSUYArQpMwbL3UlA-MQVVNHZ6CqaTT9g9hFLQwHsIprz4eyijv1bcg5J7D8sb7yGXAnys6EdH_aw4QY1GK9ppZqIVy-nVO1ZgqBXxn1iRSh-NsmIybdhmRTk1VFmRfcCKU21WXKCh7VaMIm9jPfpQ3Rv1eEgnY-pxlkZurkcGja1gnt2Ap3SxogE3yPpDA5r_cbEBA13vI472e97HSdrQfB-6TxthoPjMRqTSNjpIv09vhJjRiNELG4HqRnSjSa2NmEaH85twlib_1oT5lNvQhE20Z-MD7KcOvz5AZ1onmlFEV9JacIMcbTqt-TLnFOyzW8rOafkHmD11StZ0v97pYydMn5I1LWTa1Kz0UWOnjU9Pnz4teFzWlMzp6ZljPwkPDe8XFhoeHhIa_snU8P8DZ_hFPg&build-label=editors.spreadsheets-frontend_20251022.02_p2&imp-sid=CJGWtNGwyZADFXTAzgAd6SA4Ug&is-cached-offline=false&cellSizeBucket=RITZ_SHEET_CELLS_25K_TO_50K\"", "server": "GSE", "x-content-type-options": "nosniff", "x-frame-options": "ALLOW-FROM https://docs.google.com", "x-l2-request-path": "l2-managed-6", "x-robots-tag": "noindex, nofollow, nosnippet", "x-xss-protection": "1; mode=block"}}
+ LOG  📊 Celkem řádků dat: 210
+ LOG  ✅ Parsování řádku 2: {"area": 71, "hash_id": "1666904908", "lokalita": "Jerlínová, Brno - Žebětín", "price": 5150000, "pricePerM2": 72535, "titulek": "Prodej bytu 1+kk 71 m²..."}
+ LOG  ✅ Parsování řádku 3: {"area": 54, "hash_id": "2093867852", "lokalita": "Souběžná, Brno - Židenice", "price": 7190000, "pricePerM2": 133148, "titulek": "Prodej bytu 3+kk 54 m²..."}
+ LOG  ✅ Parsování řádku 4: {"area": 40, "hash_id": "1925043020", "lokalita": "Táborská, Brno - Židenice", "price": 5600000, "pricePerM2": 140000, "titulek": "Prodej bytu 2+kk 40 m² (Jednop..."}
+ LOG  ✅ Parsování řádku 5: {"area": 41, "hash_id": "1920590668", "lokalita": "Křenová, Brno - Trnitá", "price": 5990000, "pricePerM2": 146098, "titulek": "Prodej bytu 1+kk 41 m²..."}
+ LOG  ✅ Parsování řádku 6: {"area": 93, "hash_id": "2204422988", "lokalita": "Tkalcovská, Brno - Zábrdovice", "price": 9990000, "pricePerM2": 107419, "titulek": "Prodej bytu 3+1 93 m²..."}
+ LOG  ✅ Parsování řádku 7: {"area": 105, "hash_id": "2784814412", "lokalita": "Bratislavská, Brno - Zábrdovice", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 3+kk 105 m²..."}
+ LOG  ✅ Parsování řádku 8: {"area": 77, "hash_id": "877807180", "lokalita": "Bratislavská, Brno - Zábrdovice", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 3+kk 77 m²..."}
+ LOG  ✅ Parsování řádku 9: {"area": 107, "hash_id": "1348403788", "lokalita": "Bratislavská, Brno - Zábrdovice", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 4+kk 107 m²..."}
+ LOG  ✅ Parsování řádku 10: {"area": 35, "hash_id": "3612463948", "lokalita": "Bratislavská, Brno - Zábrdovice", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 1+kk 35 m²..."}
+ LOG  ✅ Parsování řádku 11: {"area": 60, "hash_id": "1126290252", "lokalita": "Bratislavská, Brno - Zábrdovice", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 2+kk 60 m²..."}
+ LOG  ✅ Parsování řádku 12: {"area": 54, "hash_id": "1864487756", "lokalita": "Bratislavská, Brno - Zábrdovice", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 2+kk 54 m²..."}
+ LOG  ✅ Parsování řádku 13: {"area": 55, "hash_id": "2065429324", "lokalita": "Dornych, Brno - Komárov", "price": 4499000, "pricePerM2": 81800, "titulek": "Prodej bytu 1+kk 55 m²..."}
+ LOG  ✅ Parsování řádku 14: {"area": 38, "hash_id": "1728172876", "lokalita": "Bratislavská, Brno - Zábrdovice", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 1+kk 38 m²..."}
+ LOG  ✅ Parsování řádku 15: {"area": 83, "hash_id": "286380876", "lokalita": "Bratislavská, Brno - Zábrdovice", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 3+kk 83 m²..."}
+ LOG  ✅ Parsování řádku 16: {"area": 43, "hash_id": "2011288396", "lokalita": "Bratislavská, Brno - Zábrdovice", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 1+kk 43 m²..."}
+ LOG  ✅ Parsování řádku 17: {"area": 41, "hash_id": "1088541516", "lokalita": "Bratislavská, Brno - Zábrdovice", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 1+kk 41 m²..."}
+ LOG  ✅ Parsování řádku 18: {"area": 41, "hash_id": "2313278284", "lokalita": "Bratislavská, Brno - Zábrdovice", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 1+kk 41 m²..."}
+ LOG  ✅ Parsování řádku 19: {"area": 45, "hash_id": "886166348", "lokalita": "Bratislavská, Brno - Zábrdovice", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 1+kk 45 m²..."}
+ LOG  ✅ Parsování řádku 20: {"area": 87, "hash_id": "1475400524", "lokalita": "Okrouhlá, Brno - Bohunice", "price": 7790000, "pricePerM2": 89540, "titulek": "Prodej bytu 4+1 87 m²..."}
+ LOG  ✅ Parsování řádku 21: {"area": 57, "hash_id": "3704738636", "lokalita": "Bratislavská, Brno - Zábrdovice", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 2+kk 57 m²..."}
+ LOG  ✅ Parsování řádku 22: {"area": 76, "hash_id": "2666845004", "lokalita": "Bučovická, Brno - Slatina", "price": 8280000, "pricePerM2": 108947, "titulek": "Prodej bytu 4+kk 76 m²..."}
+ LOG  ✅ Parsování řádku 23: {"area": 139, "hash_id": "3093066316", "lokalita": "Slovákova, Brno - Veveří", "price": 35022000, "pricePerM2": 251957, "titulek": "Prodej bytu 3+kk 139 m² (Jedno..."}
+ LOG  ✅ Parsování řádku 24: {"area": 32, "hash_id": "2041792076", "lokalita": "Bratislavská, Brno - Zábrdovice", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 1+kk 32 m²..."}
+ LOG  ✅ Parsování řádku 25: {"area": 60, "hash_id": "2950681420", "lokalita": "Fleischnerova, Brno - Bystrc", "price": 6890000, "pricePerM2": 114833, "titulek": "Prodej bytu 2+1 60 m² (Jednopo..."}
+ LOG  ✅ Parsování řádku 26: {"area": 65, "hash_id": "330683212", "lokalita": "U Leskavy, Brno - Starý Lískovec", "price": 8399000, "pricePerM2": 129215, "titulek": "Prodej bytu 2+1 65 m² (Jednopo..."}
+ LOG  ✅ Parsování řádku 27: {"area": 57, "hash_id": "4110164556", "lokalita": "Příční, Brno - Zábrdovice", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 2+kk 57 m²..."}
+ LOG  ✅ Parsování řádku 28: {"area": 68, "hash_id": "822744140", "lokalita": "Příční, Brno - Zábrdovice", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 3+kk 68 m²..."}
+ LOG  ✅ Parsování řádku 29: {"area": 34, "hash_id": "2233016908", "lokalita": "Příční, Brno - Zábrdovice", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 1+kk 34 m²..."}
+ LOG  ✅ Parsování řádku 30: {"area": 85, "hash_id": "3328436316", "lokalita": "Kollárova, Brno - Královo Pole", "price": 12100000, "pricePerM2": 142353, "titulek": "Prodej bytu 3+kk 85 m²..."}
+ LOG  ✅ Parsování řádku 31: {"area": 72, "hash_id": "3031864140", "lokalita": "Bratislavská, Brno - Zábrdovice", "price": 12650000, "pricePerM2": 175694, "titulek": "Prodej bytu 3+kk 72 m² (Mezone..."}
+ LOG  ✅ Parsování řádku 32: {"area": 53, "hash_id": "1354142540", "lokalita": "Bratislavská, Brno - Zábrdovice", "price": 8790000, "pricePerM2": 165849, "titulek": "Prodej bytu 2+kk 53 m² (Mezone..."}
+ LOG  ✅ Parsování řádku 33: {"area": 38, "hash_id": "3486212684", "lokalita": "Stará, Brno - Zábrdovice", "price": 5910000, "pricePerM2": 155526, "titulek": "Prodej bytu 1+kk 38 m²..."}
+ LOG  ✅ Parsování řádku 34: {"area": 59, "hash_id": "1607164492", "lokalita": "Stará, Brno - Zábrdovice", "price": 8785000, "pricePerM2": 148898, "titulek": "Prodej bytu 2+kk 59 m²..."}
+ LOG  ✅ Parsování řádku 35: {"area": 88, "hash_id": "264987212", "lokalita": "Stará, Brno - Zábrdovice", "price": 16196000, "pricePerM2": 184045, "titulek": "Prodej bytu 3+1 88 m²..."}
+ LOG  ✅ Parsování řádku 36: {"area": 67, "hash_id": "4006306380", "lokalita": "Stará, Brno - Zábrdovice", "price": 10230000, "pricePerM2": 152687, "titulek": "Prodej bytu 3+kk 67 m²..."}
+ LOG  ✅ Parsování řádku 37: {"area": 44, "hash_id": "3553420108", "lokalita": "Konradova, Brno - Líšeň", "price": 5790000, "pricePerM2": 131591, "titulek": "Prodej bytu 2+kk 44 m²..."}
+ LOG  ✅ Parsování řádku 38: {"area": 35, "hash_id": "2917724748", "lokalita": "Dornych, Brno - Komárov", "price": 4699000, "pricePerM2": 134257, "titulek": "Prodej bytu 1+kk 35 m²..."}
+ LOG  ✅ Parsování řádku 39: {"area": 52, "hash_id": "3974689356", "lokalita": "Dornych, Brno - Komárov", "price": 4999000, "pricePerM2": 96135, "titulek": "Prodej bytu 1+kk 52 m²..."}
+ LOG  ✅ Parsování řádku 40: {"area": 104, "hash_id": "3048818252", "lokalita": "Tilhonova, Brno - Slatina", "price": 10990000, "pricePerM2": 105673, "titulek": "Prodej bytu atypické 104 m²..."}
+ LOG  ✅ Parsování řádku 41: {"area": 64, "hash_id": "2400842572", "lokalita": "Zemědělská, Brno - Černá Pole", "price": 7799900, "pricePerM2": 121873, "titulek": "Prodej bytu 3+kk 64 m²..."}
+ LOG  ✅ Parsování řádku 42: {"area": 70, "hash_id": "2321204044", "lokalita": "Mikšíčkova, Brno - Židenice", "price": 8773000, "pricePerM2": 125329, "titulek": "Prodej bytu 2+kk 70 m² (Jednop..."}
+ LOG  ✅ Parsování řádku 43: {"area": 50, "hash_id": "2606416716", "lokalita": "Mikšíčkova, Brno - Židenice", "price": 7199750, "pricePerM2": 143995, "titulek": "Prodej bytu 2+kk 50 m² (Jednop..."}
+ LOG  ✅ Parsování řádku 44: {"area": 123, "hash_id": "4225344332", "lokalita": "Jerlínová, Brno - Žebětín", "price": 7800000, "pricePerM2": 63415, "titulek": "Prodej bytu 2+kk 123 m²..."}
+ LOG  ✅ Parsování řádku 45: {"area": 58, "hash_id": "3948593996", "lokalita": "Mikšíčkova, Brno - Židenice", "price": 8982500, "pricePerM2": 154871, "titulek": "Prodej bytu 2+kk 58 m² (Jednop..."}
+ LOG  ✅ Parsování řádku 46: {"area": 23, "hash_id": "140165964", "lokalita": "Mikšíčkova, Brno - Židenice", "price": 4199000, "pricePerM2": 182565, "titulek": "Prodej bytu 1+kk 23 m² (Jednop..."}
+ LOG  ✅ Parsování řádku 47: {"area": 57, "hash_id": "1482343244", "lokalita": "Mikšíčkova, Brno - Židenice", "price": 8866000, "pricePerM2": 155544, "titulek": "Prodej bytu 2+1 57 m² (Jednopo..."}
+ LOG  ✅ Parsování řádku 48: {"area": 46, "hash_id": "1314571084", "lokalita": "třída Generála Píky, Brno - Černá Pole", "price": 6900000, "pricePerM2": 150000, "titulek": "Prodej bytu 2+kk 46 m²..."}
+ LOG  ✅ Parsování řádku 49: {"area": 145, "hash_id": "2656748364", "lokalita": "Mikšíčkova, Brno - Židenice", "price": 19080500, "pricePerM2": 131590, "titulek": "Prodej bytu 4+kk 145 m² (Jedno..."}
+ LOG  ✅ Parsování řádku 50: {"area": 50, "hash_id": "3998925644", "lokalita": "Mikšíčkova, Brno - Židenice", "price": 7161000, "pricePerM2": 143220, "titulek": "Prodej bytu 2+kk 50 m² (Jednop..."}
+ LOG  ✅ Parsování řádku 51: {"area": 50, "hash_id": "844809036", "lokalita": "Mikšíčkova, Brno - Židenice", "price": 7199750, "pricePerM2": 143995, "titulek": "Prodej bytu 2+kk 50 m² (Jednop..."}
+ LOG  ✅ Parsování řádku 52: {"area": 58, "hash_id": "3260728140", "lokalita": "Mikšíčkova, Brno - Židenice", "price": 8982500, "pricePerM2": 154871, "titulek": "Prodej bytu 2+kk 58 m² (Jednop..."}
+ LOG  ✅ Parsování řádku 53: {"area": 50, "hash_id": "4092130124", "lokalita": "Příkop, Brno - Zábrdovice", "price": 6490000, "pricePerM2": 129800, "titulek": "Prodej bytu 2+1 50 m²..."}
+ LOG  ✅ Parsování řádku 54: {"area": 48, "hash_id": "1679270732", "lokalita": "Plynárenská, Brno - Zábrdovice", "price": 7375000, "pricePerM2": 153646, "titulek": "Prodej bytu 2+kk 48 m²..."}
+ LOG  ✅ Parsování řádku 55: {"area": 44, "hash_id": "622306124", "lokalita": "Plynárenská, Brno - Zábrdovice", "price": 6390000, "pricePerM2": 145227, "titulek": "Prodej bytu 2+kk 44 m²..."}
+ LOG  ✅ Parsování řádku 56: {"area": 65, "hash_id": "2467799884", "lokalita": "Plynárenská, Brno - Zábrdovice", "price": 9598000, "pricePerM2": 147662, "titulek": "Prodej bytu 3+kk 65 m²..."}
+ LOG  ✅ Parsování řádku 57: {"area": 57, "hash_id": "1913312076", "lokalita": "Spolková, Brno - Zábrdovice", "price": 7200000, "pricePerM2": 126316, "titulek": "Prodej bytu 2+kk 57 m²..."}
+ LOG  ✅ Parsování řádku 58: {"area": 102, "hash_id": "1938281292", "lokalita": "Erbenova, Brno - Černá Pole", "price": 11900000, "pricePerM2": 116667, "titulek": "Prodej bytu 4+kk 102 m²..."}
+ LOG  ✅ Parsování řádku 59: {"area": 134, "hash_id": "1560601164", "lokalita": "Klatovská, Brno - Ponava", "price": 10900000, "pricePerM2": 81343, "titulek": "Prodej bytu 3+kk 134 m² (Podkr..."}
+ LOG  ✅ Parsování řádku 60: {"area": 47, "hash_id": "2061427532", "lokalita": "Náplavka, Brno - Staré Brno", "price": 6300000, "pricePerM2": 134043, "titulek": "Prodej bytu 2+kk 47 m²..."}
+ LOG  ✅ Parsování řádku 61: {"area": 73, "hash_id": "1074914124", "lokalita": "Cacovická, Brno - Husovice", "price": 9270000, "pricePerM2": 126986, "titulek": "Prodej bytu 3+kk 73 m²..."}
+ LOG  ✅ Parsování řádku 62: {"area": 105, "hash_id": "4269843276", "lokalita": "Kotlářská, Brno - Veveří", "price": 10690000, "pricePerM2": 101810, "titulek": "Prodej bytu 3+kk 105 m²..."}
+ LOG  ✅ Parsování řádku 63: {"area": 35, "hash_id": "3380265804", "lokalita": "Herčíkova, Brno - Královo Pole", "price": 5100000, "pricePerM2": 145714, "titulek": "Prodej bytu 2+kk 35 m²..."}
+ LOG  ✅ Parsování řádku 64: {"area": 51, "hash_id": "1366983500", "lokalita": "Gajdošova, Brno - Židenice", "price": 5812380, "pricePerM2": 113968, "titulek": "Prodej bytu 1+kk 51 m²..."}
+ LOG  ✅ Parsování řádku 65: {"area": 103, "hash_id": "929854028", "lokalita": "Slovákova, Brno - Veveří", "price": 22484000, "pricePerM2": 218291, "titulek": "Prodej bytu 3+kk 103 m² (Jedno..."}
+ LOG  ✅ Parsování řádku 66: {"area": 106, "hash_id": "4038034252", "lokalita": "Gajdošova, Brno - Židenice", "price": 9706179, "pricePerM2": 91568, "titulek": "Prodej bytu 2+kk 106 m²..."}
+ LOG  ✅ Parsování řádku 67: {"area": 87, "hash_id": "240026444", "lokalita": "Gajdošova, Brno - Židenice", "price": 8744138, "pricePerM2": 100507, "titulek": "Prodej bytu 2+kk 87 m²..."}
+ LOG  ✅ Parsování řádku 68: {"area": 38, "hash_id": "3607995212", "lokalita": "Jeneweinova, Brno - Komárov", "price": 4950000, "pricePerM2": 130263, "titulek": "Prodej bytu 2+kk 38 m² (Jednop..."}
+ LOG  ✅ Parsování řádku 69: {"area": 64, "hash_id": "3105153868", "lokalita": "Božetěchova, Brno - Královo Pole", "price": 7090000, "pricePerM2": 110781, "titulek": "Prodej bytu 2+1 64 m²..."}
+ LOG  ✅ Parsování řádku 70: {"area": 60, "hash_id": "1103004492", "lokalita": "Brno - Starý Lískovec, okres Brno-město", "price": 8312879, "pricePerM2": 138548, "titulek": "Prodej bytu 2+kk 60 m²..."}
+ LOG  ✅ Parsování řádku 71: {"area": 34, "hash_id": "1412932428", "lokalita": "Brno - Starý Lískovec, okres Brno-město", "price": 5410070, "pricePerM2": 159120, "titulek": "Prodej bytu 1+kk 34 m²..."}
+ LOG  ✅ Parsování řádku 72: {"area": 86, "hash_id": "199861068", "lokalita": "Brno - Starý Lískovec, okres Brno-město", "price": 16390000, "pricePerM2": 190581, "titulek": "Prodej bytu 4+kk 86 m²..."}
+ LOG  ✅ Parsování řádku 73: {"area": 90, "hash_id": "294269516", "lokalita": "Pražákova, Brno - Horní Heršpice", "price": 10490000, "pricePerM2": 116556, "titulek": "Prodej bytu 3+kk 90 m² (Mezone..."}
+ LOG  ✅ Parsování řádku 74: {"area": 99, "hash_id": "2989929804", "lokalita": "Komárovská, Brno - Komárov", "price": 20020727, "pricePerM2": 202230, "titulek": "Prodej bytu 4+kk 99 m²..."}
+ LOG  ✅ Parsování řádku 75: {"area": 47, "hash_id": "2852627276", "lokalita": "Plynárenská, Brno - Zábrdovice", "price": 7098000, "pricePerM2": 151021, "titulek": "Prodej bytu 2+kk 47 m²..."}
+ LOG  ✅ Parsování řádku 76: {"area": 35, "hash_id": "2018243404", "lokalita": "Rotalova, Brno - Husovice", "price": 5721930, "pricePerM2": 163484, "titulek": "Prodej bytu 2+kk 35 m²..."}
+ LOG  ✅ Parsování řádku 77: {"area": 114, "hash_id": "9056844", "lokalita": "Pražákova, Brno - Horní Heršpice", "price": 14990000, "pricePerM2": 131491, "titulek": "Prodej bytu 4+kk 114 m² (Mezon..."}
+ LOG  ✅ Parsování řádku 78: {"area": 49, "hash_id": "495931980", "lokalita": "Pražákova, Brno", "price": 6890000, "pricePerM2": 140612, "titulek": "Prodej bytu 2+kk 49 m²..."}
+ LOG  ✅ Parsování řádku 79: {"area": 47, "hash_id": "3476529996", "lokalita": "Plynárenská, Brno - Zábrdovice", "price": 6936000, "pricePerM2": 147574, "titulek": "Prodej bytu 2+kk 47 m²..."}
+ LOG  ✅ Parsování řádku 80: {"area": 52, "hash_id": "1352385356", "lokalita": "Kigginsova, Brno - Slatina", "price": 6560000, "pricePerM2": 126154, "titulek": "Prodej bytu 2+kk 52 m²..."}
+ LOG  ✅ Parsování řádku 81: {"area": 130, "hash_id": "2544538444", "lokalita": "Hvozdíková, Brno - Lesná", "price": 16900000, "pricePerM2": 130000, "titulek": "Prodej bytu 4+kk 130 m²..."}
+ LOG  ✅ Parsování řádku 82: {"area": 98, "hash_id": "2704466764", "lokalita": "Sokolská, Brno - Veveří", "price": 10900000, "pricePerM2": 111224, "titulek": "Prodej bytu 3+kk 98 m²..."}
+ LOG  ✅ Parsování řádku 83: {"area": 44, "hash_id": "2603803468", "lokalita": "Horácké náměstí, Brno - Řečkovice", "price": 5790000, "pricePerM2": 131591, "titulek": "Prodej bytu 1+1 44 m²..."}
+ LOG  ✅ Parsování řádku 84: {"area": 125, "hash_id": "609411916", "lokalita": "Vrbovecká, Brno - Bystrc", "price": 13990000, "pricePerM2": 111920, "titulek": "Prodej bytu 4+kk 125 m²..."}
+ LOG  ✅ Parsování řádku 85: {"area": 79, "hash_id": "2643432268", "lokalita": "Olomoucká, Brno", "price": 9660000, "pricePerM2": 122278, "titulek": "Prodej bytu 2+kk 79 m²..."}
+ LOG  ✅ Parsování řádku 86: {"area": 139, "hash_id": "3093066316", "lokalita": "Slovákova, Brno - Veveří", "price": 35022000, "pricePerM2": 251957, "titulek": "Prodej bytu 3+kk 139 m² (Jedno..."}
+ LOG  ✅ Parsování řádku 87: {"area": 40, "hash_id": "2087621452", "lokalita": "Olomoucká, Brno", "price": 5840000, "pricePerM2": 146000, "titulek": "Prodej bytu 1+kk 40 m²..."}
+ LOG  ✅ Parsování řádku 88: {"area": 93, "hash_id": "4273967948", "lokalita": "Olomoucká, Brno", "price": 11000000, "pricePerM2": 118280, "titulek": "Prodej bytu 3+kk 93 m²..."}
+ LOG  ✅ Parsování řádku 89: {"area": 31, "hash_id": "4237017932", "lokalita": "Bernáčkova, Brno - Dolní Heršpice", "price": 4490000, "pricePerM2": 144839, "titulek": "Prodej bytu 1+kk 31 m² (Jednop..."}
+ LOG  ✅ Parsování řádku 90: {"area": 97, "hash_id": "3669390668", "lokalita": "Sychrov, Brno - Ivanovice", "price": 14900000, "pricePerM2": 153608, "titulek": "Prodej bytu 4+kk 97 m²..."}
+ LOG  ✅ Parsování řádku 91: {"area": 159, "hash_id": "1589137996", "lokalita": "Cejl, Brno", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 3+kk 159 m² (Mezon..."}
+ LOG  ✅ Parsování řádku 92: {"area": 79, "hash_id": "1721946956", "lokalita": "Bezručova, Brno - Staré Brno", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 3+1 79 m²..."}
+ LOG  ✅ Parsování řádku 93: {"area": 59, "hash_id": "3631514444", "lokalita": "Auerswaldova, Brno - Zábrdovice", "price": 7288650, "pricePerM2": 123536, "titulek": "Prodej bytu 2+kk 59 m²..."}
+ LOG  ✅ Parsování řádku 94: {"area": 82, "hash_id": "3940848460", "lokalita": "Konradova, Brno - Líšeň", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 4+1 82 m² (Jednopo..."}
+ LOG  ✅ Parsování řádku 95: {"area": 113, "hash_id": "327770700", "lokalita": "Vídeňská, Brno - Štýřice", "price": 10490000, "pricePerM2": 92832, "titulek": "Prodej bytu 3+1 113 m²..."}
+ LOG  ✅ Parsování řádku 96: {"area": 95, "hash_id": "1360102220", "lokalita": "Vranovská, Brno - Husovice", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 3+kk 95 m²..."}
+ LOG  ✅ Parsování řádku 97: {"area": 56, "hash_id": "162714444", "lokalita": "Vídeňská, Brno - Štýřice", "price": 6800000, "pricePerM2": 121429, "titulek": "Prodej bytu 2+1 56 m²..."}
+ LOG  ✅ Parsování řádku 98: {"area": 68, "hash_id": "3300893516", "lokalita": "Sentická, Brno - Žebětín", "price": 5495000, "pricePerM2": 80809, "titulek": "Prodej bytu 1+kk 68 m²..."}
+ LOG  ✅ Parsování řádku 99: {"area": 50, "hash_id": "837800780", "lokalita": "Merhautova, Brno - Černá Pole", "price": 5755555, "pricePerM2": 115111, "titulek": "Prodej bytu 2+kk 50 m²..."}
+ LOG  ✅ Parsování řádku 100: {"area": 60, "hash_id": "895931212", "lokalita": "Jílkova, Brno - Židenice", "price": 10500000, "pricePerM2": 175000, "titulek": "Prodej bytu 3+kk 60 m²..."}
+ LOG  ✅ Parsování řádku 101: {"area": 38, "hash_id": "379871820", "lokalita": "Charbulova, Brno - Černovice", "price": 6370938, "pricePerM2": 167656, "titulek": "Prodej bytu 2+kk 38 m²..."}
+ LOG  ✅ Parsování řádku 102: {"area": 57, "hash_id": "1461056332", "lokalita": "Húskova, Brno - Černovice", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 3+kk 57 m²..."}
+ LOG  ✅ Parsování řádku 103: {"area": 43, "hash_id": "2099303244", "lokalita": "Kotlanova, Brno - Líšeň", "price": 5200000, "pricePerM2": 120930, "titulek": "Prodej bytu 2+kk 43 m² (Jednop..."}
+ LOG  ✅ Parsování řádku 104: {"area": 32, "hash_id": "711951180", "lokalita": "Stejskalova, Brno - Židenice", "price": 4499000, "pricePerM2": 140594, "titulek": "Prodej bytu 1+kk 32 m²..."}
+ LOG  ✅ Parsování řádku 105: {"area": 47, "hash_id": "1254867788", "lokalita": "Obřanská, Brno - Maloměřice", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 2+kk 47 m²..."}
+ LOG  ✅ Parsování řádku 106: {"area": 44, "hash_id": "45204044", "lokalita": "Antonína Slavíka, Brno - Černá Pole", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 2+kk 44 m²..."}
+ LOG  ✅ Parsování řádku 107: {"area": 139, "hash_id": "3093066316", "lokalita": "Slovákova, Brno - Veveří", "price": 35022000, "pricePerM2": 251957, "titulek": "Prodej bytu 3+kk 139 m² (Jedno..."}
+ LOG  ✅ Parsování řádku 108: {"area": 60, "hash_id": "1890697804", "lokalita": "Antonína Slavíka, Brno - Černá Pole", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 3+kk 60 m²..."}
+ LOG  ✅ Parsování řádku 109: {"area": 38, "hash_id": "4272013900", "lokalita": "Antonína Slavíka, Brno - Černá Pole", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 1+kk 38 m²..."}
+ LOG  ✅ Parsování řádku 110: {"area": 54, "hash_id": "3887186508", "lokalita": "Antonína Slavíka, Brno - Černá Pole", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 2+kk 54 m² (Jednop..."}
+ LOG  ✅ Parsování řádku 111: {"area": 120, "hash_id": "766624332", "lokalita": "Antonína Slavíka, Brno - Černá Pole", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 4+kk 120 m² (Jedno..."}
+ LOG  ✅ Parsování řádku 112: {"area": 109, "hash_id": "1325966156", "lokalita": "Botanická, Brno - Veveří", "price": 10200000, "pricePerM2": 93578, "titulek": "Prodej bytu 3+kk 109 m² (Podkr..."}
+ LOG  ✅ Parsování řádku 113: {"area": 134, "hash_id": "3111052108", "lokalita": "Botanická, Brno - Veveří", "price": 11990000, "pricePerM2": 89478, "titulek": "Prodej bytu 4+kk 134 m² (Mezon..."}
+ LOG  ✅ Parsování řádku 114: {"area": 63, "hash_id": "166445900", "lokalita": "Obřanská, Brno - Maloměřice", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 3+kk 63 m²..."}
+ LOG  ✅ Parsování řádku 115: {"area": 74, "hash_id": "3205997388", "lokalita": "Plynárenská, Brno - Zábrdovice", "price": 9988000, "pricePerM2": 134973, "titulek": "Prodej bytu 3+kk 74 m²..."}
+ LOG  ✅ Parsování řádku 116: {"area": 31, "hash_id": "1642840908", "lokalita": "náměstí SNP, Brno - Černá Pole", "price": 4095000, "pricePerM2": 132097, "titulek": "Prodej bytu 1+1 31 m²..."}
+ LOG  ✅ Parsování řádku 117: {"area": 180, "hash_id": "2578907724", "lokalita": "Příkop, Brno - Zábrdovice", "price": 12900000, "pricePerM2": 71667, "titulek": "Prodej bytu 3+kk 180 m² (Mezon..."}
+ LOG  ✅ Parsování řádku 118: {"area": 80, "hash_id": "2353505100", "lokalita": "Strnadova, Brno - Líšeň", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 4+1 80 m²..."}
+ LOG  ✅ Parsování řádku 119: {"area": 81, "hash_id": "1873924940", "lokalita": "Oblá, Brno - Nový Lískovec", "price": 7480000, "pricePerM2": 92346, "titulek": "Prodej bytu 4+1 81 m²..."}
+ LOG  ✅ Parsování řádku 120: {"area": 71, "hash_id": "77521740", "lokalita": "Hoblíkova, Brno - Černá Pole", "price": 7390000, "pricePerM2": 104085, "titulek": "Prodej bytu 2+1 71 m²..."}
+ LOG  ✅ Parsování řádku 121: {"area": 53, "hash_id": "2761876300", "lokalita": "Přadlácká, Brno - Zábrdovice", "price": 7480000, "pricePerM2": 141132, "titulek": "Prodej bytu 2+kk 53 m²..."}
+ LOG  ✅ Parsování řádku 122: {"area": 90, "hash_id": "4262961996", "lokalita": "Plynárenská, Brno - Zábrdovice", "price": 13406000, "pricePerM2": 148956, "titulek": "Prodej bytu 4+kk 90 m²..."}
+ LOG  ✅ Parsování řádku 123: {"area": 53, "hash_id": "3031880524", "lokalita": "Brno - Brno-Bosonohy, okres Brno-město", "price": 6810000, "pricePerM2": 128491, "titulek": "Prodej bytu 2+kk 53 m²..."}
+ LOG  ✅ Parsování řádku 124: {"area": 85, "hash_id": "1446368076", "lokalita": "Brno - Brno-Bosonohy, okres Brno-město", "price": 10260000, "pricePerM2": 120706, "titulek": "Prodej bytu 3+kk 85 m²..."}
+ LOG  ✅ Parsování řádku 125: {"area": 41, "hash_id": "1965613644", "lokalita": "Lazaretní, Brno", "price": 5869000, "pricePerM2": 143146, "titulek": "Prodej bytu 1+kk 41 m² (Jednop..."}
+ LOG  ✅ Parsování řádku 126: {"area": 78, "hash_id": "3741770572", "lokalita": "Špitálka, Brno - Zábrdovice", "price": 7399000, "pricePerM2": 94859, "titulek": "Prodej bytu 2+1 78 m²..."}
+ LOG  ✅ Parsování řádku 127: {"area": 53, "hash_id": "2444415820", "lokalita": "Krásného, Brno - Židenice", "price": 6200000, "pricePerM2": 116981, "titulek": "Prodej bytu 2+1 53 m²..."}
+ LOG  ✅ Parsování řádku 128: {"area": 123, "hash_id": "4225344332", "lokalita": "Jerlínová, Brno - Žebětín", "price": 7800000, "pricePerM2": 63415, "titulek": "Prodej bytu 2+kk 123 m²..."}
+ LOG  ✅ Parsování řádku 129: {"area": 35, "hash_id": "4141200204", "lokalita": "Vranovská, Brno", "price": 4890000, "pricePerM2": 139714, "titulek": "Prodej bytu 1+kk 35 m²..."}
+ LOG  ✅ Parsování řádku 130: {"area": 38, "hash_id": "288798028", "lokalita": "Komárovská, Brno - Komárov", "price": 6113130, "pricePerM2": 160872, "titulek": "Prodej bytu 1+kk 38 m²..."}
+ LOG  ✅ Parsování řádku 131: {"area": 54, "hash_id": "758043468", "lokalita": "Renneská třída, Brno - Štýřice", "price": 6200000, "pricePerM2": 114815, "titulek": "Prodej bytu 2+1 54 m²..."}
+ LOG  ✅ Parsování řádku 132: {"area": 76, "hash_id": "3328762444", "lokalita": "Bratislavská, Brno - Zábrdovice", "price": 8018371, "pricePerM2": 105505, "titulek": "Prodej bytu 3+kk 76 m²..."}
+ LOG  ✅ Parsování řádku 133: {"area": 38, "hash_id": "1173443148", "lokalita": "Bratislavská, Brno - Zábrdovice", "price": 5275400, "pricePerM2": 138826, "titulek": "Prodej bytu 1+kk 38 m²..."}
+ LOG  ✅ Parsování řádku 134: {"area": 51, "hash_id": "1859945292", "lokalita": "Zedníkova, Brno - Staré Brno", "price": 6950000, "pricePerM2": 136275, "titulek": "Prodej bytu 2+1 51 m²..."}
+ LOG  ✅ Parsování řádku 135: {"area": 66, "hash_id": "44618572", "lokalita": "Bohuňova, Brno - Bohunice", "price": 6390000, "pricePerM2": 96818, "titulek": "Prodej bytu 2+1 66 m² (Jednopo..."}
+ LOG  ✅ Parsování řádku 136: {"area": 70, "hash_id": "979690316", "lokalita": "Košinova, Brno - Královo Pole", "price": 9290000, "pricePerM2": 132714, "titulek": "Prodej bytu 3+kk 70 m² (Jednop..."}
+ LOG  ✅ Parsování řádku 137: {"area": 78, "hash_id": "2838618956", "lokalita": "Francouzská, Brno - Zábrdovice", "price": 6900000, "pricePerM2": 88462, "titulek": "Prodej bytu 3+kk 78 m² (Jednop..."}
+ LOG  ✅ Parsování řádku 138: {"area": 79, "hash_id": "1196286796", "lokalita": "Bohuslava Martinů, Brno - Stránice", "price": 12900000, "pricePerM2": 163291, "titulek": "Prodej bytu 3+1 79 m²..."}
+ LOG  ✅ Parsování řádku 139: {"area": 51, "hash_id": "3003507532", "lokalita": "Bystrcká, Brno - Komín", "price": 7664200, "pricePerM2": 150278, "titulek": "Prodej bytu 2+kk 51 m²..."}
+ LOG  ✅ Parsování řádku 140: {"area": 87, "hash_id": "532615756", "lokalita": "Holzova, Brno - Líšeň", "price": 5992000, "pricePerM2": 68874, "titulek": "Prodej bytu 1+kk 87 m²..."}
+ LOG  ✅ Parsování řádku 141: {"area": 109, "hash_id": "3755266892", "lokalita": "Dohnalova, Brno - Soběšice", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 5+kk 109 m²..."}
+ LOG  ✅ Parsování řádku 142: {"area": 43, "hash_id": "3865105228", "lokalita": "Horácké náměstí, Brno - Řečkovice", "price": 5990000, "pricePerM2": 139302, "titulek": "Prodej bytu 2+kk 43 m²..."}
+ LOG  ✅ Parsování řádku 143: {"area": 75, "hash_id": "2382553932", "lokalita": "Bystrcká, Brno - Komín", "price": 9992500, "pricePerM2": 133233, "titulek": "Prodej bytu 3+kk 75 m²..."}
+ LOG  ✅ Parsování řádku 144: {"area": 94, "hash_id": "1827701580", "lokalita": "Palackého třída, Brno - Královo Pole", "price": 11390000, "pricePerM2": 121170, "titulek": "Prodej bytu 3+kk 94 m²..."}
+ LOG  ✅ Parsování řádku 145: {"area": 270, "hash_id": "560337484", "lokalita": "Příkop, Brno - Zábrdovice", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 6 pokojů a více 27..."}
+ LOG  ✅ Parsování řádku 146: {"area": 60, "hash_id": "2136728396", "lokalita": "Svatoplukova, Brno - Židenice", "price": 8175000, "pricePerM2": 136250, "titulek": "Prodej bytu 2+kk 60 m²..."}
+ LOG  ✅ Parsování řádku 147: {"area": 75, "hash_id": "3446072140", "lokalita": "Bystrcká, Brno - Komín", "price": 10695600, "pricePerM2": 142608, "titulek": "Prodej bytu 3+kk 75 m²..."}
+ LOG  ✅ Parsování řádku 148: {"area": 52, "hash_id": "3935343436", "lokalita": "Jánská, Brno - Brno-město", "price": 8870000, "pricePerM2": 170577, "titulek": "Prodej bytu 2+kk 52 m²..."}
+ LOG  ✅ Parsování řádku 149: {"area": 103, "hash_id": "929854028", "lokalita": "Slovákova, Brno - Veveří", "price": 22484000, "pricePerM2": 218291, "titulek": "Prodej bytu 3+kk 103 m² (Jedno..."}
+ LOG  ✅ Parsování řádku 150: {"area": 22, "hash_id": "633054028", "lokalita": "Körnerova, Brno - Zábrdovice", "price": 3804578, "pricePerM2": 172935, "titulek": "Prodej bytu 1+kk 22 m²..."}
+ LOG  ✅ Parsování řádku 151: {"area": 143, "hash_id": "974058316", "lokalita": "Jírovcova, Brno - Kohoutovice", "price": 15999000, "pricePerM2": 111881, "titulek": "Prodej bytu 4+kk 143 m² (Mezon..."}
+ LOG  ✅ Parsování řádku 152: {"area": 51, "hash_id": "2870932300", "lokalita": "Jírovcova, Brno - Kohoutovice", "price": 7299000, "pricePerM2": 143118, "titulek": "Prodej bytu 2+kk 51 m²..."}
+ LOG  ✅ Parsování řádku 153: {"area": 29, "hash_id": "3746231116", "lokalita": "Burešova, Brno - Veveří", "price": 4823000, "pricePerM2": 166310, "titulek": "Prodej bytu 1+kk 29 m²..."}
+ LOG  ✅ Parsování řádku 154: {"area": 95, "hash_id": "869589836", "lokalita": "Gajdošova, Brno - Židenice", "price": 10990000, "pricePerM2": 115684, "titulek": "Prodej bytu 2+kk 95 m² (Jednop..."}
+ LOG  ✅ Parsování řádku 155: {"area": 59, "hash_id": "1489257036", "lokalita": "Křenová, Brno", "price": 9140000, "pricePerM2": 154915, "titulek": "Prodej bytu 2+kk 59 m²..."}
+ LOG  ✅ Parsování řádku 156: {"area": 77, "hash_id": "2169033548", "lokalita": "Kvapilova, Brno - Žabovřesky", "price": 7990000, "pricePerM2": 103766, "titulek": "Prodej bytu 3+1 77 m² (Jednopo..."}
+ LOG  ✅ Parsování řádku 157: {"area": 44, "hash_id": "2319242060", "lokalita": "Dornych, Brno - Komárov", "price": 5499000, "pricePerM2": 124977, "titulek": "Prodej bytu 1+kk 44 m²..."}
+ LOG  ✅ Parsování řádku 158: {"area": 46, "hash_id": "358077260", "lokalita": "Uzbecká, Brno - Bohunice", "price": 5330000, "pricePerM2": 115870, "titulek": "Prodej bytu 2+kk 46 m²..."}
+ LOG  ✅ Parsování řádku 159: {"area": 49, "hash_id": "1148908364", "lokalita": "Burešova, Brno - Veveří", "price": 6233000, "pricePerM2": 127204, "titulek": "Prodej bytu 2+kk 49 m²..."}
+ LOG  ✅ Parsování řádku 160: {"area": 81, "hash_id": "2471219788", "lokalita": "Burešova, Brno - Veveří", "price": 10830000, "pricePerM2": 133704, "titulek": "Prodej bytu 3+kk 81 m²..."}
+ LOG  ✅ Parsování řádku 161: {"area": 138, "hash_id": "18575948", "lokalita": "Ondrova, Brno - Kníničky", "price": 10829000, "pricePerM2": 78471, "titulek": "Prodej bytu 3+kk 138 m²..."}
+ LOG  ✅ Parsování řádku 162: {"area": 52, "hash_id": "421229132", "lokalita": "Ondrova, Brno - Kníničky", "price": 8267000, "pricePerM2": 158981, "titulek": "Prodej bytu 2+kk 52 m²..."}
+ LOG  ✅ Parsování řádku 163: {"area": 73, "hash_id": "3922584396", "lokalita": "Ondrova, Brno - Kníničky", "price": 8267000, "pricePerM2": 113247, "titulek": "Prodej bytu 2+kk 73 m²..."}
+ LOG  ✅ Parsování řádku 164: {"area": 43, "hash_id": "1156768588", "lokalita": "Dřevařská, Brno - Veveří", "price": 5350000, "pricePerM2": 124419, "titulek": "Prodej bytu 2+kk 43 m²..."}
+ LOG  ✅ Parsování řádku 165: {"area": 99, "hash_id": "2009854796", "lokalita": "Komárovská, Brno - Komárov", "price": 20020727, "pricePerM2": 202230, "titulek": "Prodej bytu 4+kk 99 m²..."}
+ LOG  ✅ Parsování řádku 166: {"area": 82, "hash_id": "2654982988", "lokalita": "Nerudova, Brno - Veveří", "price": 9500000, "pricePerM2": 115854, "titulek": "Prodej bytu 2+1 82 m²..."}
+ LOG  ✅ Parsování řádku 167: {"area": 104, "hash_id": "2676671052", "lokalita": "Veslařská, Brno - Jundrov", "price": 7850000, "pricePerM2": 75481, "titulek": "Prodej bytu 2+kk 104 m²..."}
+ LOG  ✅ Parsování řádku 168: {"area": 38, "hash_id": "2445640524", "lokalita": "Vomáčkova, Brno - Dolní Heršpice", "price": 4850000, "pricePerM2": 127632, "titulek": "Prodej bytu 1+kk 38 m²..."}
+ LOG  ✅ Parsování řádku 169: {"area": 42, "hash_id": "371446604", "lokalita": "Cejl, Brno - Zábrdovice", "price": 5000000, "pricePerM2": 119048, "titulek": "Prodej bytu 2+kk 42 m² (Jednop..."}
+ LOG  ✅ Parsování řádku 170: {"area": 104, "hash_id": "1796211276", "lokalita": "Slovákova, Brno - Veveří", "price": 13998000, "pricePerM2": 134596, "titulek": "Prodej bytu 3+kk 104 m² (Jedno..."}
+ LOG  ✅ Parsování řádku 171: {"area": 67, "hash_id": "1200550732", "lokalita": "Ostopovická, Brno - Bosonohy", "price": 6850000, "pricePerM2": 102239, "titulek": "Prodej bytu 3+kk 67 m²..."}
+ LOG  ✅ Parsování řádku 172: {"area": 46, "hash_id": "2019279692", "lokalita": "Jaselská, Brno - Veveří", "price": 6690000, "pricePerM2": 145435, "titulek": "Prodej bytu 2+kk 46 m²..."}
+ LOG  ✅ Parsování řádku 173: {"area": 79, "hash_id": "1252324172", "lokalita": "Holzova, Brno - Líšeň", "price": 9990000, "pricePerM2": 126456, "titulek": "Prodej bytu 3+kk 79 m²..."}
+ LOG  ✅ Parsování řádku 174: {"area": 55, "hash_id": "4098605900", "lokalita": "Záhřebská, Brno - Žabovřesky", "price": 5987600, "pricePerM2": 108865, "titulek": "Prodej bytu 2+1 55 m²..."}
+ LOG  ✅ Parsování řádku 175: {"area": 47, "hash_id": "3578512204", "lokalita": "Pod Kaštany, Brno - Žabovřesky", "price": 5590000, "pricePerM2": 118936, "titulek": "Prodej bytu 2+kk 47 m²..."}
+ LOG  ✅ Parsování řádku 176: {"area": 31, "hash_id": "3933979468", "lokalita": "Havelkova, Brno - Bohunice", "price": 4189000, "pricePerM2": 135129, "titulek": "Prodej bytu 1+kk 31 m²..."}
+ LOG  ✅ Parsování řádku 177: {"area": 62, "hash_id": "997966668", "lokalita": "Opálkova, Brno - Bystrc", "price": 5987000, "pricePerM2": 96565, "titulek": "Prodej bytu 2+1 62 m²..."}
+ LOG  ✅ Parsování řádku 178: {"area": 53, "hash_id": "3413885772", "lokalita": "Arménská, Brno - Bohunice", "price": 5490000, "pricePerM2": 103585, "titulek": "Prodej bytu 2+kk 53 m²..."}
+ LOG  ✅ Parsování řádku 179: {"area": 68, "hash_id": "740414284", "lokalita": "Chudčická, Brno - Bystrc", "price": 10690000, "pricePerM2": 157206, "titulek": "Prodej bytu 3+kk 68 m²..."}
+ LOG  ✅ Parsování řádku 180: {"area": 72, "hash_id": "3095118668", "lokalita": "Ježkova, Brno - Lesná", "price": 8490000, "pricePerM2": 117917, "titulek": "Prodej bytu 3+1 72 m² (Jednopo..."}
+ LOG  ✅ Parsování řádku 181: {"area": 44, "hash_id": "2170286924", "lokalita": "Bratislavská, Brno - Zábrdovice", "price": 5690000, "pricePerM2": 129318, "titulek": "Prodej bytu 1+kk 44 m² (Jednop..."}
+ LOG  ✅ Parsování řádku 182: {"area": 64, "hash_id": "1653461836", "lokalita": "Klíny, Brno - Židenice", "price": 6299000, "pricePerM2": 98422, "titulek": "Prodej bytu 2+1 64 m²..."}
+ LOG  ✅ Parsování řádku 183: {"area": 101, "hash_id": "1470554956", "lokalita": "Markůvky, Brno - Bystrc", "price": 9900000, "pricePerM2": 98020, "titulek": "Prodej bytu 2+kk 101 m²..."}
+ LOG  ✅ Parsování řádku 184: {"area": 257, "hash_id": "1956926028", "lokalita": "Brno - Brno-střed, okres Brno-město", "price": 26900000, "pricePerM2": 104669, "titulek": "Prodej bytu 5+kk 257 m²..."}
+ LOG  ✅ Parsování řádku 185: {"area": 89, "hash_id": "3950723660", "lokalita": "Zaječí hora, Brno - Sadová", "price": 12999000, "pricePerM2": 146056, "titulek": "Prodej bytu 3+kk 89 m² (Mezone..."}
+ LOG  ✅ Parsování řádku 186: {"area": 195, "hash_id": "2137342540", "lokalita": "Čápkova, Brno - Veveří", "price": 19990000, "pricePerM2": 102513, "titulek": "Prodej bytu 6 pokojů a více 19..."}
+ LOG  ✅ Parsování řádku 187: {"area": 79, "hash_id": "4088574796", "lokalita": "Faměrovo náměstí, Brno - Černovice", "price": 9200000, "pricePerM2": 116456, "titulek": "Prodej bytu 2+kk 79 m²..."}
+ LOG  ✅ Parsování řádku 188: {"area": 50, "hash_id": "3736253260", "lokalita": "Faměrovo náměstí, Brno - Černovice", "price": 7200000, "pricePerM2": 144000, "titulek": "Prodej bytu 1+kk 50 m²..."}
+ LOG  ✅ Parsování řádku 189: {"area": 74, "hash_id": "2863838028", "lokalita": "Faměrovo náměstí, Brno - Černovice", "price": 8890000, "pricePerM2": 120135, "titulek": "Prodej bytu 2+kk 74 m²..."}
+ LOG  ✅ Parsování řádku 190: {"area": 69, "hash_id": "2770178892", "lokalita": "Brno - Staré Brno, okres Brno-město", "price": 13500000, "pricePerM2": 195652, "titulek": "Prodej bytu 3+kk 69 m²..."}
+ LOG  ✅ Parsování řádku 191: {"area": 85, "hash_id": "3175785292", "lokalita": "Jerlínová, Brno - Žebětín", "price": 5400000, "pricePerM2": 63529, "titulek": "Prodej bytu 1+kk 85 m²..."}
+ LOG  ✅ Parsování řádku 192: {"area": 62, "hash_id": "1368847180", "lokalita": "Faměrovo náměstí, Brno - Černovice", "price": 8050000, "pricePerM2": 129839, "titulek": "Prodej bytu 2+kk 62 m²..."}
+ LOG  ✅ Parsování řádku 193: {"area": 69, "hash_id": "138801996", "lokalita": "Faměrovo náměstí, Brno - Černovice", "price": 8300000, "pricePerM2": 120290, "titulek": "Prodej bytu 2+kk 69 m²..."}
+ LOG  ✅ Parsování řádku 194: {"area": 101, "hash_id": "3549160268", "lokalita": "Brno - Sadová, okres Brno-město", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 3+kk 101 m²..."}
+ LOG  ✅ Parsování řádku 195: {"area": 132, "hash_id": "3414025036", "lokalita": "Šafaříkova, Brno - Královo Pole", "price": 15680000, "pricePerM2": 118788, "titulek": "Prodej bytu 5+kk 132 m² (Mezon..."}
+ LOG  ✅ Parsování řádku 196: {"area": 83, "hash_id": "3932074828", "lokalita": "Oblá, Brno - Nový Lískovec", "price": 8299000, "pricePerM2": 99988, "titulek": "Prodej bytu 4+1 83 m²..."}
+ LOG  ✅ Parsování řádku 197: {"area": 87, "hash_id": "1236263756", "lokalita": "Svatopluka Čecha, Brno - Královo Pole", "price": 10990000, "pricePerM2": 126322, "titulek": "Prodej bytu 4+kk 87 m²..."}
+ LOG  ✅ Parsování řádku 198: {"area": 56, "hash_id": "1376637772", "lokalita": "Bešůvka, Brno - Žebětín", "price": 6690000, "pricePerM2": 119464, "titulek": "Prodej bytu 2+kk 56 m²..."}
+ LOG  ✅ Parsování řádku 199: {"area": 61, "hash_id": "2137768780", "lokalita": "Fleischnerova, Brno - Bystrc", "price": 6900000, "pricePerM2": 113115, "titulek": "Prodej bytu 2+1 61 m²..."}
+ LOG  ✅ Parsování řádku 200: {"area": 40, "hash_id": "648074060", "lokalita": "Hybešova, Brno - Staré Brno", "price": 6490000, "pricePerM2": 162250, "titulek": "Prodej bytu 2+kk 40 m²..."}
+ LOG  ✅ Parsování řádku 201: {"area": 89, "hash_id": "2282672972", "lokalita": "Tržní, Brno - Černovice", "price": 8990000, "pricePerM2": 101011, "titulek": "Prodej bytu 4+kk 89 m²..."}
+ LOG  ✅ Parsování řádku 202: {"area": 55, "hash_id": "1636446796", "lokalita": "Pražákova, Brno - Horní Heršpice", "price": 7990000, "pricePerM2": 145273, "titulek": "Prodej bytu 3+kk 55 m²..."}
+ LOG  ✅ Parsování řádku 203: {"area": 42, "hash_id": "2100798284", "lokalita": "Plynárenská, Brno - Zábrdovice", "price": 6992000, "pricePerM2": 166476, "titulek": "Prodej bytu 2+kk 42 m²..."}
+ LOG  ✅ Parsování řádku 204: {"area": 54, "hash_id": "2490090316", "lokalita": "Obřanská, Brno - Maloměřice", "price": 1, "pricePerM2": 0, "titulek": "Prodej bytu 2+kk 54 m²..."}
+ LOG  ✅ Parsování řádku 205: {"area": 34, "hash_id": "1051886412", "lokalita": "Červený kopec, Brno - Štýřice", "price": 4690000, "pricePerM2": 137941, "titulek": "Prodej bytu 1+kk 34 m² (Podkro..."}
+ LOG  ✅ Parsování řádku 206: {"area": 80, "hash_id": "2610221900", "lokalita": "Josefy Faimonové, Brno - Líšeň", "price": 8290000, "pricePerM2": 103625, "titulek": "Prodej bytu 4+1 80 m²..."}
+ LOG  ✅ Parsování řádku 207: {"area": 82, "hash_id": "232383308", "lokalita": "Havlíčkova, Brno - Stránice", "price": 13950000, "pricePerM2": 170122, "titulek": "Prodej bytu 4+kk 82 m²..."}
+ LOG  ✅ Parsování řádku 208: {"area": 39, "hash_id": "924296012", "lokalita": "Plynárenská, Brno - Zábrdovice", "price": 6523000, "pricePerM2": 167256, "titulek": "Prodej bytu 2+kk 39 m²..."}
+ LOG  ✅ Parsování řádku 209: {"area": 38, "hash_id": "2639102796", "lokalita": "Francouzská, Brno - Zábrdovice", "price": 4499900, "pricePerM2": 118418, "titulek": "Prodej bytu 1+kk 38 m²..."}
+ LOG  ✅ Parsování řádku 210: {"area": 84, "hash_id": "2693411404", "lokalita": "Pražákova, Brno - Horní Heršpice", "price": 12490000, "pricePerM2": 148690, "titulek": "Prodej bytu 4+kk 84 m²..."}
+ LOG  ✅ Parsování řádku 211: {"area": 86, "hash_id": "2505429836", "lokalita": "Valtická, Brno - Židenice", "price": 8690000, "pricePerM2": 101047, "titulek": "Prodej bytu 4+1 86 m²..."}
+ LOG  ✅ Úspěšně zparsováno 210 z 210 nemovitostí
+ LOG  📍 První nemovitost: {"area": 71, "disposition": "1+kk", "id": "1666904908-0", "location": "Jerlínová, Brno - Žebětín", "price": 5150000, "title": "Prodej bytu 1+kk 71 m²", "type": "byt"}
+ LOG  📊 Načteno 210 nemovitostí ze Google Sheets
+ LOG  🔍 Aktuální filtry: {"areaRange": {"max": 500, "min": 0}, "dispositions": ["1+kk", "1+1", "2+kk", "2+1", "3+kk", "3+1", "4+kk", "4+1"], "locations": ["Praha"], "minDiscount": 0, "priceRange": {"max": 50000000, "min": 0}, "propertyTypes": ["byt", "dům"]}
+ LOG  🔍 Aplikuji filtry na 210 nemovitostí
+ LOG  📋 Filtry: {"areaRange": {"max": 500, "min": 0}, "dispositions": ["1+kk", "1+1", "2+kk", "2+1", "3+kk", "3+1", "4+kk", "4+1"], "locations": ["Praha"], "minDiscountPercentage": 0, "notificationsEnabled": true, "priceRange": {"max": 50000000, "min": 0}, "propertyTypes": ["byt", "dům"]}
+ LOG  ❌ 1666904908-0 vyfiltrováno - lokalita Jerlínová, Brno - Žebětín neodpovídá Praha
+ LOG  ❌ 2093867852-1 vyfiltrováno - lokalita Souběžná, Brno - Židenice neodpovídá Praha
+ LOG  ❌ 1925043020-2 vyfiltrováno - lokalita Táborská, Brno - Židenice neodpovídá Praha
+ LOG  ❌ 1920590668-3 vyfiltrováno - lokalita Křenová, Brno - Trnitá neodpovídá Praha
+ LOG  ❌ 2204422988-4 vyfiltrováno - lokalita Tkalcovská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 2784814412-5 vyfiltrováno - lokalita Bratislavská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 877807180-6 vyfiltrováno - lokalita Bratislavská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 1348403788-7 vyfiltrováno - lokalita Bratislavská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 3612463948-8 vyfiltrováno - lokalita Bratislavská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 1126290252-9 vyfiltrováno - lokalita Bratislavská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 1864487756-10 vyfiltrováno - lokalita Bratislavská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 2065429324-11 vyfiltrováno - lokalita Dornych, Brno - Komárov neodpovídá Praha
+ LOG  ❌ 1728172876-12 vyfiltrováno - lokalita Bratislavská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 286380876-13 vyfiltrováno - lokalita Bratislavská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 2011288396-14 vyfiltrováno - lokalita Bratislavská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 1088541516-15 vyfiltrováno - lokalita Bratislavská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 2313278284-16 vyfiltrováno - lokalita Bratislavská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 886166348-17 vyfiltrováno - lokalita Bratislavská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 1475400524-18 vyfiltrováno - lokalita Okrouhlá, Brno - Bohunice neodpovídá Praha
+ LOG  ❌ 3704738636-19 vyfiltrováno - lokalita Bratislavská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 2666845004-20 vyfiltrováno - lokalita Bučovická, Brno - Slatina neodpovídá Praha
+ LOG  ❌ 3093066316-21 vyfiltrováno - lokalita Slovákova, Brno - Veveří neodpovídá Praha
+ LOG  ❌ 2041792076-22 vyfiltrováno - lokalita Bratislavská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 2950681420-23 vyfiltrováno - lokalita Fleischnerova, Brno - Bystrc neodpovídá Praha
+ LOG  ❌ 330683212-24 vyfiltrováno - lokalita U Leskavy, Brno - Starý Lískovec neodpovídá Praha
+ LOG  ❌ 4110164556-25 vyfiltrováno - lokalita Příční, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 822744140-26 vyfiltrováno - lokalita Příční, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 2233016908-27 vyfiltrováno - lokalita Příční, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 3328436316-28 vyfiltrováno - lokalita Kollárova, Brno - Královo Pole neodpovídá Praha
+ LOG  ❌ 3031864140-29 vyfiltrováno - lokalita Bratislavská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 1354142540-30 vyfiltrováno - lokalita Bratislavská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 3486212684-31 vyfiltrováno - lokalita Stará, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 1607164492-32 vyfiltrováno - lokalita Stará, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 264987212-33 vyfiltrováno - lokalita Stará, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 4006306380-34 vyfiltrováno - lokalita Stará, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 3553420108-35 vyfiltrováno - lokalita Konradova, Brno - Líšeň neodpovídá Praha
+ LOG  ❌ 2917724748-36 vyfiltrováno - lokalita Dornych, Brno - Komárov neodpovídá Praha
+ LOG  ❌ 3974689356-37 vyfiltrováno - lokalita Dornych, Brno - Komárov neodpovídá Praha
+ LOG  ❌ 3048818252-38 vyfiltrováno - lokalita Tilhonova, Brno - Slatina neodpovídá Praha
+ LOG  ❌ 2400842572-39 vyfiltrováno - lokalita Zemědělská, Brno - Černá Pole neodpovídá Praha
+ LOG  ❌ 2321204044-40 vyfiltrováno - lokalita Mikšíčkova, Brno - Židenice neodpovídá Praha
+ LOG  ❌ 2606416716-41 vyfiltrováno - lokalita Mikšíčkova, Brno - Židenice neodpovídá Praha
+ LOG  ❌ 4225344332-42 vyfiltrováno - lokalita Jerlínová, Brno - Žebětín neodpovídá Praha
+ LOG  ❌ 3948593996-43 vyfiltrováno - lokalita Mikšíčkova, Brno - Židenice neodpovídá Praha
+ LOG  ❌ 140165964-44 vyfiltrováno - lokalita Mikšíčkova, Brno - Židenice neodpovídá Praha
+ LOG  ❌ 1482343244-45 vyfiltrováno - lokalita Mikšíčkova, Brno - Židenice neodpovídá Praha
+ LOG  ❌ 1314571084-46 vyfiltrováno - lokalita třída Generála Píky, Brno - Černá Pole neodpovídá Praha
+ LOG  ❌ 2656748364-47 vyfiltrováno - lokalita Mikšíčkova, Brno - Židenice neodpovídá Praha
+ LOG  ❌ 3998925644-48 vyfiltrováno - lokalita Mikšíčkova, Brno - Židenice neodpovídá Praha
+ LOG  ❌ 844809036-49 vyfiltrováno - lokalita Mikšíčkova, Brno - Židenice neodpovídá Praha
+ LOG  ❌ 3260728140-50 vyfiltrováno - lokalita Mikšíčkova, Brno - Židenice neodpovídá Praha
+ LOG  ❌ 4092130124-51 vyfiltrováno - lokalita Příkop, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 1679270732-52 vyfiltrováno - lokalita Plynárenská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 622306124-53 vyfiltrováno - lokalita Plynárenská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 2467799884-54 vyfiltrováno - lokalita Plynárenská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 1913312076-55 vyfiltrováno - lokalita Spolková, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 1938281292-56 vyfiltrováno - lokalita Erbenova, Brno - Černá Pole neodpovídá Praha
+ LOG  ❌ 1560601164-57 vyfiltrováno - lokalita Klatovská, Brno - Ponava neodpovídá Praha
+ LOG  ❌ 2061427532-58 vyfiltrováno - lokalita Náplavka, Brno - Staré Brno neodpovídá Praha
+ LOG  ❌ 1074914124-59 vyfiltrováno - lokalita Cacovická, Brno - Husovice neodpovídá Praha
+ LOG  ❌ 4269843276-60 vyfiltrováno - lokalita Kotlářská, Brno - Veveří neodpovídá Praha
+ LOG  ❌ 3380265804-61 vyfiltrováno - lokalita Herčíkova, Brno - Královo Pole neodpovídá Praha
+ LOG  ❌ 1366983500-62 vyfiltrováno - lokalita Gajdošova, Brno - Židenice neodpovídá Praha
+ LOG  ❌ 929854028-63 vyfiltrováno - lokalita Slovákova, Brno - Veveří neodpovídá Praha
+ LOG  ❌ 4038034252-64 vyfiltrováno - lokalita Gajdošova, Brno - Židenice neodpovídá Praha
+ LOG  ❌ 240026444-65 vyfiltrováno - lokalita Gajdošova, Brno - Židenice neodpovídá Praha
+ LOG  ❌ 3607995212-66 vyfiltrováno - lokalita Jeneweinova, Brno - Komárov neodpovídá Praha
+ LOG  ❌ 3105153868-67 vyfiltrováno - lokalita Božetěchova, Brno - Královo Pole neodpovídá Praha
+ LOG  ❌ 1103004492-68 vyfiltrováno - lokalita Brno - Starý Lískovec, okres Brno-město neodpovídá Praha
+ LOG  ❌ 1412932428-69 vyfiltrováno - lokalita Brno - Starý Lískovec, okres Brno-město neodpovídá Praha
+ LOG  ❌ 199861068-70 vyfiltrováno - lokalita Brno - Starý Lískovec, okres Brno-město neodpovídá Praha
+ LOG  ❌ 294269516-71 vyfiltrováno - lokalita Pražákova, Brno - Horní Heršpice neodpovídá Praha
+ LOG  ❌ 2989929804-72 vyfiltrováno - lokalita Komárovská, Brno - Komárov neodpovídá Praha
+ LOG  ❌ 2852627276-73 vyfiltrováno - lokalita Plynárenská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 2018243404-74 vyfiltrováno - lokalita Rotalova, Brno - Husovice neodpovídá Praha
+ LOG  ❌ 9056844-75 vyfiltrováno - lokalita Pražákova, Brno - Horní Heršpice neodpovídá Praha
+ LOG  ❌ 495931980-76 vyfiltrováno - lokalita Pražákova, Brno neodpovídá Praha
+ LOG  ❌ 3476529996-77 vyfiltrováno - lokalita Plynárenská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 1352385356-78 vyfiltrováno - lokalita Kigginsova, Brno - Slatina neodpovídá Praha
+ LOG  ❌ 2544538444-79 vyfiltrováno - lokalita Hvozdíková, Brno - Lesná neodpovídá Praha
+ LOG  ❌ 2704466764-80 vyfiltrováno - lokalita Sokolská, Brno - Veveří neodpovídá Praha
+ LOG  ❌ 2603803468-81 vyfiltrováno - lokalita Horácké náměstí, Brno - Řečkovice neodpovídá Praha
+ LOG  ❌ 609411916-82 vyfiltrováno - lokalita Vrbovecká, Brno - Bystrc neodpovídá Praha
+ LOG  ❌ 2643432268-83 vyfiltrováno - lokalita Olomoucká, Brno neodpovídá Praha
+ LOG  ❌ 3093066316-84 vyfiltrováno - lokalita Slovákova, Brno - Veveří neodpovídá Praha
+ LOG  ❌ 2087621452-85 vyfiltrováno - lokalita Olomoucká, Brno neodpovídá Praha
+ LOG  ❌ 4273967948-86 vyfiltrováno - lokalita Olomoucká, Brno neodpovídá Praha
+ LOG  ❌ 4237017932-87 vyfiltrováno - lokalita Bernáčkova, Brno - Dolní Heršpice neodpovídá Praha
+ LOG  ❌ 3669390668-88 vyfiltrováno - lokalita Sychrov, Brno - Ivanovice neodpovídá Praha
+ LOG  ❌ 1589137996-89 vyfiltrováno - lokalita Cejl, Brno neodpovídá Praha
+ LOG  ❌ 1721946956-90 vyfiltrováno - lokalita Bezručova, Brno - Staré Brno neodpovídá Praha
+ LOG  ❌ 3631514444-91 vyfiltrováno - lokalita Auerswaldova, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 3940848460-92 vyfiltrováno - lokalita Konradova, Brno - Líšeň neodpovídá Praha
+ LOG  ❌ 327770700-93 vyfiltrováno - lokalita Vídeňská, Brno - Štýřice neodpovídá Praha
+ LOG  ❌ 1360102220-94 vyfiltrováno - lokalita Vranovská, Brno - Husovice neodpovídá Praha
+ LOG  ❌ 162714444-95 vyfiltrováno - lokalita Vídeňská, Brno - Štýřice neodpovídá Praha
+ LOG  ❌ 3300893516-96 vyfiltrováno - lokalita Sentická, Brno - Žebětín neodpovídá Praha
+ LOG  ❌ 837800780-97 vyfiltrováno - lokalita Merhautova, Brno - Černá Pole neodpovídá Praha
+ LOG  ❌ 895931212-98 vyfiltrováno - lokalita Jílkova, Brno - Židenice neodpovídá Praha
+ LOG  ❌ 379871820-99 vyfiltrováno - lokalita Charbulova, Brno - Černovice neodpovídá Praha
+ LOG  ❌ 1461056332-100 vyfiltrováno - lokalita Húskova, Brno - Černovice neodpovídá Praha
+ LOG  ❌ 2099303244-101 vyfiltrováno - lokalita Kotlanova, Brno - Líšeň neodpovídá Praha
+ LOG  ❌ 711951180-102 vyfiltrováno - lokalita Stejskalova, Brno - Židenice neodpovídá Praha
+ LOG  ❌ 1254867788-103 vyfiltrováno - lokalita Obřanská, Brno - Maloměřice neodpovídá Praha
+ LOG  ❌ 45204044-104 vyfiltrováno - lokalita Antonína Slavíka, Brno - Černá Pole neodpovídá Praha
+ LOG  ❌ 3093066316-105 vyfiltrováno - lokalita Slovákova, Brno - Veveří neodpovídá Praha
+ LOG  ❌ 1890697804-106 vyfiltrováno - lokalita Antonína Slavíka, Brno - Černá Pole neodpovídá Praha
+ LOG  ❌ 4272013900-107 vyfiltrováno - lokalita Antonína Slavíka, Brno - Černá Pole neodpovídá Praha
+ LOG  ❌ 3887186508-108 vyfiltrováno - lokalita Antonína Slavíka, Brno - Černá Pole neodpovídá Praha
+ LOG  ❌ 766624332-109 vyfiltrováno - lokalita Antonína Slavíka, Brno - Černá Pole neodpovídá Praha
+ LOG  ❌ 1325966156-110 vyfiltrováno - lokalita Botanická, Brno - Veveří neodpovídá Praha
+ LOG  ❌ 3111052108-111 vyfiltrováno - lokalita Botanická, Brno - Veveří neodpovídá Praha
+ LOG  ❌ 166445900-112 vyfiltrováno - lokalita Obřanská, Brno - Maloměřice neodpovídá Praha
+ LOG  ❌ 3205997388-113 vyfiltrováno - lokalita Plynárenská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 1642840908-114 vyfiltrováno - lokalita náměstí SNP, Brno - Černá Pole neodpovídá Praha
+ LOG  ❌ 2578907724-115 vyfiltrováno - lokalita Příkop, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 2353505100-116 vyfiltrováno - lokalita Strnadova, Brno - Líšeň neodpovídá Praha
+ LOG  ❌ 1873924940-117 vyfiltrováno - lokalita Oblá, Brno - Nový Lískovec neodpovídá Praha
+ LOG  ❌ 77521740-118 vyfiltrováno - lokalita Hoblíkova, Brno - Černá Pole neodpovídá Praha
+ LOG  ❌ 2761876300-119 vyfiltrováno - lokalita Přadlácká, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 4262961996-120 vyfiltrováno - lokalita Plynárenská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 3031880524-121 vyfiltrováno - lokalita Brno - Brno-Bosonohy, okres Brno-město neodpovídá Praha
+ LOG  ❌ 1446368076-122 vyfiltrováno - lokalita Brno - Brno-Bosonohy, okres Brno-město neodpovídá Praha
+ LOG  ❌ 1965613644-123 vyfiltrováno - lokalita Lazaretní, Brno neodpovídá Praha
+ LOG  ❌ 3741770572-124 vyfiltrováno - lokalita Špitálka, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 2444415820-125 vyfiltrováno - lokalita Krásného, Brno - Židenice neodpovídá Praha
+ LOG  ❌ 4225344332-126 vyfiltrováno - lokalita Jerlínová, Brno - Žebětín neodpovídá Praha
+ LOG  ❌ 4141200204-127 vyfiltrováno - lokalita Vranovská, Brno neodpovídá Praha
+ LOG  ❌ 288798028-128 vyfiltrováno - lokalita Komárovská, Brno - Komárov neodpovídá Praha
+ LOG  ❌ 758043468-129 vyfiltrováno - lokalita Renneská třída, Brno - Štýřice neodpovídá Praha
+ LOG  ❌ 3328762444-130 vyfiltrováno - lokalita Bratislavská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 1173443148-131 vyfiltrováno - lokalita Bratislavská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 1859945292-132 vyfiltrováno - lokalita Zedníkova, Brno - Staré Brno neodpovídá Praha
+ LOG  ❌ 44618572-133 vyfiltrováno - lokalita Bohuňova, Brno - Bohunice neodpovídá Praha
+ LOG  ❌ 979690316-134 vyfiltrováno - lokalita Košinova, Brno - Královo Pole neodpovídá Praha
+ LOG  ❌ 2838618956-135 vyfiltrováno - lokalita Francouzská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 1196286796-136 vyfiltrováno - lokalita Bohuslava Martinů, Brno - Stránice neodpovídá Praha
+ LOG  ❌ 3003507532-137 vyfiltrováno - lokalita Bystrcká, Brno - Komín neodpovídá Praha
+ LOG  ❌ 532615756-138 vyfiltrováno - lokalita Holzova, Brno - Líšeň neodpovídá Praha
+ LOG  ❌ 3755266892-139 vyfiltrováno - lokalita Dohnalova, Brno - Soběšice neodpovídá Praha
+ LOG  ❌ 3865105228-140 vyfiltrováno - lokalita Horácké náměstí, Brno - Řečkovice neodpovídá Praha
+ LOG  ❌ 2382553932-141 vyfiltrováno - lokalita Bystrcká, Brno - Komín neodpovídá Praha
+ LOG  ❌ 1827701580-142 vyfiltrováno - lokalita Palackého třída, Brno - Královo Pole neodpovídá Praha
+ LOG  ❌ 560337484-143 vyfiltrováno - lokalita Příkop, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 2136728396-144 vyfiltrováno - lokalita Svatoplukova, Brno - Židenice neodpovídá Praha
+ LOG  ❌ 3446072140-145 vyfiltrováno - lokalita Bystrcká, Brno - Komín neodpovídá Praha
+ LOG  ❌ 3935343436-146 vyfiltrováno - lokalita Jánská, Brno - Brno-město neodpovídá Praha
+ LOG  ❌ 929854028-147 vyfiltrováno - lokalita Slovákova, Brno - Veveří neodpovídá Praha
+ LOG  ❌ 633054028-148 vyfiltrováno - lokalita Körnerova, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 974058316-149 vyfiltrováno - lokalita Jírovcova, Brno - Kohoutovice neodpovídá Praha
+ LOG  ❌ 2870932300-150 vyfiltrováno - lokalita Jírovcova, Brno - Kohoutovice neodpovídá Praha
+ LOG  ❌ 3746231116-151 vyfiltrováno - lokalita Burešova, Brno - Veveří neodpovídá Praha
+ LOG  ❌ 869589836-152 vyfiltrováno - lokalita Gajdošova, Brno - Židenice neodpovídá Praha
+ LOG  ❌ 1489257036-153 vyfiltrováno - lokalita Křenová, Brno neodpovídá Praha
+ LOG  ❌ 2169033548-154 vyfiltrováno - lokalita Kvapilova, Brno - Žabovřesky neodpovídá Praha
+ LOG  ❌ 2319242060-155 vyfiltrováno - lokalita Dornych, Brno - Komárov neodpovídá Praha
+ LOG  ❌ 358077260-156 vyfiltrováno - lokalita Uzbecká, Brno - Bohunice neodpovídá Praha
+ LOG  ❌ 1148908364-157 vyfiltrováno - lokalita Burešova, Brno - Veveří neodpovídá Praha
+ LOG  ❌ 2471219788-158 vyfiltrováno - lokalita Burešova, Brno - Veveří neodpovídá Praha
+ LOG  ❌ 18575948-159 vyfiltrováno - lokalita Ondrova, Brno - Kníničky neodpovídá Praha
+ LOG  ❌ 421229132-160 vyfiltrováno - lokalita Ondrova, Brno - Kníničky neodpovídá Praha
+ LOG  ❌ 3922584396-161 vyfiltrováno - lokalita Ondrova, Brno - Kníničky neodpovídá Praha
+ LOG  ❌ 1156768588-162 vyfiltrováno - lokalita Dřevařská, Brno - Veveří neodpovídá Praha
+ LOG  ❌ 2009854796-163 vyfiltrováno - lokalita Komárovská, Brno - Komárov neodpovídá Praha
+ LOG  ❌ 2654982988-164 vyfiltrováno - lokalita Nerudova, Brno - Veveří neodpovídá Praha
+ LOG  ❌ 2676671052-165 vyfiltrováno - lokalita Veslařská, Brno - Jundrov neodpovídá Praha
+ LOG  ❌ 2445640524-166 vyfiltrováno - lokalita Vomáčkova, Brno - Dolní Heršpice neodpovídá Praha
+ LOG  ❌ 371446604-167 vyfiltrováno - lokalita Cejl, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 1796211276-168 vyfiltrováno - lokalita Slovákova, Brno - Veveří neodpovídá Praha
+ LOG  ❌ 1200550732-169 vyfiltrováno - lokalita Ostopovická, Brno - Bosonohy neodpovídá Praha
+ LOG  ❌ 2019279692-170 vyfiltrováno - lokalita Jaselská, Brno - Veveří neodpovídá Praha
+ LOG  ❌ 1252324172-171 vyfiltrováno - lokalita Holzova, Brno - Líšeň neodpovídá Praha
+ LOG  ❌ 4098605900-172 vyfiltrováno - lokalita Záhřebská, Brno - Žabovřesky neodpovídá Praha
+ LOG  ❌ 3578512204-173 vyfiltrováno - lokalita Pod Kaštany, Brno - Žabovřesky neodpovídá Praha
+ LOG  ❌ 3933979468-174 vyfiltrováno - lokalita Havelkova, Brno - Bohunice neodpovídá Praha
+ LOG  ❌ 997966668-175 vyfiltrováno - lokalita Opálkova, Brno - Bystrc neodpovídá Praha
+ LOG  ❌ 3413885772-176 vyfiltrováno - lokalita Arménská, Brno - Bohunice neodpovídá Praha
+ LOG  ❌ 740414284-177 vyfiltrováno - lokalita Chudčická, Brno - Bystrc neodpovídá Praha
+ LOG  ❌ 3095118668-178 vyfiltrováno - lokalita Ježkova, Brno - Lesná neodpovídá Praha
+ LOG  ❌ 2170286924-179 vyfiltrováno - lokalita Bratislavská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 1653461836-180 vyfiltrováno - lokalita Klíny, Brno - Židenice neodpovídá Praha
+ LOG  ❌ 1470554956-181 vyfiltrováno - lokalita Markůvky, Brno - Bystrc neodpovídá Praha
+ LOG  ❌ 1956926028-182 vyfiltrováno - lokalita Brno - Brno-střed, okres Brno-město neodpovídá Praha
+ LOG  ❌ 3950723660-183 vyfiltrováno - lokalita Zaječí hora, Brno - Sadová neodpovídá Praha
+ LOG  ❌ 2137342540-184 vyfiltrováno - lokalita Čápkova, Brno - Veveří neodpovídá Praha
+ LOG  ❌ 4088574796-185 vyfiltrováno - lokalita Faměrovo náměstí, Brno - Černovice neodpovídá Praha
+ LOG  ❌ 3736253260-186 vyfiltrováno - lokalita Faměrovo náměstí, Brno - Černovice neodpovídá Praha
+ LOG  ❌ 2863838028-187 vyfiltrováno - lokalita Faměrovo náměstí, Brno - Černovice neodpovídá Praha
+ LOG  ❌ 2770178892-188 vyfiltrováno - lokalita Brno - Staré Brno, okres Brno-město neodpovídá Praha
+ LOG  ❌ 3175785292-189 vyfiltrováno - lokalita Jerlínová, Brno - Žebětín neodpovídá Praha
+ LOG  ❌ 1368847180-190 vyfiltrováno - lokalita Faměrovo náměstí, Brno - Černovice neodpovídá Praha
+ LOG  ❌ 138801996-191 vyfiltrováno - lokalita Faměrovo náměstí, Brno - Černovice neodpovídá Praha
+ LOG  ❌ 3549160268-192 vyfiltrováno - lokalita Brno - Sadová, okres Brno-město neodpovídá Praha
+ LOG  ❌ 3414025036-193 vyfiltrováno - lokalita Šafaříkova, Brno - Královo Pole neodpovídá Praha
+ LOG  ❌ 3932074828-194 vyfiltrováno - lokalita Oblá, Brno - Nový Lískovec neodpovídá Praha
+ LOG  ❌ 1236263756-195 vyfiltrováno - lokalita Svatopluka Čecha, Brno - Královo Pole neodpovídá Praha
+ LOG  ❌ 1376637772-196 vyfiltrováno - lokalita Bešůvka, Brno - Žebětín neodpovídá Praha
+ LOG  ❌ 2137768780-197 vyfiltrováno - lokalita Fleischnerova, Brno - Bystrc neodpovídá Praha
+ LOG  ❌ 648074060-198 vyfiltrováno - lokalita Hybešova, Brno - Staré Brno neodpovídá Praha
+ LOG  ❌ 2282672972-199 vyfiltrováno - lokalita Tržní, Brno - Černovice neodpovídá Praha
+ LOG  ❌ 1636446796-200 vyfiltrováno - lokalita Pražákova, Brno - Horní Heršpice neodpovídá Praha
+ LOG  ❌ 2100798284-201 vyfiltrováno - lokalita Plynárenská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 2490090316-202 vyfiltrováno - lokalita Obřanská, Brno - Maloměřice neodpovídá Praha
+ LOG  ❌ 1051886412-203 vyfiltrováno - lokalita Červený kopec, Brno - Štýřice neodpovídá Praha
+ LOG  ❌ 2610221900-204 vyfiltrováno - lokalita Josefy Faimonové, Brno - Líšeň neodpovídá Praha
+ LOG  ❌ 232383308-205 vyfiltrováno - lokalita Havlíčkova, Brno - Stránice neodpovídá Praha
+ LOG  ❌ 924296012-206 vyfiltrováno - lokalita Plynárenská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 2639102796-207 vyfiltrováno - lokalita Francouzská, Brno - Zábrdovice neodpovídá Praha
+ LOG  ❌ 2693411404-208 vyfiltrováno - lokalita Pražákova, Brno - Horní Heršpice neodpovídá Praha
+ LOG  ❌ 2505429836-209 vyfiltrováno - lokalita Valtická, Brno - Židenice neodpovídá Praha
+ LOG  ✅ Po filtrování: 0 nemovitostí
+ LOG  ✅ Data nastavena do store
+ LOG  📍 První nemovitost: {"area": 71, "createdAt": 2025-10-08T06:48:16.618Z, "description": "Popis není k dispozici", "discountPercentage": 0, "disposition": "1+kk", "id": "1666904908-0", "imageUrl": "https://d18-a.sdn.cz/d_18/c_img_od_D/nPSV1TXV2nCruJ2CIwEbnDPa/76d8.jpeg?fl=res,400,300,3|shr,,20|jpg,90", "isNew": true, "location": "Jerlínová, Brno - Žebětín", "price": 5150000, "pricePerM2": 72535, "rating": "C", "source": "sreality", "sourceUrl": "https://www.sreality.cz/detail/prodej/byt/1+kk/brno-zebetin-jerlinova/1666904908", "title": "Prodej bytu 1+kk 71 m²", "type": "byt"}
+ WARN  ⚠️  Supabase nedostupný, zkouším Google Sheets:
+{"code": "", "details": "TypeError: Network request failed
+
+Call Stack
+  anonymous (http:/34.186.111.67:8081/index.ts.bundle)
+ LOG  🔍 Aplikuji filtry na 210 nemovitostí
+ LOG  📋 Filtry: {"areaRange": {"max": 500, "min": 0}, "dispositions": ["1+kk", "1+1", "2+kk", "2+1", "3+kk", "3+1", "4+kk", "4+1"], "locations": [], "minDiscountPercentage": 0, "notificationsEnabled": true, "priceRange": {"max": 50000000, "min": 0}, "propertyTypes": ["byt", "dům"]}
+ LOG  ✅ 1666904908-0 prošel všemi filtry
+ LOG  ✅ 2093867852-1 prošel všemi filtry
+ LOG  ✅ 1925043020-2 prošel všemi filtry
+ LOG  ✅ 1920590668-3 prošel všemi filtry
+ LOG  ✅ 2204422988-4 prošel všemi filtry
+ LOG  ✅ 2784814412-5 prošel všemi filtry
+ LOG  ✅ 877807180-6 prošel všemi filtry
+ LOG  ✅ 1348403788-7 prošel všemi filtry
+ LOG  ✅ 3612463948-8 prošel všemi filtry
+ LOG  ✅ 1126290252-9 prošel všemi filtry
+ LOG  ✅ 1864487756-10 prošel všemi filtry
+ LOG  ✅ 2065429324-11 prošel všemi filtry
+ LOG  ✅ 1728172876-12 prošel všemi filtry
+ LOG  ✅ 286380876-13 prošel všemi filtry
+ LOG  ✅ 2011288396-14 prošel všemi filtry
+ LOG  ✅ 1088541516-15 prošel všemi filtry
+ LOG  ✅ 2313278284-16 prošel všemi filtry
+ LOG  ✅ 886166348-17 prošel všemi filtry
+ LOG  ✅ 1475400524-18 prošel všemi filtry
+ LOG  ✅ 3704738636-19 prošel všemi filtry
+ LOG  ✅ 2666845004-20 prošel všemi filtry
+ LOG  ✅ 3093066316-21 prošel všemi filtry
+ LOG  ✅ 2041792076-22 prošel všemi filtry
+ LOG  ✅ 2950681420-23 prošel všemi filtry
+ LOG  ✅ 330683212-24 prošel všemi filtry
+ LOG  ✅ 4110164556-25 prošel všemi filtry
+ LOG  ✅ 822744140-26 prošel všemi filtry
+ LOG  ✅ 2233016908-27 prošel všemi filtry
+ LOG  ✅ 3328436316-28 prošel všemi filtry
+ LOG  ✅ 3031864140-29 prošel všemi filtry
+ LOG  ✅ 1354142540-30 prošel všemi filtry
+ LOG  ✅ 3486212684-31 prošel všemi filtry
+ LOG  ✅ 1607164492-32 prošel všemi filtry
+ LOG  ✅ 264987212-33 prošel všemi filtry
+ LOG  ✅ 4006306380-34 prošel všemi filtry
+ LOG  ✅ 3553420108-35 prošel všemi filtry
+ LOG  ✅ 2917724748-36 prošel všemi filtry
+ LOG  ✅ 3974689356-37 prošel všemi filtry
+ LOG  ✅ 3048818252-38 prošel všemi filtry
+ LOG  ✅ 2400842572-39 prošel všemi filtry
+ LOG  ✅ 2321204044-40 prošel všemi filtry
+ LOG  ✅ 2606416716-41 prošel všemi filtry
+ LOG  ✅ 4225344332-42 prošel všemi filtry
+ LOG  ✅ 3948593996-43 prošel všemi filtry
+ LOG  ✅ 140165964-44 prošel všemi filtry
+ LOG  ✅ 1482343244-45 prošel všemi filtry
+ LOG  ✅ 1314571084-46 prošel všemi filtry
+ LOG  ✅ 2656748364-47 prošel všemi filtry
+ LOG  ✅ 3998925644-48 prošel všemi filtry
+ LOG  ✅ 844809036-49 prošel všemi filtry
+ LOG  ✅ 3260728140-50 prošel všemi filtry
+ LOG  ✅ 4092130124-51 prošel všemi filtry
+ LOG  ✅ 1679270732-52 prošel všemi filtry
+ LOG  ✅ 622306124-53 prošel všemi filtry
+ LOG  ✅ 2467799884-54 prošel všemi filtry
+ LOG  ✅ 1913312076-55 prošel všemi filtry
+ LOG  ✅ 1938281292-56 prošel všemi filtry
+ LOG  ✅ 1560601164-57 prošel všemi filtry
+ LOG  ✅ 2061427532-58 prošel všemi filtry
+ LOG  ✅ 1074914124-59 prošel všemi filtry
+ LOG  ✅ 4269843276-60 prošel všemi filtry
+ LOG  ✅ 3380265804-61 prošel všemi filtry
+ LOG  ✅ 1366983500-62 prošel všemi filtry
+ LOG  ✅ 929854028-63 prošel všemi filtry
+ LOG  ✅ 4038034252-64 prošel všemi filtry
+ LOG  ✅ 240026444-65 prošel všemi filtry
+ LOG  ✅ 3607995212-66 prošel všemi filtry
+ LOG  ✅ 3105153868-67 prošel všemi filtry
+ LOG  ✅ 1103004492-68 prošel všemi filtry
+ LOG  ✅ 1412932428-69 prošel všemi filtry
+ LOG  ✅ 199861068-70 prošel všemi filtry
+ LOG  ✅ 294269516-71 prošel všemi filtry
+ LOG  ✅ 2989929804-72 prošel všemi filtry
+ LOG  ✅ 2852627276-73 prošel všemi filtry
+ LOG  ✅ 2018243404-74 prošel všemi filtry
+ LOG  ✅ 9056844-75 prošel všemi filtry
+ LOG  ✅ 495931980-76 prošel všemi filtry
+ LOG  ✅ 3476529996-77 prošel všemi filtry
+ LOG  ✅ 1352385356-78 prošel všemi filtry
+ LOG  ✅ 2544538444-79 prošel všemi filtry
+ LOG  ✅ 2704466764-80 prošel všemi filtry
+ LOG  ✅ 2603803468-81 prošel všemi filtry
+ LOG  ✅ 609411916-82 prošel všemi filtry
+ LOG  ✅ 2643432268-83 prošel všemi filtry
+ LOG  ✅ 3093066316-84 prošel všemi filtry
+ LOG  ✅ 2087621452-85 prošel všemi filtry
+ LOG  ✅ 4273967948-86 prošel všemi filtry
+ LOG  ✅ 4237017932-87 prošel všemi filtry
+ LOG  ✅ 3669390668-88 prošel všemi filtry
+ LOG  ✅ 1589137996-89 prošel všemi filtry
+ LOG  ✅ 1721946956-90 prošel všemi filtry
+ LOG  ✅ 3631514444-91 prošel všemi filtry
+ LOG  ✅ 3940848460-92 prošel všemi filtry
+ LOG  ✅ 327770700-93 prošel všemi filtry
+ LOG  ✅ 1360102220-94 prošel všemi filtry
+ LOG  ✅ 162714444-95 prošel všemi filtry
+ LOG  ✅ 3300893516-96 prošel všemi filtry
+ LOG  ✅ 837800780-97 prošel všemi filtry
+ LOG  ✅ 895931212-98 prošel všemi filtry
+ LOG  ✅ 379871820-99 prošel všemi filtry
+ LOG  ✅ 1461056332-100 prošel všemi filtry
+ LOG  ✅ 2099303244-101 prošel všemi filtry
+ LOG  ✅ 711951180-102 prošel všemi filtry
+ LOG  ✅ 1254867788-103 prošel všemi filtry
+ LOG  ✅ 45204044-104 prošel všemi filtry
+ LOG  ✅ 3093066316-105 prošel všemi filtry
+ LOG  ✅ 1890697804-106 prošel všemi filtry
+ LOG  ✅ 4272013900-107 prošel všemi filtry
+ LOG  ✅ 3887186508-108 prošel všemi filtry
+ LOG  ✅ 766624332-109 prošel všemi filtry
+ LOG  ✅ 1325966156-110 prošel všemi filtry
+ LOG  ✅ 3111052108-111 prošel všemi filtry
+ LOG  ✅ 166445900-112 prošel všemi filtry
+ LOG  ✅ 3205997388-113 prošel všemi filtry
+ LOG  ✅ 1642840908-114 prošel všemi filtry
+ LOG  ✅ 2578907724-115 prošel všemi filtry
+ LOG  ✅ 2353505100-116 prošel všemi filtry
+ LOG  ✅ 1873924940-117 prošel všemi filtry
+ LOG  ✅ 77521740-118 prošel všemi filtry
+ LOG  ✅ 2761876300-119 prošel všemi filtry
+ LOG  ✅ 4262961996-120 prošel všemi filtry
+ LOG  ✅ 3031880524-121 prošel všemi filtry
+ LOG  ✅ 1446368076-122 prošel všemi filtry
+ LOG  ✅ 1965613644-123 prošel všemi filtry
+ LOG  ✅ 3741770572-124 prošel všemi filtry
+ LOG  ✅ 2444415820-125 prošel všemi filtry
+ LOG  ✅ 4225344332-126 prošel všemi filtry
+ LOG  ✅ 4141200204-127 prošel všemi filtry
+ LOG  ✅ 288798028-128 prošel všemi filtry
+ LOG  ✅ 758043468-129 prošel všemi filtry
+ LOG  ✅ 3328762444-130 prošel všemi filtry
+ LOG  ✅ 1173443148-131 prošel všemi filtry
+ LOG  ✅ 1859945292-132 prošel všemi filtry
+ LOG  ✅ 44618572-133 prošel všemi filtry
+ LOG  ✅ 979690316-134 prošel všemi filtry
+ LOG  ✅ 2838618956-135 prošel všemi filtry
+ LOG  ✅ 1196286796-136 prošel všemi filtry
+ LOG  ✅ 3003507532-137 prošel všemi filtry
+ LOG  ✅ 532615756-138 prošel všemi filtry
+ LOG  ❌ 3755266892-139 vyfiltrováno - dispozice 5+kk není v 1+kk,1+1,2+kk,2+1,3+kk,3+1,4+kk,4+1
+ LOG  ✅ 3865105228-140 prošel všemi filtry
+ LOG  ✅ 2382553932-141 prošel všemi filtry
+ LOG  ✅ 1827701580-142 prošel všemi filtry
+ LOG  ✅ 560337484-143 prošel všemi filtry
+ LOG  ✅ 2136728396-144 prošel všemi filtry
+ LOG  ✅ 3446072140-145 prošel všemi filtry
+ LOG  ✅ 3935343436-146 prošel všemi filtry
+ LOG  ✅ 929854028-147 prošel všemi filtry
+ LOG  ✅ 633054028-148 prošel všemi filtry
+ LOG  ✅ 974058316-149 prošel všemi filtry
+ LOG  ✅ 2870932300-150 prošel všemi filtry
+ LOG  ✅ 3746231116-151 prošel všemi filtry
+ LOG  ✅ 869589836-152 prošel všemi filtry
+ LOG  ✅ 1489257036-153 prošel všemi filtry
+ LOG  ✅ 2169033548-154 prošel všemi filtry
+ LOG  ✅ 2319242060-155 prošel všemi filtry
+ LOG  ✅ 358077260-156 prošel všemi filtry
+ LOG  ✅ 1148908364-157 prošel všemi filtry
+ LOG  ✅ 2471219788-158 prošel všemi filtry
+ LOG  ✅ 18575948-159 prošel všemi filtry
+ LOG  ✅ 421229132-160 prošel všemi filtry
+ LOG  ✅ 3922584396-161 prošel všemi filtry
+ LOG  ✅ 1156768588-162 prošel všemi filtry
+ LOG  ✅ 2009854796-163 prošel všemi filtry
+ LOG  ✅ 2654982988-164 prošel všemi filtry
+ LOG  ✅ 2676671052-165 prošel všemi filtry
+ LOG  ✅ 2445640524-166 prošel všemi filtry
+ LOG  ✅ 371446604-167 prošel všemi filtry
+ LOG  ✅ 1796211276-168 prošel všemi filtry
+ LOG  ✅ 1200550732-169 prošel všemi filtry
+ LOG  ✅ 2019279692-170 prošel všemi filtry
+ LOG  ✅ 1252324172-171 prošel všemi filtry
+ LOG  ✅ 4098605900-172 prošel všemi filtry
+ LOG  ✅ 3578512204-173 prošel všemi filtry
+ LOG  ✅ 3933979468-174 prošel všemi filtry
+ LOG  ✅ 997966668-175 prošel všemi filtry
+ LOG  ✅ 3413885772-176 prošel všemi filtry
+ LOG  ✅ 740414284-177 prošel všemi filtry
+ LOG  ✅ 3095118668-178 prošel všemi filtry
+ LOG  ✅ 2170286924-179 prošel všemi filtry
+ LOG  ✅ 1653461836-180 prošel všemi filtry
+ LOG  ✅ 1470554956-181 prošel všemi filtry
+ LOG  ❌ 1956926028-182 vyfiltrováno - dispozice 5+kk není v 1+kk,1+1,2+kk,2+1,3+kk,3+1,4+kk,4+1
+ LOG  ✅ 3950723660-183 prošel všemi filtry
+ LOG  ✅ 2137342540-184 prošel všemi filtry
+ LOG  ✅ 4088574796-185 prošel všemi filtry
+ LOG  ✅ 3736253260-186 prošel všemi filtry
+ LOG  ✅ 2863838028-187 prošel všemi filtry
+ LOG  ✅ 2770178892-188 prošel všemi filtry
+ LOG  ✅ 3175785292-189 prošel všemi filtry
+ LOG  ✅ 1368847180-190 prošel všemi filtry
+ LOG  ✅ 138801996-191 prošel všemi filtry
+ LOG  ✅ 3549160268-192 prošel všemi filtry
+ LOG  ❌ 3414025036-193 vyfiltrováno - dispozice 5+kk není v 1+kk,1+1,2+kk,2+1,3+kk,3+1,4+kk,4+1
+ LOG  ✅ 3932074828-194 prošel všemi filtry
+ LOG  ✅ 1236263756-195 prošel všemi filtry
+ LOG  ✅ 1376637772-196 prošel všemi filtry
+ LOG  ✅ 2137768780-197 prošel všemi filtry
+ LOG  ✅ 648074060-198 prošel všemi filtry
+ LOG  ✅ 2282672972-199 prošel všemi filtry
+ LOG  ✅ 1636446796-200 prošel všemi filtry
+ LOG  ✅ 2100798284-201 prošel všemi filtry
+ LOG  ✅ 2490090316-202 prošel všemi filtry
+ LOG  ✅ 1051886412-203 prošel všemi filtry
+ LOG  ✅ 2610221900-204 prošel všemi filtry
+ LOG  ✅ 232383308-205 prošel všemi filtry
+ LOG  ✅ 924296012-206 prošel všemi filtry
+ LOG  ✅ 2639102796-207 prošel všemi filtry
+ LOG  ✅ 2693411404-208 prošel všemi filtry
+ LOG  ✅ 2505429836-209 prošel všemi filtry
+ LOG  ✅ Po filtrování: 207 nemovitostí
+ LOG  🔍 Aplikuji filtry na 210 nemovitostí
+ LOG  📋 Filtry: {"areaRange": {"max": 500, "min": 0}, "dispositions": ["1+kk", "1+1", "2+kk", "2+1", "3+kk", "3+1", "4+kk", "4+1"], "locations": [], "minDiscountPercentage": 0, "notificationsEnabled": true, "priceRange": {"max": 50000000, "min": 0}, "propertyTypes": ["byt", "dům"]}
+ LOG  ✅ 1666904908-0 prošel všemi filtry
+ LOG  ✅ 2093867852-1 prošel všemi filtry
+ LOG  ✅ 1925043020-2 prošel všemi filtry
+ LOG  ✅ 1920590668-3 prošel všemi filtry
+ LOG  ✅ 2204422988-4 prošel všemi filtry
+ LOG  ✅ 2784814412-5 prošel všemi filtry
+ LOG  ✅ 877807180-6 prošel všemi filtry
+ LOG  ✅ 1348403788-7 prošel všemi filtry
+ LOG  ✅ 3612463948-8 prošel všemi filtry
+ LOG  ✅ 1126290252-9 prošel všemi filtry
+ LOG  ✅ 1864487756-10 prošel všemi filtry
+ LOG  ✅ 2065429324-11 prošel všemi filtry
+ LOG  ✅ 1728172876-12 prošel všemi filtry
+ LOG  ✅ 286380876-13 prošel všemi filtry
+ LOG  ✅ 2011288396-14 prošel všemi filtry
+ LOG  ✅ 1088541516-15 prošel všemi filtry
+ LOG  ✅ 2313278284-16 prošel všemi filtry
+ LOG  ✅ 886166348-17 prošel všemi filtry
+ LOG  ✅ 1475400524-18 prošel všemi filtry
+ LOG  ✅ 3704738636-19 prošel všemi filtry
+ LOG  ✅ 2666845004-20 prošel všemi filtry
+ LOG  ✅ 3093066316-21 prošel všemi filtry
+ LOG  ✅ 2041792076-22 prošel všemi filtry
+ LOG  ✅ 2950681420-23 prošel všemi filtry
+ LOG  ✅ 330683212-24 prošel všemi filtry
+ LOG  ✅ 4110164556-25 prošel všemi filtry
+ LOG  ✅ 822744140-26 prošel všemi filtry
+ LOG  ✅ 2233016908-27 prošel všemi filtry
+ LOG  ✅ 3328436316-28 prošel všemi filtry
+ LOG  ✅ 3031864140-29 prošel všemi filtry
+ LOG  ✅ 1354142540-30 prošel všemi filtry
+ LOG  ✅ 3486212684-31 prošel všemi filtry
+ LOG  ✅ 1607164492-32 prošel všemi filtry
+ LOG  ✅ 264987212-33 prošel všemi filtry
+ LOG  ✅ 4006306380-34 prošel všemi filtry
+ LOG  ✅ 3553420108-35 prošel všemi filtry
+ LOG  ✅ 2917724748-36 prošel všemi filtry
+ LOG  ✅ 3974689356-37 prošel všemi filtry
+ LOG  ✅ 3048818252-38 prošel všemi filtry
+ LOG  ✅ 2400842572-39 prošel všemi filtry
+ LOG  ✅ 2321204044-40 prošel všemi filtry
+ LOG  ✅ 2606416716-41 prošel všemi filtry
+ LOG  ✅ 4225344332-42 prošel všemi filtry
+ LOG  ✅ 3948593996-43 prošel všemi filtry
+ LOG  ✅ 140165964-44 prošel všemi filtry
+ LOG  ✅ 1482343244-45 prošel všemi filtry
+ LOG  ✅ 1314571084-46 prošel všemi filtry
+ LOG  ✅ 2656748364-47 prošel všemi filtry
+ LOG  ✅ 3998925644-48 prošel všemi filtry
+ LOG  ✅ 844809036-49 prošel všemi filtry
+ LOG  ✅ 3260728140-50 prošel všemi filtry
+ LOG  ✅ 4092130124-51 prošel všemi filtry
+ LOG  ✅ 1679270732-52 prošel všemi filtry
+ LOG  ✅ 622306124-53 prošel všemi filtry
+ LOG  ✅ 2467799884-54 prošel všemi filtry
+ LOG  ✅ 1913312076-55 prošel všemi filtry
+ LOG  ✅ 1938281292-56 prošel všemi filtry
+ LOG  ✅ 1560601164-57 prošel všemi filtry
+ LOG  ✅ 2061427532-58 prošel všemi filtry
+ LOG  ✅ 1074914124-59 prošel všemi filtry
+ LOG  ✅ 4269843276-60 prošel všemi filtry
+ LOG  ✅ 3380265804-61 prošel všemi filtry
+ LOG  ✅ 1366983500-62 prošel všemi filtry
+ LOG  ✅ 929854028-63 prošel všemi filtry
+ LOG  ✅ 4038034252-64 prošel všemi filtry
+ LOG  ✅ 240026444-65 prošel všemi filtry
+ LOG  ✅ 3607995212-66 prošel všemi filtry
+ LOG  ✅ 3105153868-67 prošel všemi filtry
+ LOG  ✅ 1103004492-68 prošel všemi filtry
+ LOG  ✅ 1412932428-69 prošel všemi filtry
+ LOG  ✅ 199861068-70 prošel všemi filtry
+ LOG  ✅ 294269516-71 prošel všemi filtry
+ LOG  ✅ 2989929804-72 prošel všemi filtry
+ LOG  ✅ 2852627276-73 prošel všemi filtry
+ LOG  ✅ 2018243404-74 prošel všemi filtry
+ LOG  ✅ 9056844-75 prošel všemi filtry
+ LOG  ✅ 495931980-76 prošel všemi filtry
+ LOG  ✅ 3476529996-77 prošel všemi filtry
+ LOG  ✅ 1352385356-78 prošel všemi filtry
+ LOG  ✅ 2544538444-79 prošel všemi filtry
+ LOG  ✅ 2704466764-80 prošel všemi filtry
+ LOG  ✅ 2603803468-81 prošel všemi filtry
+ LOG  ✅ 609411916-82 prošel všemi filtry
+ LOG  ✅ 2643432268-83 prošel všemi filtry
+ LOG  ✅ 3093066316-84 prošel všemi filtry
+ LOG  ✅ 2087621452-85 prošel všemi filtry
+ LOG  ✅ 4273967948-86 prošel všemi filtry
+ LOG  ✅ 4237017932-87 prošel všemi filtry
+ LOG  ✅ 3669390668-88 prošel všemi filtry
+ LOG  ✅ 1589137996-89 prošel všemi filtry
+ LOG  ✅ 1721946956-90 prošel všemi filtry
+ LOG  ✅ 3631514444-91 prošel všemi filtry
+ LOG  ✅ 3940848460-92 prošel všemi filtry
+ LOG  ✅ 327770700-93 prošel všemi filtry
+ LOG  ✅ 1360102220-94 prošel všemi filtry
+ LOG  ✅ 162714444-95 prošel všemi filtry
+ LOG  ✅ 3300893516-96 prošel všemi filtry
+ LOG  ✅ 837800780-97 prošel všemi filtry
+ LOG  ✅ 895931212-98 prošel všemi filtry
+ LOG  ✅ 379871820-99 prošel všemi filtry
+ LOG  ✅ 1461056332-100 prošel všemi filtry
+ LOG  ✅ 2099303244-101 prošel všemi filtry
+ LOG  ✅ 711951180-102 prošel všemi filtry
+ LOG  ✅ 1254867788-103 prošel všemi filtry
+ LOG  ✅ 45204044-104 prošel všemi filtry
+ LOG  ✅ 3093066316-105 prošel všemi filtry
+ LOG  ✅ 1890697804-106 prošel všemi filtry
+ LOG  ✅ 4272013900-107 prošel všemi filtry
+ LOG  ✅ 3887186508-108 prošel všemi filtry
+ LOG  ✅ 766624332-109 prošel všemi filtry
+ LOG  ✅ 1325966156-110 prošel všemi filtry
+ LOG  ✅ 3111052108-111 prošel všemi filtry
+ LOG  ✅ 166445900-112 prošel všemi filtry
+ LOG  ✅ 3205997388-113 prošel všemi filtry
+ LOG  ✅ 1642840908-114 prošel všemi filtry
+ LOG  ✅ 2578907724-115 prošel všemi filtry
+ LOG  ✅ 2353505100-116 prošel všemi filtry
+ LOG  ✅ 1873924940-117 prošel všemi filtry
+ LOG  ✅ 77521740-118 prošel všemi filtry
+ LOG  ✅ 2761876300-119 prošel všemi filtry
+ LOG  ✅ 4262961996-120 prošel všemi filtry
+ LOG  ✅ 3031880524-121 prošel všemi filtry
+ LOG  ✅ 1446368076-122 prošel všemi filtry
+ LOG  ✅ 1965613644-123 prošel všemi filtry
+ LOG  ✅ 3741770572-124 prošel všemi filtry
+ LOG  ✅ 2444415820-125 prošel všemi filtry
+ LOG  ✅ 4225344332-126 prošel všemi filtry
+ LOG  ✅ 4141200204-127 prošel všemi filtry
+ LOG  ✅ 288798028-128 prošel všemi filtry
+ LOG  ✅ 758043468-129 prošel všemi filtry
+ LOG  ✅ 3328762444-130 prošel všemi filtry
+ LOG  ✅ 1173443148-131 prošel všemi filtry
+ LOG  ✅ 1859945292-132 prošel všemi filtry
+ LOG  ✅ 44618572-133 prošel všemi filtry
+ LOG  ✅ 979690316-134 prošel všemi filtry
+ LOG  ✅ 2838618956-135 prošel všemi filtry
+ LOG  ✅ 1196286796-136 prošel všemi filtry
+ LOG  ✅ 3003507532-137 prošel všemi filtry
+ LOG  ✅ 532615756-138 prošel všemi filtry
+ LOG  ❌ 3755266892-139 vyfiltrováno - dispozice 5+kk není v 1+kk,1+1,2+kk,2+1,3+kk,3+1,4+kk,4+1
+ LOG  ✅ 3865105228-140 prošel všemi filtry
+ LOG  ✅ 2382553932-141 prošel všemi filtry
+ LOG  ✅ 1827701580-142 prošel všemi filtry
+ LOG  ✅ 560337484-143 prošel všemi filtry
+ LOG  ✅ 2136728396-144 prošel všemi filtry
+ LOG  ✅ 3446072140-145 prošel všemi filtry
+ LOG  ✅ 3935343436-146 prošel všemi filtry
+ LOG  ✅ 929854028-147 prošel všemi filtry
+ LOG  ✅ 633054028-148 prošel všemi filtry
+ LOG  ✅ 974058316-149 prošel všemi filtry
+ LOG  ✅ 2870932300-150 prošel všemi filtry
+ LOG  ✅ 3746231116-151 prošel všemi filtry
+ LOG  ✅ 869589836-152 prošel všemi filtry
+ LOG  ✅ 1489257036-153 prošel všemi filtry
+ LOG  ✅ 2169033548-154 prošel všemi filtry
+ LOG  ✅ 2319242060-155 prošel všemi filtry
+ LOG  ✅ 358077260-156 prošel všemi filtry
+ LOG  ✅ 1148908364-157 prošel všemi filtry
+ LOG  ✅ 2471219788-158 prošel všemi filtry
+ LOG  ✅ 18575948-159 prošel všemi filtry
+ LOG  ✅ 421229132-160 prošel všemi filtry
+ LOG  ✅ 3922584396-161 prošel všemi filtry
+ LOG  ✅ 1156768588-162 prošel všemi filtry
+ LOG  ✅ 2009854796-163 prošel všemi filtry
+ LOG  ✅ 2654982988-164 prošel všemi filtry
+ LOG  ✅ 2676671052-165 prošel všemi filtry
+ LOG  ✅ 2445640524-166 prošel všemi filtry
+ LOG  ✅ 371446604-167 prošel všemi filtry
+ LOG  ✅ 1796211276-168 prošel všemi filtry
+ LOG  ✅ 1200550732-169 prošel všemi filtry
+ LOG  ✅ 2019279692-170 prošel všemi filtry
+ LOG  ✅ 1252324172-171 prošel všemi filtry
+ LOG  ✅ 4098605900-172 prošel všemi filtry
+ LOG  ✅ 3578512204-173 prošel všemi filtry
+ LOG  ✅ 3933979468-174 prošel všemi filtry
+ LOG  ✅ 997966668-175 prošel všemi filtry
+ LOG  ✅ 3413885772-176 prošel všemi filtry
+ LOG  ✅ 740414284-177 prošel všemi filtry
+ LOG  ✅ 3095118668-178 prošel všemi filtry
+ LOG  ✅ 2170286924-179 prošel všemi filtry
+ LOG  ✅ 1653461836-180 prošel všemi filtry
+ LOG  ✅ 1470554956-181 prošel všemi filtry
+ LOG  ❌ 1956926028-182 vyfiltrováno - dispozice 5+kk není v 1+kk,1+1,2+kk,2+1,3+kk,3+1,4+kk,4+1
+ LOG  ✅ 3950723660-183 prošel všemi filtry
+ LOG  ✅ 2137342540-184 prošel všemi filtry
+ LOG  ✅ 4088574796-185 prošel všemi filtry
+ LOG  ✅ 3736253260-186 prošel všemi filtry
+ LOG  ✅ 2863838028-187 prošel všemi filtry
+ LOG  ✅ 2770178892-188 prošel všemi filtry
+ LOG  ✅ 3175785292-189 prošel všemi filtry
+ LOG  ✅ 1368847180-190 prošel všemi filtry
+ LOG  ✅ 138801996-191 prošel všemi filtry
+ LOG  ✅ 3549160268-192 prošel všemi filtry
+ LOG  ❌ 3414025036-193 vyfiltrováno - dispozice 5+kk není v 1+kk,1+1,2+kk,2+1,3+kk,3+1,4+kk,4+1
+ LOG  ✅ 3932074828-194 prošel všemi filtry
+ LOG  ✅ 1236263756-195 prošel všemi filtry
+ LOG  ✅ 1376637772-196 prošel všemi filtry
+ LOG  ✅ 2137768780-197 prošel všemi filtry
+ LOG  ✅ 648074060-198 prošel všemi filtry
+ LOG  ✅ 2282672972-199 prošel všemi filtry
+ LOG  ✅ 1636446796-200 prošel všemi filtry
+ LOG  ✅ 2100798284-201 prošel všemi filtry
+ LOG  ✅ 2490090316-202 prošel všemi filtry
+ LOG  ✅ 1051886412-203 prošel všemi filtry
+ LOG  ✅ 2610221900-204 prošel všemi filtry
+ LOG  ✅ 232383308-205 prošel všemi filtry
+ LOG  ✅ 924296012-206 prošel všemi filtry
+ LOG  ✅ 2639102796-207 prošel všemi filtry
+ LOG  ✅ 2693411404-208 prošel všemi filtry
+ LOG  ✅ 2505429836-209 prošel všemi filtry
+ LOG  ✅ Po filtrování: 207 nemovitostí
+ WARN  Non-serializable values were found in the navigation state. Check:
+
+PropertyDetail > params.property.createdAt (Wed Oct 08 2025 08:48:16 GMT+0200)
+
+This can break usage such as persisting and restoring state. This might happen if you passed non-serializable values such as function, class instances etc. in params. If you need to use components with callbacks in your options, you can use 'navigation.setOptions' instead. See https://reactnavigation.org/docs/troubleshooting#i-get-the-warning-non-serializable-values-were-found-in-the-navigation-state for more details.

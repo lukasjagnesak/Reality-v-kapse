@@ -1,5 +1,5 @@
 import type { Property, PropertyType, PropertyDisposition } from "../types/property";
-import { calculatePropertyRating } from "../utils/propertyUtils";
+import { calculatePropertyRating, parseLocation } from "../utils/propertyUtils";
 
 /**
  * Google Sheets API Service
@@ -164,6 +164,8 @@ function rowToProperty(row: string[], index: number, headers: string[]): Propert
         ? (dispozice as PropertyDisposition)
         : "2+kk";
 
+      const locationInfo = parseLocation(lokalita.trim());
+
       const property: Property = {
         id: `${hash_id.trim()}-${index}`, // Přidán index pro unikátnost
         title: titulek.trim(),
@@ -172,6 +174,9 @@ function rowToProperty(row: string[], index: number, headers: string[]): Propert
         area,
         pricePerM2,
         location: lokalita.trim(),
+        city: locationInfo.city,
+        district: locationInfo.district,
+        microLocation: locationInfo.microLocation,
         type: propertyType,
         disposition: propertyDisposition,
         rating: calculatePropertyRating(discountPercentage),
@@ -250,6 +255,8 @@ function rowToProperty(row: string[], index: number, headers: string[]): Propert
         ? (disposition as PropertyDisposition)
         : "2+kk";
 
+      const locationInfo = parseLocation(location.trim());
+
       const property: Property = {
         id: `${id.trim()}-${index}`, // Přidán index pro unikátnost
         title: title.trim(),
@@ -258,6 +265,9 @@ function rowToProperty(row: string[], index: number, headers: string[]): Propert
         area,
         pricePerM2,
         location: location.trim(),
+        city: locationInfo.city,
+        district: locationInfo.district,
+        microLocation: locationInfo.microLocation,
         type: propertyType,
         disposition: propertyDisposition,
         rating: calculatePropertyRating(discountPercentage),
