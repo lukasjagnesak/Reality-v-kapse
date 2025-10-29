@@ -60,7 +60,7 @@ export async function fetchPropertiesFromSupabase(): Promise<Property[]> {
 
     return properties;
   } catch (error) {
-    console.error('❌ Chyba při načítání z Supabase:', error);
+    console.log('❌ Chyba při načítání z Supabase:', error);
     throw error;
   }
 }
