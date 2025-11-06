@@ -23,13 +23,13 @@ function initSupabase() {
     throw new Error('Missing Supabase config! Check .env file.');
   }
   supabase = createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_SERVICE_KEY);
-  console.log(' Supabase client initialized');
+  console.log(' Supabase client initialized');
 }
 
 async function fetchSrealityPage(page = 1) {
   try {
     const params = { ...CONFIG.SEARCH_PARAMS, page };
-    console.log(`=á Loading page ${page} from Sreality.cz...`);
+    console.log(`Loading page ${page} from Sreality.cz...`);
 
     const response = await axios.get('https://www.sreality.cz/api/cs/v2/estates', {
       params,
@@ -38,7 +38,7 @@ async function fetchSrealityPage(page = 1) {
     });
     return response.data;
   } catch (error) {
-    console.error(`L Error loading page ${page}:`, error.message);
+    console.error(`Error loading page ${page}:`, error.message);
     return null;
   }
 }
@@ -73,7 +73,7 @@ function processEstate(estate) {
     let type = 'byt';
     if (estate.category_main_cb === 2) type = 'dom';
     else if (estate.category_main_cb === 3) type = 'pozemek';
-    else if (estate.category_main_cb === 4) type = 'komerní';
+    else if (estate.category_main_cb === 4) type = 'komercni';
 
     const imageUrl = estate._links?.images?.[0]?.href
       ? `https:${estate._links.images[0].href}`
@@ -102,7 +102,7 @@ function processEstate(estate) {
       last_seen_at: new Date().toISOString(),
     };
   } catch (error) {
-    console.error('L Error processing estate:', error);
+    console.error('Error processing estate:', error);
     return null;
   }
 }
@@ -115,19 +115,19 @@ async function upsertProperty(property) {
       .select();
 
     if (error) {
-      console.error(`L Error saving ${property.hash_id}:`, error.message);
+      console.error(`Error saving ${property.hash_id}:`, error.message);
       return false;
     }
     return true;
   } catch (error) {
-    console.error(`L Unexpected error:`, error);
+    console.error(`Unexpected error:`, error);
     return false;
   }
 }
 
 async function markOldPropertiesAsArchived() {
   try {
-    console.log('=Ä Archiving old properties...');
+    console.log('Archiving old properties...');
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
@@ -139,18 +139,18 @@ async function markOldPropertiesAsArchived() {
       .select();
 
     if (error) {
-      console.error('L Archive error:', error);
+      console.error('Archive error:', error);
       return;
     }
-    console.log(` Archived ${data?.length || 0} old properties`);
+    console.log(`Archived ${data?.length || 0} old properties`);
   } catch (error) {
-    console.error('L Unexpected archive error:', error);
+    console.error('Unexpected archive error:', error);
   }
 }
 
 async function scrapeSreality() {
-  console.log('=€ Starting Sreality scraper...');
-  console.log(''.repeat(60));
+  console.log('Starting Sreality scraper...');
+  console.log('='.repeat(60));
 
   let totalProcessed = 0;
   let totalSaved = 0;
@@ -160,12 +160,12 @@ async function scrapeSreality() {
     const data = await fetchSrealityPage(page);
 
     if (!data || !data._embedded?.estates) {
-      console.log(`  Page ${page}: No data`);
+      console.log(`Page ${page}: No data`);
       continue;
     }
 
     const estates = data._embedded.estates;
-    console.log(`=Ä Page ${page}: Found ${estates.length} properties`);
+    console.log(`Page ${page}: Found ${estates.length} properties`);
 
     for (const estate of estates) {
       totalProcessed++;
@@ -179,10 +179,10 @@ async function scrapeSreality() {
       const saved = await upsertProperty(property);
       if (saved) {
         totalSaved++;
-        process.stdout.write(` ${totalSaved}/${totalProcessed} `);
+        process.stdout.write(`${totalSaved}/${totalProcessed} `);
       } else {
         totalErrors++;
-        process.stdout.write(`L `);
+        process.stdout.write(`X `);
       }
     }
 
@@ -190,26 +190,26 @@ async function scrapeSreality() {
     await new Promise(resolve => setTimeout(resolve, 1000));
   }
 
-  console.log(''.repeat(60));
-  console.log('=Ê STATISTICS:');
+  console.log('='.repeat(60));
+  console.log('STATISTICS:');
   console.log(`   Total processed: ${totalProcessed}`);
   console.log(`   Successfully saved: ${totalSaved}`);
   console.log(`   Errors: ${totalErrors}`);
-  console.log(''.repeat(60));
+  console.log('='.repeat(60));
 
   await markOldPropertiesAsArchived();
 }
 
 async function main() {
   try {
-    console.log('<à Reality v Kapse - Sreality Scraper');
-    console.log(''.repeat(60));
+    console.log('Reality v Kapse - Sreality Scraper');
+    console.log('='.repeat(60));
     initSupabase();
     await scrapeSreality();
-    console.log(' Done!');
+    console.log('Done!');
     process.exit(0);
   } catch (error) {
-    console.error('L Critical error:', error);
+    console.error('Critical error:', error);
     process.exit(1);
   }
 }
