@@ -20,6 +20,14 @@ Aplikace pro vyhledávání nemovitostí s podporou různých metod autentizace 
 
 **15 testovacích nemovitostí** je připraveno k načtení!
 
+### 🤖 Automatické stahování dat ze Sreality.cz
+
+👉 **Přečtěte si [GITHUB-ACTIONS-SETUP.md](./GITHUB-ACTIONS-SETUP.md)** - návod na nastavení automatického scraperu!
+
+- Automaticky stahuje reálné nemovitosti ze Sreality.cz
+- Spouští se každých 10 minut (nastavitelné)
+- Běží v cloudu pomocí GitHub Actions zdarma
+
 ---
 
 ## Funkce
