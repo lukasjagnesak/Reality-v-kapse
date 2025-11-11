@@ -20,7 +20,39 @@ config.cacheStores = ({ FileStore, HttpStore }) => {
   const stores = [new FileStore({ root: metroCacheDir })];
 
   if (metroCacheHttpEndpoint) {
-    stores.push(new HttpStore({ endpoint: metroCacheHttpEndpoint }));
+    // Create HttpStore with timeout and wrap to make failures non-fatal
+    const httpStore = new HttpStore({
+      endpoint: metroCacheHttpEndpoint,
+      timeout: 10000 // 10 seconds (better to fail quickly and not cache than to hang)
+    });
+
+    // Wrap HttpStore methods to catch and log errors without failing
+    const wrappedHttpStore = {
+      get: async (...args) => {
+        try {
+          return await httpStore.get(...args);
+        } catch (error) {
+          console.warn('[Metro Cache] HttpStore get failed:', error.message);
+          return null;
+        }
+      },
+      set: async (...args) => {
+        try {
+          return await httpStore.set(...args);
+        } catch (error) {
+          console.warn('[Metro Cache] HttpStore set failed:', error.message);
+        }
+      },
+      clear: async (...args) => {
+        try {
+          return await httpStore.clear(...args);
+        } catch (error) {
+          console.warn('[Metro Cache] HttpStore clear failed:', error.message);
+        }
+      }
+    };
+
+    stores.push(wrappedHttpStore);
   }
   return stores;
 };
