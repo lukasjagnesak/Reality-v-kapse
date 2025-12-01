@@ -6,4 +6,4 @@ Starting Metro Bundler
 Waiting on http://localhost:8081
 Logs for your project will appear below.
 iOS ./index.ts ░░░░░░░░░░░░░░░░  0.0% (0/1)
-iOS Bundled 931ms index.ts (1349 modules)
+iOS Bundled 912ms index.ts (1353 modules)
