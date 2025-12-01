@@ -21,14 +21,16 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install scraper dependencies only
+        run: |
+          npm install --no-save @supabase/supabase-js axios dotenv
+        working-directory: .
 
       - name: Run scraper
         env:
           EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: npm run scrape
+        run: node scraper/sreality-to-supabase.js
 
       - name: Upload logs (if scraper fails)
         if: failure()
