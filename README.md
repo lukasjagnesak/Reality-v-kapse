@@ -22,11 +22,17 @@ Aplikace pro vyhledávání nemovitostí s podporou různých metod autentizace 
 
 ### 🤖 Automatické stahování dat ze Sreality.cz
 
-👉 **Přečtěte si [GITHUB-ACTIONS-SETUP.md](./GITHUB-ACTIONS-SETUP.md)** - návod na nastavení automatického scraperu!
+✅ **GitHub Actions jsou nastaveny a funkční!**
 
-- Automaticky stahuje reálné nemovitosti ze Sreality.cz
-- Spouští se každých 10 minut (nastavitelné)
+- Automaticky stahuje reálné nemovitosti ze Sreality.cz každých 10 minut
 - Běží v cloudu pomocí GitHub Actions zdarma
+- Data se ukládají přímo do Supabase
+- Workflow lze spustit i manuálně přes GitHub UI (Actions tab → Sreality Scraper → Run workflow)
+
+**Nastavené GitHub Secrets:**
+- `EXPO_PUBLIC_SUPABASE_URL` ✅
+- `SUPABASE_SERVICE_KEY` ✅
+- `GH_PAT` (Personal Access Token) ✅
 
 ---
 
@@ -116,6 +122,9 @@ src/
 
 ## Poslední změny
 
+- ✅ **GitHub Actions scraper nastaveny a spuštěny!**
+- ✅ Automatické stahování nemovitostí ze Sreality.cz každých 10 minut
+- ✅ Supabase secrets nakonfigurovány v GitHub repository
 - ✅ Přidána podpora Apple Sign-In
 - ✅ Automatická detekce dostupnosti Apple Sign-In na zařízení
 - ✅ Integrace s Supabase authentication
