@@ -18,12 +18,36 @@ const CONFIG = {
 
 let supabase = null;
 
-function initSupabase() {
+async function initSupabase() {
   if (!CONFIG.SUPABASE_URL || !CONFIG.SUPABASE_SERVICE_KEY) {
     throw new Error('Missing Supabase config! Check .env file.');
   }
-  supabase = createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_SERVICE_KEY);
-  console.log(' Supabase client initialized');
+  supabase = createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_SERVICE_KEY, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  });
+  console.log('✓ Supabase client initialized');
+
+  // Test the connection
+  try {
+    console.log('Testing Supabase connection...');
+    const { data, error } = await supabase.from('properties').select('id').limit(1);
+    if (error && error.code !== 'PGRST116') { // PGRST116 = no rows, which is fine
+      console.error('Supabase error details:', JSON.stringify(error, null, 2));
+      throw error;
+    }
+    console.log('✓ Supabase connection verified');
+  } catch (error) {
+    console.error('✗ Failed to connect to Supabase');
+    console.error('Error type:', error.constructor.name);
+    console.error('Error message:', error.message);
+    if (error.cause) {
+      console.error('Error cause:', error.cause);
+    }
+    throw new Error('Supabase connection failed - check network and credentials');
+  }
 }
 
 async function fetchSrealityPage(page = 1) {
@@ -107,22 +131,34 @@ function processEstate(estate) {
   }
 }
 
-async function upsertProperty(property) {
-  try {
-    const { data, error } = await supabase
-      .from('properties')
-      .upsert(property, { onConflict: 'hash_id' })
-      .select();
+async function upsertProperty(property, retries = 3) {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const { data, error } = await supabase
+        .from('properties')
+        .upsert(property, { onConflict: 'hash_id' })
+        .select();
 
-    if (error) {
-      console.error(`Error saving ${property.hash_id}:`, error.message);
-      return false;
+      if (error) {
+        if (attempt === retries) {
+          console.error(`Error saving ${property.hash_id} after ${retries} attempts:`, error.message);
+          return false;
+        }
+        // Exponential backoff
+        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        continue;
+      }
+      return true;
+    } catch (error) {
+      if (attempt === retries) {
+        console.error(`Network error saving ${property.hash_id} after ${retries} attempts:`, error.message);
+        return false;
+      }
+      // Exponential backoff for network errors
+      await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
     }
-    return true;
-  } catch (error) {
-    console.error(`Unexpected error:`, error);
-    return false;
   }
+  return false;
 }
 
 async function markOldPropertiesAsArchived() {
@@ -167,23 +203,35 @@ async function scrapeSreality() {
     const estates = data._embedded.estates;
     console.log(`Page ${page}: Found ${estates.length} properties`);
 
-    for (const estate of estates) {
-      totalProcessed++;
-      const property = processEstate(estate);
+    // Process in batches of 5 to avoid overwhelming the connection
+    for (let i = 0; i < estates.length; i += 5) {
+      const batch = estates.slice(i, i + 5);
 
-      if (!property) {
-        totalErrors++;
-        continue;
-      }
+      const results = await Promise.allSettled(
+        batch.map(async (estate) => {
+          totalProcessed++;
+          const property = processEstate(estate);
 
-      const saved = await upsertProperty(property);
-      if (saved) {
-        totalSaved++;
-        process.stdout.write(`${totalSaved}/${totalProcessed} `);
-      } else {
-        totalErrors++;
-        process.stdout.write(`X `);
-      }
+          if (!property) {
+            totalErrors++;
+            return false;
+          }
+
+          const saved = await upsertProperty(property);
+          if (saved) {
+            totalSaved++;
+            process.stdout.write(`✓ `);
+            return true;
+          } else {
+            totalErrors++;
+            process.stdout.write(`X `);
+            return false;
+          }
+        })
+      );
+
+      // Small delay between batches
+      await new Promise(resolve => setTimeout(resolve, 500));
     }
 
     console.log('');
@@ -204,12 +252,12 @@ async function main() {
   try {
     console.log('Reality v Kapse - Sreality Scraper');
     console.log('='.repeat(60));
-    initSupabase();
+    await initSupabase();
     await scrapeSreality();
-    console.log('Done!');
+    console.log('✓ Done!');
     process.exit(0);
   } catch (error) {
-    console.error('Critical error:', error);
+    console.error('✗ Critical error:', error);
     process.exit(1);
   }
 }
