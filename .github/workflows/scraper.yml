@@ -24,18 +24,29 @@ jobs:
       - name: Install scraper dependencies only
         run: npm install --no-save @supabase/supabase-js axios dotenv
 
+      - name: Create log file
+        run: |
+          pwd
+          touch scraper.log
+          echo "Log file created at: $(pwd)/scraper.log"
+          ls -la scraper.log
+
       - name: Run scraper and capture logs
+        continue-on-error: true
         env:
           EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: |
-          echo "Starting scraper at $(date)"
-          touch scraper.log
-          node scraper/sreality-to-supabase.js > scraper.log 2>&1 || true
-          echo "Scraper finished at $(date)"
-          echo "Log file contents:"
+          echo "Starting scraper at $(date)" | tee -a scraper.log
+          node scraper/sreality-to-supabase.js 2>&1 | tee -a scraper.log
+          echo "Scraper finished at $(date)" | tee -a scraper.log
+
+      - name: Display log contents
+        if: always()
+        run: |
+          echo "=== Log file contents ==="
           cat scraper.log
-          echo "Checking if file exists:"
+          echo "=== End of log ==="
           ls -la scraper.log
 
       - name: Upload logs
