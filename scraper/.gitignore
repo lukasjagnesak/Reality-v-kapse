@@ -8,7 +8,6 @@ scraper.log
 # Google Service Account (DŮLEŽITÉ - NIKDY NECOMMITUJTE!)
 service-account.json
 service-account-*.json
-*.json
 
 # Environment variables
 .env
