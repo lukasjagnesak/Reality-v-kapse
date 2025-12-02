@@ -30,7 +30,10 @@ jobs:
         env:
           EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: node scraper/sreality-to-supabase.js 2>&1 | tee scraper.log
+        run: |
+          touch scraper.log
+          node scraper/sreality-to-supabase.js > scraper.log 2>&1 || true
+          cat scraper.log
 
       - name: Upload logs
         if: always()
@@ -39,4 +42,4 @@ jobs:
           name: scraper-logs
           path: scraper.log
           retention-days: 7
-          if-no-files-found: warn
+          if-no-files-found: error
