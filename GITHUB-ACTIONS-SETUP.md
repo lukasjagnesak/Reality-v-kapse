@@ -1,94 +1,160 @@
-# GitHub Actions Setup - Automatické spouštění scraperu
+# GitHub Actions Setup - Kompletní Návod
 
-Tento návod vám ukáže, jak nastavit automatické spouštění Sreality scraperu pomocí GitHub Actions.
+## 🎯 CÍL
+Nastavit automatický scraper Sreality.cz, který běží každých 10 minut na GitHub Actions a ukládá data do Supabase.
 
-## ✅ Co je už připraveno
+---
 
-Workflow soubor `.github/workflows/scraper.yml` je již vytvořen a nakonfigurován.
+## ✅ KROK 1: Push kódu na GitHub
 
-## 🔐 Nastavení GitHub Secrets
+**DŮLEŽITÉ:** Kód musí být nejdřív na GitHub! Váš repo je: `https://github.com/lukasjagnesak/Reality-v-kapse`
 
-Abyste mohli používat GitHub Actions, musíte přidat tajné klíče do GitHubu:
+### Varanta A - HTTPS (rychlejší):
 
-### Krok 1: Otevřete GitHub repository
-1. Jděte na váš GitHub repository ve webovém prohlížeči
-2. Například: `https://github.com/VASE_JMENO/reality-v-kapse`
+1. **Vytvořte Personal Access Token:**
+   - Jděte na: https://github.com/settings/tokens
+   - Klikněte: **Generate new token** → **Classic token**
+   - Zaškrtněte: `repo` (full control)
+   - Klikněte: **Generate token**
+   - **ZKOPÍRUJTE token!** (uvidíte ho jen jednou)
 
-### Krok 2: Přejděte do Settings
-1. Klikněte na **Settings** (záložka nahoře)
-2. V levém menu klikněte na **Secrets and variables** > **Actions**
+2. **Push kód:**
+   ```bash
+   cd /home/user/workspace
+   git push https://YOUR_TOKEN@github.com/lukasjagnesak/Reality-v-kapse.git main
+   ```
+   (Nahraďte `YOUR_TOKEN` vaším tokenem)
 
-### Krok 3: Přidejte tajné klíče
-Klikněte na **New repository secret** a přidejte tyto 2 secrets:
+### Varianta B - SSH (bezpečnější):
 
-#### Secret 1: SUPABASE_URL
-- **Name:** `SUPABASE_URL`
-- **Value:** `https://xhjkjcrjfwhrzjackboa.supabase.co`
-- Klikněte **Add secret**
+1. Vygenerujte SSH klíč a přidejte na GitHub
+2. Změňte remote: `git remote set-url github git@github.com:lukasjagnesak/Reality-v-kapse.git`
+3. Push: `git push github main`
 
-#### Secret 2: SUPABASE_SERVICE_KEY
-- **Name:** `SUPABASE_SERVICE_KEY`
-- **Value:** `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhoamtqY3JqZndocnpqYWNrYm9hIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1OTc0NDM4OSwiZXhwIjoyMDc1MzIwMzg5fQ.ngfBTh9dzuK5JKwgRWBPJWP8Qj6npCo5GFrcibfPsn8`
-- Klikněte **Add secret**
+---
 
-## 🚀 Spuštění scraperu
+## ✅ KROK 2: Nastavení GitHub Secrets (KRITICKÝ KROK!)
 
-### Automatické spouštění
-Scraper se automaticky spustí **každých 10 minut** po pushnutí do main větve.
+**BEZ TOHOTO KROKU SCRAPER NEBUDE FUNGOVAT!**
 
-### Manuální spuštění
-1. Jděte na záložku **Actions** v GitHub repository
-2. V levém menu klikněte na **Sreality Scraper**
-3. Klikněte na **Run workflow** (vpravo nahoře)
-4. Vyberte větev `main` a klikněte **Run workflow**
+1. **Jděte na:**
+   ```
+   https://github.com/lukasjagnesak/Reality-v-kapse/settings/secrets/actions
+   ```
 
-## 📊 Sledování výsledků
+2. **Klikněte: "New repository secret"**
 
-1. Jděte na záložku **Actions**
-2. Klikněte na běžící workflow
-3. Uvidíte live logy z scraperu
-4. Po dokončení můžete vidět statistiky:
-   - Kolik nemovitostí bylo zpracováno
-   - Kolik bylo úspěšně uloženo
-   - Případné chyby
+3. **Přidejte PRVNÍ secret:**
+   - **Name:** `EXPO_PUBLIC_SUPABASE_URL` (⚠️ Přesně takhle!)
+   - **Value:** `https://xhjkjcrjfwhrzjackboa.supabase.co`
+   - Klikněte: **Add secret**
 
-## 🔧 Jak změnit frekvenci spouštění
+4. **Přidejte DRUHÝ secret:**
+   - **Name:** `SUPABASE_SERVICE_KEY` (⚠️ Přesně takhle!)
+   - **Value:** `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhoamtqY3JqZndocnpqYWNrYm9hIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1OTc0NDM4OSwiZXhwIjoyMDc1MzIwMzg5fQ.ngfBTh9dzuK5JKwgRWBPJWP8Qj6npCo5GFrcibfPsn8`
+   - Klikněte: **Add secret**
 
-V souboru `.github/workflows/scraper.yml` změňte řádek s `cron`:
+5. **Ověření:**
+   - Měli byste vidět **2 secrets** v seznamu
+   - Hodnoty secrets se **NEZOBRAZUJÍ** (jsou skryté) - to je OK!
 
-```yaml
-# Každých 10 minut (aktuální nastavení)
-- cron: '*/10 * * * *'
+---
 
-# Každou hodinu
-- cron: '0 * * * *'
+## ✅ KROK 3: Spuštění GitHub Actions
 
-# Každých 30 minut
-- cron: '*/30 * * * *'
+1. **Jděte na Actions tab:**
+   ```
+   https://github.com/lukasjagnesak/Reality-v-kapse/actions
+   ```
 
-# Každý den v 8:00
-- cron: '0 8 * * *'
+2. **Najděte workflow "Sreality Scraper"** v levém menu
 
-# Každý den v 8:00 a 20:00
-- cron: '0 8,20 * * *'
+3. **Klikněte: "Run workflow"** (zelené tlačítko vpravo nahoře)
+   - Vyberte branch: `main`
+   - Klikněte: **Run workflow**
+
+4. **Sledujte běh:**
+   - Klikněte na spuštěný workflow (nahoře v seznamu)
+   - Klikněte na job **"scrape"**
+   - Sledujte real-time logy
+
+5. **Stáhněte si artifact s logy:**
+   - Po dokončení klikněte na **"scraper-logs-XXX"** dole na stránce
+   - Stáhne se ZIP s kompletními logy
+
+---
+
+## 🔍 CO OČEKÁVAT
+
+### ✅ Úspěšný běh vypadá takto:
+```
+=== Repository Debug Info ===
+Current directory: /home/runner/work/Reality-v-kapse/Reality-v-kapse
+
+Files in scraper directory:
+✓ File scraper/sreality-to-supabase.js exists
+
+=== Starting Scraper ===
+Reality v Kapse - Sreality Scraper
+============================================================
+✓ Supabase client initialized
+✓ Supabase connection verified
+Loading page 1 from Sreality.cz...
+Page 1: Found 20 properties
+✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓
+...
+============================================================
+STATISTICS:
+   Total processed: 100
+   Successfully saved: 100
+   Errors: 0
+============================================================
+✓ Done!
 ```
 
-## ⚠️ Důležité poznámky
+### Zkontrolujte Supabase:
+1. Jděte na: https://supabase.com/dashboard/project/xhjkjcrjfwhrzjackboa
+2. Otevřete: **Table Editor** → tabulka **properties**
+3. Měli byste vidět nové záznamy s dnešním datem
 
-1. **GitHub Actions má limity:**
-   - Veřejné repository: neomezené
-   - Soukromé repository: 2000 minut/měsíc zdarma
+---
 
-2. **Každých 10 minut = ~4,320 spuštění/měsíc:**
-   - Každé spuštění trvá ~1-2 minuty
-   - Měsíční spotřeba: ~4,320-8,640 minut
-   - Pro soukromé repo doporučujeme změnit na každou hodinu
+## ❌ ŘEŠENÍ PROBLÉMŮ
 
-3. **Sreality API:**
-   - Buďte ohleduplní k jejich API
-   - Scraper má zabudovanou 1 sekundovou pauzu mezi stránkami
-   - Pokud dostanete rate limiting, zvyšte interval
+### "Cannot find module 'scraper/sreality-to-supabase.js'"
+**Problém:** Soubor není na GitHub
+**Řešení:** Dokončete KROK 1 - pushn ěte kód na GitHub
 
-## 🎉 Hotovo!
+### "Missing Supabase config! Check .env file."
+**Problém:** GitHub Secrets nejsou nastavené nebo mají špatné názvy
+**Řešení:**
+- Zkontrolujte že secrets jsou přesně: `EXPO_PUBLIC_SUPABASE_URL` a `SUPABASE_SERVICE_KEY`
+- **NE** `SUPABASE_URL` (toto je špatně!)
+- Smazány a vytvořte znovu pokud máte špatný název
 
-Po nastavení secrets a pushnutí změn do GitHubu bude scraper automaticky běžet a stahovat nejnovější nemovitosti ze Sreality.cz!
+### "Supabase connection failed"
+**Problém:** Špatný Service Key
+**Řešení:**
+1. Jděte na: https://supabase.com/dashboard/project/xhjkjcrjfwhrzjackboa/settings/api
+2. Zkopírujte **service_role** key (dlouhý token začínající `eyJ...`)
+3. Aktualizujte secret `SUPABASE_SERVICE_KEY` v GitHub
+
+---
+
+## 📊 AUTOMATICKÉ SPOUŠTĚNÍ
+
+- ✅ Workflow běží **každých 10 minut** automaticky
+- ✅ Scrapuje **5 stránek** = ~100 inzerátů
+- ✅ Ukládá do Supabase (upsert - neukládá duplicity)
+- ✅ Archivuje staré inzeráty (starší než 7 dní)
+
+---
+
+## 🎉 HOTOVO!
+
+Po dokončení všech 3 kroků:
+1. ✅ Kód je na GitHub
+2. ✅ Secrets jsou nastavené
+3. ✅ Workflow běží automaticky každých 10 minut
+
+**Automatické scrapování běží! 🚀**
