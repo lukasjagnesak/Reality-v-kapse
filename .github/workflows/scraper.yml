@@ -24,6 +24,25 @@ jobs:
       - name: Install scraper dependencies only
         run: npm install --no-save @supabase/supabase-js axios dotenv
 
+      - name: Debug - Check repository contents
+        run: |
+          echo "Current directory:"
+          pwd
+          echo ""
+          echo "Repository contents:"
+          ls -la
+          echo ""
+          echo "Scraper directory contents:"
+          ls -la scraper/
+          echo ""
+          echo "Checking for sreality-to-supabase.js:"
+          if [ -f "scraper/sreality-to-supabase.js" ]; then
+            echo "✓ File exists"
+            ls -la scraper/sreality-to-supabase.js
+          else
+            echo "✗ File NOT found"
+          fi
+
       - name: Create log file
         run: |
           pwd
