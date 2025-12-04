@@ -122,7 +122,10 @@ src/
 
 ## Poslední změny
 
-- ✅ **Opraven GitHub Actions workflow** - fixována chyba s nahráváním scraper.log souboru
+- ✅ **Opraven kritický problém v GitHub Actions workflow**
+  - Změněna shell konfigurace z `bash` na `bash {0}` (vypnutí exit-on-error)
+  - Přidána kontrola environment proměnných pro debugging
+  - Přidán debug výstup pro lepší diagnostiku
 - ✅ **GitHub Actions scraper nastaveny a spuštěny!**
 - ✅ Automatické stahování nemovitostí ze Sreality.cz každých 10 minut
 - ✅ Supabase secrets nakonfigurovány v GitHub repository
