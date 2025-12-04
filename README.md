@@ -122,11 +122,14 @@ src/
 
 ## Poslední změny
 
+- ✅ **VYŘEŠENO: Scraper soubory nahrány na GitHub!**
+  - Všechny scraper soubory včetně `sreality-to-supabase.js` jsou nyní na GitHubu
+  - Nastaven GitHub remote s autentizací
+  - GitHub Actions workflow nyní má přístup ke všem potřebným souborům
 - ✅ **Opraven kritický problém v GitHub Actions workflow**
   - Změněna shell konfigurace z `bash` na `bash {0}` (vypnutí exit-on-error)
   - Přidána kontrola environment proměnných pro debugging
   - Přidán debug výstup pro lepší diagnostiku
-- ✅ **GitHub Actions scraper nastaveny a spuštěny!**
 - ✅ Automatické stahování nemovitostí ze Sreality.cz každých 10 minut
 - ✅ Supabase secrets nakonfigurovány v GitHub repository
 - ✅ Přidána podpora Apple Sign-In
