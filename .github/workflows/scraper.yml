@@ -32,6 +32,9 @@ jobs:
         run: |
           set +e  # Don't exit on error
 
+          # Ensure log file exists from the start
+          touch scraper.log
+
           echo "=== Repository Debug Info ===" > scraper.log
           echo "Current directory: $(pwd)" >> scraper.log
           echo "Date: $(date)" >> scraper.log
@@ -71,4 +74,4 @@ jobs:
           name: scraper-logs-${{ github.run_number }}
           path: scraper.log
           retention-days: 7
-          if-no-files-found: error
+          if-no-files-found: warn
