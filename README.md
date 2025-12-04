@@ -122,6 +122,7 @@ src/
 
 ## Poslední změny
 
+- ✅ **Opraven GitHub Actions workflow** - fixována chyba s nahráváním scraper.log souboru
 - ✅ **GitHub Actions scraper nastaveny a spuštěny!**
 - ✅ Automatické stahování nemovitostí ze Sreality.cz každých 10 minut
 - ✅ Supabase secrets nakonfigurovány v GitHub repository
