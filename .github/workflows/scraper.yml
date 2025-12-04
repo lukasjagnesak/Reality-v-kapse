@@ -4,31 +4,31 @@ on:
   # Automatické spouštění každých 10 minut
   schedule:
     - cron: '*/10 * * * *'
-
+  
   # Možnost manuálního spuštění z GitHub UI
   workflow_dispatch:
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
+      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-
+      
       - name: Install scraper dependencies only
         run: npm install --no-save @supabase/supabase-js axios dotenv
-
+      
       - name: Create log file and run scraper
         env:
           EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        shell: bash {0}
+        continue-on-error: true
         run: |
           set +e  # Don't exit on error
           set -x  # Print commands for debugging
@@ -73,16 +73,20 @@ jobs:
             echo "Repository contents:" >> scraper.log
             ls -laR >> scraper.log 2>&1
           fi
-
-          exit 0  # Always succeed so logs get uploaded
-
+      
       - name: Display log contents
         if: always()
         run: |
-          echo "=== Scraper Log Contents ==="
-          cat scraper.log
-          echo "=== End of Log ==="
-
+          if [ -f scraper.log ]; then
+            echo "=== Scraper Log Contents ==="
+            cat scraper.log
+            echo "=== End of Log ==="
+          else
+            echo "ERROR: scraper.log file was not created!"
+            echo "Listing current directory:"
+            ls -la
+          fi
+      
       - name: Upload logs
         if: always()
         uses: actions/upload-artifact@v4
