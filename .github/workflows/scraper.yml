@@ -21,8 +21,9 @@ jobs:
         with:
           node-version: '18'
       
-      - name: Install scraper dependencies only
-        run: npm install --no-save @supabase/supabase-js axios dotenv
+     - name: Install scraper dependencies only
+  working-directory: scraper
+  run: npm install --no-save @supabase/supabase-js axios dotenv
       
       - name: Create log file and run scraper
         env:
@@ -63,10 +64,12 @@ jobs:
           if [ -f "scraper/sreality-to-supabase.js" ]; then
             echo "✓ File scraper/sreality-to-supabase.js exists" >> scraper.log
             echo "" >> scraper.log
-            echo "=== Starting Scraper ===" >> scraper.log
-            node scraper/sreality-to-supabase.js >> scraper.log 2>&1
-            EXIT_CODE=$?
-            echo "" >> scraper.log
+           echo "=== Starting Scraper ===" >> scraper.log
+cd scraper
+node sreality-to-supabase.js >> ../scraper.log 2>&1
+EXIT_CODE=$?
+cd ..
+echo "" >> scraper.log
             echo "=== Scraper finished with exit code: $EXIT_CODE ===" >> scraper.log
           else
             echo "✗ ERROR: File scraper/sreality-to-supabase.js NOT FOUND" >> scraper.log
