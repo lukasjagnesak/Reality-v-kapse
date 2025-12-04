@@ -28,9 +28,10 @@ jobs:
         env:
           EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        shell: bash
+        shell: bash {0}
         run: |
           set +e  # Don't exit on error
+          set -x  # Print commands for debugging
 
           # Ensure log file exists from the start
           touch scraper.log
@@ -38,6 +39,21 @@ jobs:
           echo "=== Repository Debug Info ===" > scraper.log
           echo "Current directory: $(pwd)" >> scraper.log
           echo "Date: $(date)" >> scraper.log
+          echo "" >> scraper.log
+
+          # Check if secrets are set (without revealing values)
+          echo "=== Environment Check ===" >> scraper.log
+          if [ -n "$EXPO_PUBLIC_SUPABASE_URL" ]; then
+            echo "✓ EXPO_PUBLIC_SUPABASE_URL is set" >> scraper.log
+          else
+            echo "✗ EXPO_PUBLIC_SUPABASE_URL is NOT set" >> scraper.log
+          fi
+
+          if [ -n "$SUPABASE_SERVICE_KEY" ]; then
+            echo "✓ SUPABASE_SERVICE_KEY is set" >> scraper.log
+          else
+            echo "✗ SUPABASE_SERVICE_KEY is NOT set" >> scraper.log
+          fi
           echo "" >> scraper.log
 
           echo "Files in scraper directory:" >> scraper.log
