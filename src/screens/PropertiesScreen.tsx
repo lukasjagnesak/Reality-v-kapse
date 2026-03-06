@@ -1,15 +1,22 @@
 import React, { useEffect } from "react";
-import { View, Text, ScrollView, RefreshControl, ActivityIndicator, Alert } from "react-native";
+import { View, Text, ScrollView, RefreshControl, ActivityIndicator, Alert, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../navigation/AppNavigator";
 import { usePropertyStore } from "../state/propertyStore";
 import { useUserStore } from "../state/userStore";
-import { fetchPropertiesFromSupabase } from "../api/realtyService"; // NOVÉ - Supabase
-import { fetchPropertiesFromGoogleSheets } from "../api/googleSheetsService"; // FALLBACK
+import { fetchPropertiesFromSupabase } from "../api/realtyService";
+import { fetchPropertiesFromGoogleSheets } from "../api/googleSheetsService";
 import { mockProperties } from "../api/mockData";
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  Easing,
+} from "react-native-reanimated";
 import { PropertyCard } from "../components/PropertyCard";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -31,48 +38,40 @@ export default function PropertiesScreen() {
   const [refreshing, setRefreshing] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
 
+  const headerOpacity = useSharedValue(0);
+  const contentOpacity = useSharedValue(0);
+
+  useEffect(() => {
+    headerOpacity.value = withTiming(1, { duration: 500 });
+    contentOpacity.value = withTiming(1, { duration: 600 });
+  }, []);
+
+  const headerStyle = useAnimatedStyle(() => ({
+    opacity: headerOpacity.value,
+  }));
+
+  const contentStyle = useAnimatedStyle(() => ({
+    opacity: contentOpacity.value,
+  }));
+
   const loadProperties = async () => {
     try {
-      console.log("📡 Načítám data z Supabase...");
-      
-      // TRY: Načíst z Supabase (rychlejší)
       try {
-        const properties = await fetchPropertiesFromSupabase();
-        
-        if (properties.length > 0) {
-          console.log(`✅ Načteno ${properties.length} nemovitostí z Supabase`);
-          setProperties(properties);
-          console.log(`📍 První nemovitost:`, properties[0]);
-          return; // Success, exit
+        const props = await fetchPropertiesFromSupabase();
+        if (props.length > 0) {
+          setProperties(props);
+          return;
         }
       } catch (supabaseError) {
-        console.warn("⚠️  Supabase nedostupný, zkouším Google Sheets:", supabaseError);
+        console.warn("Supabase nedostupny:", supabaseError);
       }
-      
-      // FALLBACK: Google Sheets pokud Supabase selže nebo je prázdný
-      console.log("📡 Fallback: Načítám data z Google Sheets...");
-      const properties = await fetchPropertiesFromGoogleSheets();
-      
-      console.log(`📊 Načteno ${properties.length} nemovitostí ze Google Sheets`);
-      console.log(`🔍 Aktuální filtry:`, {
-        locations: preferences.locations,
-        priceRange: preferences.priceRange,
-        areaRange: preferences.areaRange,
-        minDiscount: preferences.minDiscountPercentage,
-        propertyTypes: preferences.propertyTypes,
-        dispositions: preferences.dispositions,
-      });
-      
-      if (properties.length > 0) {
-        setProperties(properties);
-        console.log(`✅ Data nastavena do store`);
-        console.log(`📍 První nemovitost:`, properties[0]);
+      const props = await fetchPropertiesFromGoogleSheets();
+      if (props.length > 0) {
+        setProperties(props);
       } else {
-        console.log("⚠️  Žádná data, používám mock data");
         setProperties(mockProperties);
       }
     } catch (error) {
-      console.error("❌ Chyba při načítání nemovitostí:", error);
       setProperties(mockProperties);
     } finally {
       setLoading(false);
@@ -81,8 +80,6 @@ export default function PropertiesScreen() {
 
   useEffect(() => {
     loadProperties();
-    
-    // Sync favorites from database if user is logged in
     if (profile?.id) {
       syncFavoritesFromDatabase(profile.id);
     }
@@ -100,90 +97,144 @@ export default function PropertiesScreen() {
 
   const handleToggleFavorite = async (propertyId: string) => {
     const wasFavorite = isFavorite(propertyId);
-    const isAdding = !wasFavorite;
-    
-    // Toggle locally first for instant feedback
     toggleFavorite(propertyId);
-
-    // Sync with database if user is logged in
     if (profile?.id) {
       try {
-        await saveFavoriteToDatabase(profile.id, propertyId, isAdding);
+        await saveFavoriteToDatabase(profile.id, propertyId, !wasFavorite);
       } catch (error) {
-        console.error("❌ Failed to sync favorite with database:", error);
-        // Revert the local change on error
         toggleFavorite(propertyId);
-        Alert.alert(
-          "Chyba",
-          "Nepodařilo se uložit oblíbenou nemovitost. Zkuste to znovu."
-        );
+        Alert.alert("Chyba", "Nepodařilo se uložit oblíbenou nemovitost.");
       }
     }
   };
 
   if (loading) {
     return (
-      <SafeAreaView className="flex-1 bg-gray-50 items-center justify-center" edges={["bottom"]}>
-        <ActivityIndicator size="large" color="#3b82f6" />
-        <Text className="text-gray-600 mt-4">Načítám nemovitosti...</Text>
-      </SafeAreaView>
+      <View style={{ flex: 1, backgroundColor: '#0A0A0F', alignItems: 'center', justifyContent: 'center' }}>
+        <LinearGradient
+          colors={['rgba(99,102,241,0.3)', 'rgba(59,130,246,0.3)']}
+          style={{
+            width: 80, height: 80, borderRadius: 24,
+            alignItems: 'center', justifyContent: 'center', marginBottom: 20,
+          }}
+        >
+          <ActivityIndicator size="large" color="#818cf8" />
+        </LinearGradient>
+        <Text style={{ color: '#9ca3af', fontSize: 16, fontWeight: '500' }}>
+          Načítám nemovitosti...
+        </Text>
+      </View>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50" edges={["bottom"]}>
+    <View style={{ flex: 1, backgroundColor: '#0A0A0F' }}>
       <ScrollView
-        className="flex-1"
+        style={{ flex: 1 }}
+        showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#6366f1"
+          />
         }
       >
-        {/* Stats */}
-        <View className="bg-white px-4 py-6 mb-2">
-          <Text className="text-sm text-gray-600 mb-1">
-            Nalezeno nabídek
-          </Text>
-          <Text className="text-3xl font-bold text-gray-900">
-            {filteredProperties.length}
-          </Text>
-          <Text className="text-xs text-gray-400 mt-1">
-            (celkem načteno: {properties.length})
-          </Text>
-          {preferences.locations.length > 0 && (
-            <Text className="text-sm text-gray-500 mt-2">
-              v lokalitách: {preferences.locations.join(", ")}
-            </Text>
-          )}
-          <Text className="text-xs text-gray-400 mt-2">
-            Filtry: sleva ≥{preferences.minDiscountPercentage}%, cena {preferences.priceRange.min/1000000}M-{preferences.priceRange.max/1000000}M Kč
-          </Text>
-        </View>
+        {/* Header Stats */}
+        <Animated.View style={headerStyle}>
+          <LinearGradient
+            colors={['#1a1040', '#0A0A0F']}
+            style={{ paddingHorizontal: 20, paddingTop: 20, paddingBottom: 24 }}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+              <View>
+                <Text style={{ color: '#6b7280', fontSize: 13, fontWeight: '600', letterSpacing: 1, marginBottom: 6 }}>
+                  NALEZENO NABIDEK
+                </Text>
+                <View style={{ flexDirection: 'row', alignItems: 'baseline' }}>
+                  <Text style={{ fontSize: 52, fontWeight: '800', color: '#ffffff', letterSpacing: -2, lineHeight: 56 }}>
+                    {filteredProperties.length}
+                  </Text>
+                  <Text style={{ color: '#6b7280', fontSize: 16, marginLeft: 6, marginBottom: 8 }}>
+                    / {properties.length}
+                  </Text>
+                </View>
+                {preferences.locations.length > 0 && (
+                  <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
+                    <Ionicons name="location" size={13} color="#6366f1" />
+                    <Text style={{ color: '#6366f1', fontSize: 13, marginLeft: 4, fontWeight: '600' }} numberOfLines={1}>
+                      {preferences.locations.join(", ")}
+                    </Text>
+                  </View>
+                )}
+              </View>
+
+              {/* Filter info chip */}
+              <View style={{
+                backgroundColor: 'rgba(99,102,241,0.15)',
+                borderRadius: 14, paddingHorizontal: 14, paddingVertical: 10,
+                borderWidth: 1, borderColor: 'rgba(99,102,241,0.3)',
+                alignItems: 'center',
+              }}>
+                <Ionicons name="trending-down" size={18} color="#818cf8" />
+                <Text style={{ color: '#818cf8', fontSize: 13, fontWeight: '700', marginTop: 4 }}>
+                  -{preferences.minDiscountPercentage}%
+                </Text>
+                <Text style={{ color: '#6b7280', fontSize: 11 }}>min. sleva</Text>
+              </View>
+            </View>
+
+            {/* Price filter */}
+            <View style={{
+              marginTop: 16,
+              backgroundColor: 'rgba(255,255,255,0.04)',
+              borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10,
+              borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)',
+              flexDirection: 'row', alignItems: 'center',
+            }}>
+              <Ionicons name="cash-outline" size={16} color="#6b7280" style={{ marginRight: 8 }} />
+              <Text style={{ color: '#9ca3af', fontSize: 13 }}>
+                Cena: {(preferences.priceRange.min / 1_000_000).toFixed(1)}M – {(preferences.priceRange.max / 1_000_000).toFixed(1)}M Kč
+              </Text>
+            </View>
+          </LinearGradient>
+        </Animated.View>
 
         {/* Properties List */}
-        {filteredProperties.length === 0 ? (
-          <View className="flex-1 items-center justify-center py-20 px-6">
-            <Ionicons name="home-outline" size={64} color="#d1d5db" />
-            <Text className="text-xl font-semibold text-gray-900 mt-4 text-center">
-              Žádné nabídky
-            </Text>
-            <Text className="text-gray-600 mt-2 text-center">
-              Zkuste upravit vaše kritéria v záložce Kritéria
-            </Text>
-          </View>
-        ) : (
-          <View className="pb-4">
-            {filteredProperties.map((property) => (
-              <PropertyCard
-                key={property.id}
-                property={property}
-                onPress={() => handlePropertyPress(property)}
-                onFavoritePress={() => handleToggleFavorite(property.id)}
-                isFavorite={isFavorite(property.id)}
-              />
-            ))}
-          </View>
-        )}
+        <Animated.View style={contentStyle}>
+          {filteredProperties.length === 0 ? (
+            <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: 80, paddingHorizontal: 40 }}>
+              <View style={{
+                width: 100, height: 100, borderRadius: 30,
+                backgroundColor: 'rgba(99,102,241,0.1)',
+                alignItems: 'center', justifyContent: 'center', marginBottom: 20,
+                borderWidth: 1, borderColor: 'rgba(99,102,241,0.2)',
+              }}>
+                <Ionicons name="home-outline" size={48} color="#374151" />
+              </View>
+              <Text style={{ fontSize: 22, fontWeight: '700', color: '#ffffff', textAlign: 'center', marginBottom: 10 }}>
+                Žádné nabídky
+              </Text>
+              <Text style={{ color: '#6b7280', textAlign: 'center', lineHeight: 22 }}>
+                Zkuste upravit vaše kritéria v záložce Kritéria
+              </Text>
+            </View>
+          ) : (
+            <View style={{ paddingTop: 8, paddingBottom: 20 }}>
+              {filteredProperties.map((property, index) => (
+                <PropertyCard
+                  key={property.id}
+                  property={property}
+                  onPress={() => handlePropertyPress(property)}
+                  onFavoritePress={() => handleToggleFavorite(property.id)}
+                  isFavorite={isFavorite(property.id)}
+                  index={index}
+                />
+              ))}
+            </View>
+          )}
+        </Animated.View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }

@@ -42,14 +42,20 @@ function MainTabs() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        headerLargeTitle: true,
-        headerTransparent: false,
-        headerBlurEffect: "systemChromeMaterial",
-        tabBarActiveTintColor: "#3b82f6",
-        tabBarInactiveTintColor: "#9ca3af",
+        headerShown: false,
+        tabBarActiveTintColor: "#818cf8",
+        tabBarInactiveTintColor: "#4b5563",
         tabBarStyle: {
+          backgroundColor: '#111118',
           borderTopWidth: 1,
-          borderTopColor: "#e5e7eb",
+          borderTopColor: 'rgba(255,255,255,0.07)',
+          height: 60,
+          paddingBottom: 8,
+          paddingTop: 8,
+        },
+        tabBarLabelStyle: {
+          fontSize: 11,
+          fontWeight: '600',
         },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName: keyof typeof Ionicons.glyphMap = "home";
@@ -62,30 +68,36 @@ function MainTabs() {
             iconName = focused ? "person" : "person-outline";
           }
 
-          return <Ionicons name={iconName} size={size} color={color} />;
+          if (focused) {
+            return (
+              <View style={{
+                backgroundColor: 'rgba(99,102,241,0.2)',
+                borderRadius: 12,
+                padding: 6,
+              }}>
+                <Ionicons name={iconName} size={20} color={color} />
+              </View>
+            );
+          }
+
+          return <Ionicons name={iconName} size={20} color={color} />;
         },
       })}
     >
       <Tab.Screen
         name="Properties"
         component={PropertiesScreen}
-        options={{
-          title: "Nemovitosti",
-        }}
+        options={{ title: "Nemovitosti" }}
       />
       <Tab.Screen
         name="Criteria"
         component={CriteriaScreen}
-        options={{
-          title: "Kritéria",
-        }}
+        options={{ title: "Kritéria" }}
       />
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
-        options={{
-          title: "Nastavení",
-        }}
+        options={{ title: "Nastavení" }}
       />
     </Tab.Navigator>
   );
@@ -229,8 +241,8 @@ export function AppNavigator() {
   // Show loading screen while checking auth state
   if (isLoading) {
     return (
-      <View className="flex-1 items-center justify-center bg-white">
-        <ActivityIndicator size="large" color="#3b82f6" />
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#0A0A0F' }}>
+        <ActivityIndicator size="large" color="#818cf8" />
       </View>
     );
   }
@@ -273,6 +285,9 @@ export function AppNavigator() {
         options={{
           title: "Detail nemovitosti",
           presentation: "modal",
+          headerStyle: { backgroundColor: '#111118' },
+          headerTintColor: '#ffffff',
+          headerTitleStyle: { color: '#ffffff', fontWeight: '700' },
         }}
       />
       <Stack.Screen

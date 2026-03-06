@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Pressable, ScrollView, TextInput, KeyboardAvoidingView, Platform, ActivityIndicator, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -7,15 +7,24 @@ import type { RootStackParamList } from "../navigation/AppNavigator";
 import { usePropertyStore } from "../state/propertyStore";
 import { useUserStore } from "../state/userStore";
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  withDelay,
+  withSpring,
+  Easing,
+} from "react-native-reanimated";
 import type { PropertyType, PropertyDisposition } from "../types/property";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-const PROPERTY_TYPES: { value: PropertyType; label: string }[] = [
-  { value: "byt", label: "Byt" },
-  { value: "dům", label: "Dům" },
-  { value: "pozemek", label: "Pozemek" },
-  { value: "komerční", label: "Komerční" },
+const PROPERTY_TYPES: { value: PropertyType; label: string; icon: string }[] = [
+  { value: "byt", label: "Byt", icon: "business" },
+  { value: "dům", label: "Dům", icon: "home" },
+  { value: "pozemek", label: "Pozemek", icon: "map" },
+  { value: "komerční", label: "Komerční", icon: "storefront" },
 ];
 
 const DISPOSITIONS: { value: PropertyDisposition; label: string }[] = [
@@ -35,17 +44,34 @@ export default function OnboardingScreen() {
   const navigation = useNavigation<NavigationProp>();
   const { preferences, updatePreferences, completeSetup, savePreferencesToDatabase } = usePropertyStore();
   const profile = useUserStore((state) => state.profile);
-  
+
   const [locations, setLocations] = useState<string[]>(preferences.locations);
   const [locationInput, setLocationInput] = useState("");
   const [selectedTypes, setSelectedTypes] = useState<PropertyType[]>(preferences.propertyTypes);
-  const [selectedDispositions, setSelectedDispositions] = useState<PropertyDisposition[]>(
-    preferences.dispositions
-  );
+  const [selectedDispositions, setSelectedDispositions] = useState<PropertyDisposition[]>(preferences.dispositions);
   const [minPrice, setMinPrice] = useState(String(preferences.priceRange.min));
   const [maxPrice, setMaxPrice] = useState(String(preferences.priceRange.max));
   const [minDiscount, setMinDiscount] = useState(String(preferences.minDiscountPercentage));
   const [saving, setSaving] = useState(false);
+
+  const headerOpacity = useSharedValue(0);
+  const headerTranslateY = useSharedValue(-20);
+  const contentOpacity = useSharedValue(0);
+
+  useEffect(() => {
+    headerOpacity.value = withTiming(1, { duration: 600 });
+    headerTranslateY.value = withTiming(0, { duration: 600, easing: Easing.out(Easing.quad) });
+    contentOpacity.value = withDelay(200, withTiming(1, { duration: 500 }));
+  }, []);
+
+  const headerStyle = useAnimatedStyle(() => ({
+    opacity: headerOpacity.value,
+    transform: [{ translateY: headerTranslateY.value }],
+  }));
+
+  const contentStyle = useAnimatedStyle(() => ({
+    opacity: contentOpacity.value,
+  }));
 
   const toggleType = (type: PropertyType) => {
     setSelectedTypes((prev) =>
@@ -55,9 +81,7 @@ export default function OnboardingScreen() {
 
   const toggleDisposition = (disposition: PropertyDisposition) => {
     setSelectedDispositions((prev) =>
-      prev.includes(disposition)
-        ? prev.filter((d) => d !== disposition)
-        : [...prev, disposition]
+      prev.includes(disposition) ? prev.filter((d) => d !== disposition) : [...prev, disposition]
     );
   };
 
@@ -77,241 +101,316 @@ export default function OnboardingScreen() {
       Alert.alert("Chyba", "Vyberte prosím alespoň jednu lokalitu a typ nemovitosti");
       return;
     }
-
     setSaving(true);
     try {
-      // Update local preferences
       updatePreferences({
         locations,
         propertyTypes: selectedTypes,
         dispositions: selectedDispositions,
-        priceRange: {
-          min: Number(minPrice) || 0,
-          max: Number(maxPrice) || 50000000,
-        },
+        priceRange: { min: Number(minPrice) || 0, max: Number(maxPrice) || 50000000 },
         minDiscountPercentage: Number(minDiscount) || 0,
       });
-
-      // Save to database if user is logged in
-      if (profile?.id) {
-        await savePreferencesToDatabase(profile.id);
-        console.log("✅ Preferences saved to database");
-      }
-
-      // Mark setup as complete
+      if (profile?.id) await savePreferencesToDatabase(profile.id);
       completeSetup();
-      
-      // Navigate to main app
       navigation.replace("MainTabs");
     } catch (error) {
-      console.error("❌ Error saving preferences:", error);
-      Alert.alert(
-        "Chyba",
-        "Nepodařilo se uložit preference. Pokračujeme s lokálním nastavením.",
-        [
-          {
-            text: "OK",
-            onPress: () => {
-              completeSetup();
-              navigation.replace("MainTabs");
-            },
-          },
-        ]
-      );
+      Alert.alert("Chyba", "Nepodařilo se uložit preference. Pokračujeme s lokálním nastavením.", [
+        { text: "OK", onPress: () => { completeSetup(); navigation.replace("MainTabs"); } },
+      ]);
     } finally {
       setSaving(false);
     }
   };
 
+  const SectionTitle = ({ title, subtitle }: { title: string; subtitle?: string }) => (
+    <View style={{ marginBottom: 16 }}>
+      <Text style={{ fontSize: 18, fontWeight: '700', color: '#ffffff', letterSpacing: -0.3 }}>{title}</Text>
+      {subtitle && <Text style={{ fontSize: 13, color: '#6b7280', marginTop: 4 }}>{subtitle}</Text>}
+    </View>
+  );
+
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={["top"]}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        className="flex-1"
-      >
-        <ScrollView 
-          className="flex-1" 
-          contentContainerStyle={{ paddingBottom: 100 }}
-          keyboardShouldPersistTaps="handled"
+    <View style={{ flex: 1, backgroundColor: '#0A0A0F' }}>
+      <LinearGradient
+        colors={['#1a1040', '#0A0A0F']}
+        style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 200 }}
+      />
+
+      <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={{ flex: 1 }}
         >
-          {/* Header */}
-          <View className="px-6 pt-8 pb-6">
-            <Text className="text-4xl font-bold text-gray-900 mb-2">
-              Vítejte v Reality v Kapse
-            </Text>
-            <Text className="text-lg text-gray-600">
-              Nastavte si preference a my vám budeme posílat notifikace o výhodných nabídkách.
-            </Text>
-          </View>
+          <ScrollView
+            style={{ flex: 1 }}
+            contentContainerStyle={{ paddingBottom: 120 }}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            {/* Header */}
+            <Animated.View style={[{ paddingHorizontal: 24, paddingTop: 32, paddingBottom: 24 }, headerStyle]}>
+              <View style={{
+                flexDirection: 'row', alignItems: 'center',
+                backgroundColor: 'rgba(99,102,241,0.15)',
+                alignSelf: 'flex-start',
+                borderRadius: 10, paddingHorizontal: 12, paddingVertical: 6, marginBottom: 16,
+              }}>
+                <Ionicons name="sparkles" size={14} color="#818cf8" style={{ marginRight: 6 }} />
+                <Text style={{ color: '#818cf8', fontSize: 13, fontWeight: '600' }}>Nastavení preferencí</Text>
+              </View>
+              <Text style={{ fontSize: 30, fontWeight: '800', color: '#ffffff', letterSpacing: -0.5, lineHeight: 36 }}>
+                Vítejte v{'\n'}Reality v Kapse
+              </Text>
+              <Text style={{ fontSize: 15, color: '#9ca3af', marginTop: 10, lineHeight: 22 }}>
+                Nastavte si preference a my vám budeme posílat notifikace o výhodných nabídkách.
+              </Text>
+            </Animated.View>
 
-          {/* Locations */}
-          <View className="px-6 mb-8">
-            <Text className="text-xl font-semibold text-gray-900 mb-3">
-              Lokalita
-            </Text>
-            <Text className="text-sm text-gray-600 mb-3">
-              Zadejte města nebo oblasti, které vás zajímají
-            </Text>
-            
-            <View className="flex-row mb-3">
-              <TextInput
-                className="flex-1 bg-gray-100 rounded-lg px-4 py-3 text-base"
-                placeholder="např. Praha, Brno..."
-                value={locationInput}
-                onChangeText={setLocationInput}
-                onSubmitEditing={addLocation}
-                returnKeyType="done"
-              />
-              <Pressable
-                onPress={addLocation}
-                className="ml-2 bg-blue-500 rounded-lg px-4 justify-center"
-              >
-                <Ionicons name="add" size={24} color="white" />
-              </Pressable>
-            </View>
+            <Animated.View style={[{ paddingHorizontal: 24 }, contentStyle]}>
 
-            <View className="flex-row flex-wrap">
-              {locations.map((location) => (
-                <View
-                  key={location}
-                  className="bg-blue-100 rounded-full px-4 py-2 mr-2 mb-2 flex-row items-center"
-                >
-                  <Text className="text-blue-700 mr-2">{location}</Text>
-                  <Pressable onPress={() => removeLocation(location)}>
-                    <Ionicons name="close-circle" size={18} color="#1d4ed8" />
+              {/* Locations */}
+              <View style={{
+                backgroundColor: 'rgba(255,255,255,0.04)',
+                borderRadius: 20, padding: 20, marginBottom: 16,
+                borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)',
+              }}>
+                <SectionTitle
+                  title="Lokalita"
+                  subtitle="Zadejte města nebo oblasti, které vás zajímají"
+                />
+                <View style={{ flexDirection: 'row', marginBottom: 12 }}>
+                  <View style={{
+                    flex: 1,
+                    backgroundColor: 'rgba(255,255,255,0.06)',
+                    borderRadius: 12,
+                    borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)',
+                    flexDirection: 'row', alignItems: 'center',
+                    paddingHorizontal: 14, marginRight: 10,
+                  }}>
+                    <Ionicons name="location-outline" size={16} color="#6b7280" style={{ marginRight: 8 }} />
+                    <TextInput
+                      style={{ flex: 1, color: '#ffffff', paddingVertical: 13, fontSize: 15 }}
+                      placeholder="např. Praha, Brno..."
+                      placeholderTextColor="#4b5563"
+                      value={locationInput}
+                      onChangeText={setLocationInput}
+                      onSubmitEditing={addLocation}
+                      returnKeyType="done"
+                    />
+                  </View>
+                  <Pressable
+                    onPress={addLocation}
+                    style={{ borderRadius: 12, overflow: 'hidden' }}
+                  >
+                    <LinearGradient
+                      colors={['#6366f1', '#3b82f6']}
+                      style={{ paddingHorizontal: 16, paddingVertical: 13, justifyContent: 'center', alignItems: 'center' }}
+                    >
+                      <Ionicons name="add" size={22} color="white" />
+                    </LinearGradient>
                   </Pressable>
                 </View>
-              ))}
-            </View>
-          </View>
-
-          {/* Property Types */}
-          <View className="px-6 mb-8">
-            <Text className="text-xl font-semibold text-gray-900 mb-3">
-              Typ nemovitosti
-            </Text>
-            <View className="flex-row flex-wrap">
-              {PROPERTY_TYPES.map((type) => (
-                <Pressable
-                  key={type.value}
-                  onPress={() => toggleType(type.value)}
-                  className={`px-6 py-3 rounded-lg mr-3 mb-3 ${
-                    selectedTypes.includes(type.value)
-                      ? "bg-blue-500"
-                      : "bg-gray-100"
-                  }`}
-                >
-                  <Text
-                    className={`text-base font-medium ${
-                      selectedTypes.includes(type.value)
-                        ? "text-white"
-                        : "text-gray-700"
-                    }`}
-                  >
-                    {type.label}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
-          </View>
-
-          {/* Dispositions */}
-          <View className="px-6 mb-8">
-            <Text className="text-xl font-semibold text-gray-900 mb-3">
-              Dispozice
-            </Text>
-            <View className="flex-row flex-wrap">
-              {DISPOSITIONS.map((disposition) => (
-                <Pressable
-                  key={disposition.value}
-                  onPress={() => toggleDisposition(disposition.value)}
-                  className={`px-5 py-3 rounded-lg mr-2 mb-2 ${
-                    selectedDispositions.includes(disposition.value)
-                      ? "bg-blue-500"
-                      : "bg-gray-100"
-                  }`}
-                >
-                  <Text
-                    className={`text-sm font-medium ${
-                      selectedDispositions.includes(disposition.value)
-                        ? "text-white"
-                        : "text-gray-700"
-                    }`}
-                  >
-                    {disposition.label}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
-          </View>
-
-          {/* Price Range */}
-          <View className="px-6 mb-8">
-            <Text className="text-xl font-semibold text-gray-900 mb-3">
-              Cenové rozpětí (Kč)
-            </Text>
-            <View className="flex-row items-center">
-              <View className="flex-1 mr-3">
-                <Text className="text-sm text-gray-600 mb-1">Od</Text>
-                <TextInput
-                  className="bg-gray-100 rounded-lg px-4 py-3 text-base"
-                  placeholder="0"
-                  value={minPrice}
-                  onChangeText={setMinPrice}
-                  keyboardType="numeric"
-                />
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                  {locations.map((location) => (
+                    <View
+                      key={location}
+                      style={{
+                        backgroundColor: 'rgba(99,102,241,0.2)',
+                        borderRadius: 20, paddingHorizontal: 14, paddingVertical: 8,
+                        marginRight: 8, marginBottom: 8, flexDirection: 'row', alignItems: 'center',
+                        borderWidth: 1, borderColor: 'rgba(99,102,241,0.4)',
+                      }}
+                    >
+                      <Text style={{ color: '#818cf8', marginRight: 8, fontWeight: '600', fontSize: 14 }}>{location}</Text>
+                      <Pressable onPress={() => removeLocation(location)}>
+                        <Ionicons name="close-circle" size={18} color="#818cf8" />
+                      </Pressable>
+                    </View>
+                  ))}
+                </View>
               </View>
-              <View className="flex-1">
-                <Text className="text-sm text-gray-600 mb-1">Do</Text>
-                <TextInput
-                  className="bg-gray-100 rounded-lg px-4 py-3 text-base"
-                  placeholder="10 000 000"
-                  value={maxPrice}
-                  onChangeText={setMaxPrice}
-                  keyboardType="numeric"
-                />
+
+              {/* Property Types */}
+              <View style={{
+                backgroundColor: 'rgba(255,255,255,0.04)',
+                borderRadius: 20, padding: 20, marginBottom: 16,
+                borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)',
+              }}>
+                <SectionTitle title="Typ nemovitosti" />
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                  {PROPERTY_TYPES.map((type) => {
+                    const isSelected = selectedTypes.includes(type.value);
+                    return (
+                      <Pressable
+                        key={type.value}
+                        onPress={() => toggleType(type.value)}
+                        style={{
+                          paddingHorizontal: 18, paddingVertical: 12,
+                          borderRadius: 14, marginRight: 10, marginBottom: 10,
+                          backgroundColor: isSelected ? 'rgba(99,102,241,0.25)' : 'rgba(255,255,255,0.06)',
+                          borderWidth: 1,
+                          borderColor: isSelected ? '#6366f1' : 'rgba(255,255,255,0.1)',
+                          flexDirection: 'row', alignItems: 'center',
+                        }}
+                      >
+                        <Ionicons
+                          name={type.icon as any}
+                          size={16}
+                          color={isSelected ? '#818cf8' : '#6b7280'}
+                          style={{ marginRight: 6 }}
+                        />
+                        <Text style={{ color: isSelected ? '#818cf8' : '#9ca3af', fontWeight: '600', fontSize: 14 }}>
+                          {type.label}
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+                </View>
               </View>
-            </View>
-          </View>
 
-          {/* Minimum Discount */}
-          <View className="px-6 mb-8">
-            <Text className="text-xl font-semibold text-gray-900 mb-3">
-              Minimální sleva oproti průměru (%)
-            </Text>
-            <TextInput
-              className="bg-gray-100 rounded-lg px-4 py-3 text-base"
-              placeholder="5"
-              value={minDiscount}
-              onChangeText={setMinDiscount}
-              keyboardType="numeric"
-            />
-            <Text className="text-sm text-gray-500 mt-2">
-              Budete dostávat notifikace pouze o nemovitostech, které jsou levnější
-              než průměr v dané lokalitě
-            </Text>
-          </View>
-        </ScrollView>
+              {/* Dispositions */}
+              <View style={{
+                backgroundColor: 'rgba(255,255,255,0.04)',
+                borderRadius: 20, padding: 20, marginBottom: 16,
+                borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)',
+              }}>
+                <SectionTitle title="Dispozice" />
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                  {DISPOSITIONS.map((disposition) => {
+                    const isSelected = selectedDispositions.includes(disposition.value);
+                    return (
+                      <Pressable
+                        key={disposition.value}
+                        onPress={() => toggleDisposition(disposition.value)}
+                        style={{
+                          paddingHorizontal: 14, paddingVertical: 10,
+                          borderRadius: 12, marginRight: 8, marginBottom: 8,
+                          backgroundColor: isSelected ? 'rgba(99,102,241,0.25)' : 'rgba(255,255,255,0.06)',
+                          borderWidth: 1,
+                          borderColor: isSelected ? '#6366f1' : 'rgba(255,255,255,0.1)',
+                        }}
+                      >
+                        <Text style={{ color: isSelected ? '#818cf8' : '#9ca3af', fontWeight: '600', fontSize: 13 }}>
+                          {disposition.label}
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              </View>
 
-        {/* Bottom Button */}
-        <View className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-6 py-4">
-          <Pressable
-            onPress={handleComplete}
-            disabled={locations.length === 0 || selectedTypes.length === 0 || saving}
-            className={`bg-blue-500 rounded-xl py-4 items-center ${
-              (locations.length === 0 || selectedTypes.length === 0 || saving) ? "opacity-50" : ""
-            }`}
-          >
-            {saving ? (
-              <ActivityIndicator color="white" />
-            ) : (
-              <Text className="text-white text-lg font-semibold">
-                Pokračovat
-              </Text>
-            )}
-          </Pressable>
-        </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+              {/* Price Range */}
+              <View style={{
+                backgroundColor: 'rgba(255,255,255,0.04)',
+                borderRadius: 20, padding: 20, marginBottom: 16,
+                borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)',
+              }}>
+                <SectionTitle title="Cenové rozpětí (Kč)" />
+                <View style={{ flexDirection: 'row' }}>
+                  <View style={{ flex: 1, marginRight: 12 }}>
+                    <Text style={{ fontSize: 12, color: '#6b7280', marginBottom: 8, fontWeight: '600' }}>OD</Text>
+                    <View style={{
+                      backgroundColor: 'rgba(255,255,255,0.06)',
+                      borderRadius: 12,
+                      borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)',
+                      paddingHorizontal: 14,
+                    }}>
+                      <TextInput
+                        style={{ color: '#ffffff', paddingVertical: 13, fontSize: 15 }}
+                        placeholder="0"
+                        placeholderTextColor="#4b5563"
+                        value={minPrice}
+                        onChangeText={setMinPrice}
+                        keyboardType="numeric"
+                      />
+                    </View>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 12, color: '#6b7280', marginBottom: 8, fontWeight: '600' }}>DO</Text>
+                    <View style={{
+                      backgroundColor: 'rgba(255,255,255,0.06)',
+                      borderRadius: 12,
+                      borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)',
+                      paddingHorizontal: 14,
+                    }}>
+                      <TextInput
+                        style={{ color: '#ffffff', paddingVertical: 13, fontSize: 15 }}
+                        placeholder="50 000 000"
+                        placeholderTextColor="#4b5563"
+                        value={maxPrice}
+                        onChangeText={setMaxPrice}
+                        keyboardType="numeric"
+                      />
+                    </View>
+                  </View>
+                </View>
+              </View>
+
+              {/* Minimum Discount */}
+              <View style={{
+                backgroundColor: 'rgba(255,255,255,0.04)',
+                borderRadius: 20, padding: 20, marginBottom: 16,
+                borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)',
+              }}>
+                <SectionTitle
+                  title="Minimální sleva (%)"
+                  subtitle="Dostávejte notifikace pouze o nemovitostech, které jsou levnější než průměr v lokalitě"
+                />
+                <View style={{
+                  backgroundColor: 'rgba(255,255,255,0.06)',
+                  borderRadius: 12,
+                  borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)',
+                  paddingHorizontal: 14,
+                  flexDirection: 'row', alignItems: 'center',
+                }}>
+                  <Ionicons name="trending-down" size={18} color="#10b981" style={{ marginRight: 10 }} />
+                  <TextInput
+                    style={{ flex: 1, color: '#ffffff', paddingVertical: 13, fontSize: 15 }}
+                    placeholder="5"
+                    placeholderTextColor="#4b5563"
+                    value={minDiscount}
+                    onChangeText={setMinDiscount}
+                    keyboardType="numeric"
+                  />
+                  <Text style={{ color: '#6b7280', fontSize: 16 }}>%</Text>
+                </View>
+              </View>
+            </Animated.View>
+          </ScrollView>
+
+          {/* Bottom Button */}
+          <View style={{
+            position: 'absolute', bottom: 0, left: 0, right: 0,
+            backgroundColor: '#0A0A0F',
+            borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.06)',
+            paddingHorizontal: 24, paddingVertical: 20,
+          }}>
+            <Pressable
+              onPress={handleComplete}
+              disabled={locations.length === 0 || selectedTypes.length === 0 || saving}
+              style={{ borderRadius: 16, overflow: 'hidden', opacity: (locations.length === 0 || selectedTypes.length === 0 || saving) ? 0.5 : 1 }}
+            >
+              <LinearGradient
+                colors={['#6366f1', '#3b82f6']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={{ paddingVertical: 18, alignItems: 'center' }}
+              >
+                {saving ? (
+                  <ActivityIndicator color="white" />
+                ) : (
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={{ color: 'white', fontSize: 17, fontWeight: '700', marginRight: 8 }}>
+                      Pokračovat
+                    </Text>
+                    <Ionicons name="arrow-forward" size={20} color="white" />
+                  </View>
+                )}
+              </LinearGradient>
+            </Pressable>
+          </View>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </View>
   );
 }

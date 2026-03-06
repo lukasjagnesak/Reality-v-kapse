@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import { View, Text, Pressable, ScrollView, TextInput, Alert, ActivityIndicator } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { useUserStore } from "../state/userStore";
 import { SUBSCRIPTION_PLANS, type SubscriptionType } from "../types/user";
 import { supabase } from "../api/supabase";
 
 export default function ProfileScreen() {
   const { profile, clearProfile, updateProfileInDatabase } = useUserStore();
-
-  // Local state for editing
   const [isEditing, setIsEditing] = useState(false);
   const [fullName, setFullName] = useState(profile?.fullName || "");
   const [phone, setPhone] = useState(profile?.phone || "");
@@ -20,25 +18,19 @@ export default function ProfileScreen() {
       Alert.alert("Chyba", "Vyplňte prosím celé jméno");
       return;
     }
-
     setSaving(true);
     try {
-      await updateProfileInDatabase({
-        fullName,
-        phone,
-      });
+      await updateProfileInDatabase({ fullName, phone });
       setIsEditing(false);
       Alert.alert("Uloženo", "Váš profil byl úspěšně aktualizován");
     } catch (error) {
-      console.error("❌ Error saving profile:", error);
-      Alert.alert("Chyba", "Nepodařilo se uložit profil. Zkuste to znovu.");
+      Alert.alert("Chyba", "Nepodařilo se uložit profil.");
     } finally {
       setSaving(false);
     }
   };
 
   const handleCancel = () => {
-    // Reset to current profile values
     setFullName(profile?.fullName || "");
     setPhone(profile?.phone || "");
     setIsEditing(false);
@@ -56,7 +48,7 @@ export default function ProfileScreen() {
             try {
               await updateProfileInDatabase({ subscription: newSubscription });
               Alert.alert("Úspěch", "Vaše předplatné bylo změněno");
-            } catch (error) {
+            } catch {
               Alert.alert("Chyba", "Nepodařilo se změnit předplatné");
             }
           },
@@ -66,302 +58,296 @@ export default function ProfileScreen() {
   };
 
   const handleLogout = () => {
-    Alert.alert(
-      "Odhlásit se",
-      "Opravdu se chcete odhlásit?",
-      [
-        { text: "Zrušit", style: "cancel" },
-        {
-          text: "Odhlásit",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              await supabase.auth.signOut();
-              clearProfile();
-              console.log("✅ Odhlášení úspěšné");
-            } catch (error) {
-              console.error("❌ Chyba při odhlášení:", error);
-              Alert.alert("Chyba", "Nepodařilo se odhlásit. Zkuste to znovu.");
-            }
-          },
+    Alert.alert("Odhlásit se", "Opravdu se chcete odhlásit?", [
+      { text: "Zrušit", style: "cancel" },
+      {
+        text: "Odhlásit",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await supabase.auth.signOut();
+            clearProfile();
+          } catch {
+            Alert.alert("Chyba", "Nepodařilo se odhlásit.");
+          }
         },
-      ]
-    );
+      },
+    ]);
   };
 
   const currentSubscription = profile?.subscription || "free";
   const currentPlan = SUBSCRIPTION_PLANS[currentSubscription];
 
-  return (
-    <SafeAreaView className="flex-1 bg-gray-50" edges={["bottom"]}>
-      <ScrollView className="flex-1">
-        {/* Profile Section */}
-        <View className="bg-white px-6 py-6 mb-2">
-          <View className="flex-row justify-between items-center mb-4">
-            <Text className="text-2xl font-bold text-gray-900">
-              Můj profil
-            </Text>
-            {!isEditing ? (
-              <Pressable
-                onPress={() => setIsEditing(true)}
-                className="bg-blue-500 rounded-lg px-4 py-2"
-              >
-                <Text className="text-white font-semibold">Upravit</Text>
-              </Pressable>
-            ) : null}
-          </View>
+  const SettingsRow = ({ icon, label, color, onPress }: { icon: string; label: string; color?: string; onPress?: () => void }) => (
+    <Pressable
+      onPress={onPress}
+      style={{
+        flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+        paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.06)',
+      }}
+    >
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{
+          backgroundColor: color ? `${color}20` : 'rgba(255,255,255,0.08)',
+          borderRadius: 10, padding: 8, marginRight: 14,
+        }}>
+          <Ionicons name={icon as any} size={20} color={color || '#9ca3af'} />
+        </View>
+        <Text style={{ color: color || '#e5e7eb', fontSize: 15, fontWeight: '500' }}>{label}</Text>
+      </View>
+      <Ionicons name="chevron-forward" size={18} color={color || '#4b5563'} />
+    </Pressable>
+  );
 
-          {/* Profile Picture Placeholder */}
-          <View className="items-center mb-6">
-            <View className="w-24 h-24 bg-blue-100 rounded-full items-center justify-center mb-2">
-              <Ionicons name="person" size={48} color="#3b82f6" />
-            </View>
+  const InputField = ({ label, value, onChange, placeholder, editable = true, keyboardType }: any) => (
+    <View style={{ marginBottom: 16 }}>
+      <Text style={{ fontSize: 12, color: '#6b7280', fontWeight: '600', letterSpacing: 0.5, marginBottom: 8 }}>
+        {label}
+      </Text>
+      <View style={{
+        backgroundColor: editable && isEditing ? 'rgba(99,102,241,0.08)' : 'rgba(255,255,255,0.04)',
+        borderRadius: 14,
+        borderWidth: 1,
+        borderColor: editable && isEditing ? 'rgba(99,102,241,0.4)' : 'rgba(255,255,255,0.08)',
+        paddingHorizontal: 16,
+      }}>
+        <TextInput
+          style={{ color: editable ? '#ffffff' : '#6b7280', paddingVertical: 14, fontSize: 15 }}
+          placeholder={placeholder}
+          placeholderTextColor="#4b5563"
+          value={value}
+          onChangeText={onChange}
+          editable={editable && isEditing}
+          keyboardType={keyboardType}
+        />
+      </View>
+    </View>
+  );
+
+  return (
+    <View style={{ flex: 1, backgroundColor: '#0A0A0F' }}>
+      <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+
+        {/* Header with avatar */}
+        <LinearGradient
+          colors={['#1a1040', '#0A0A0F']}
+          style={{ paddingHorizontal: 20, paddingTop: 20, paddingBottom: 30 }}
+        >
+          <View style={{ alignItems: 'center' }}>
+            <LinearGradient
+              colors={['#6366f1', '#3b82f6']}
+              style={{
+                width: 90, height: 90, borderRadius: 28,
+                alignItems: 'center', justifyContent: 'center', marginBottom: 16,
+                shadowColor: '#6366f1', shadowOffset: { width: 0, height: 8 },
+                shadowOpacity: 0.4, shadowRadius: 16, elevation: 8,
+              }}
+            >
+              <Ionicons name="person" size={44} color="white" />
+            </LinearGradient>
             {profile?.fullName && (
-              <Text className="text-xl font-semibold text-gray-900">
+              <Text style={{ fontSize: 22, fontWeight: '800', color: '#ffffff', letterSpacing: -0.3, marginBottom: 4 }}>
                 {profile.fullName}
               </Text>
             )}
             {profile?.email && (
-              <Text className="text-sm text-gray-600 mt-1">
-                {profile.email}
-              </Text>
+              <Text style={{ color: '#9ca3af', fontSize: 14 }}>{profile.email}</Text>
             )}
+
+            {/* Subscription badge */}
+            <View style={{
+              marginTop: 12,
+              backgroundColor: 'rgba(99,102,241,0.2)',
+              borderRadius: 20, paddingHorizontal: 16, paddingVertical: 6,
+              borderWidth: 1, borderColor: 'rgba(99,102,241,0.4)',
+              flexDirection: 'row', alignItems: 'center',
+            }}>
+              <Ionicons name="star" size={14} color="#818cf8" style={{ marginRight: 6 }} />
+              <Text style={{ color: '#818cf8', fontWeight: '700', fontSize: 13 }}>
+                {currentPlan.name}
+              </Text>
+            </View>
           </View>
+        </LinearGradient>
 
-          {/* Profile Form */}
-          <View className="space-y-4">
-            <View>
-              <Text className="text-sm font-medium text-gray-700 mb-1">
-                Celé jméno *
-              </Text>
-              <TextInput
-                className={`bg-gray-100 rounded-lg px-4 py-3 text-base ${
-                  !isEditing ? "text-gray-600" : "text-gray-900"
-                }`}
-                placeholder="Jan Novák"
-                value={fullName}
-                onChangeText={setFullName}
-                editable={isEditing}
-              />
+        <View style={{ paddingHorizontal: 20 }}>
+
+          {/* Profile Card */}
+          <View style={{
+            backgroundColor: 'rgba(255,255,255,0.04)',
+            borderRadius: 20, padding: 20, marginBottom: 16,
+            borderWidth: 1, borderColor: 'rgba(255,255,255,0.07)',
+          }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <Text style={{ fontSize: 18, fontWeight: '700', color: '#ffffff' }}>Můj profil</Text>
+              {!isEditing ? (
+                <Pressable
+                  onPress={() => setIsEditing(true)}
+                  style={{
+                    backgroundColor: 'rgba(99,102,241,0.2)',
+                    borderRadius: 12, paddingHorizontal: 16, paddingVertical: 8,
+                    borderWidth: 1, borderColor: 'rgba(99,102,241,0.4)',
+                    flexDirection: 'row', alignItems: 'center',
+                  }}
+                >
+                  <Ionicons name="pencil" size={14} color="#818cf8" style={{ marginRight: 6 }} />
+                  <Text style={{ color: '#818cf8', fontWeight: '600', fontSize: 14 }}>Upravit</Text>
+                </Pressable>
+              ) : null}
             </View>
 
-            <View>
-              <Text className="text-sm font-medium text-gray-700 mb-1">
-                Email
-              </Text>
-              <TextInput
-                className="bg-gray-100 rounded-lg px-4 py-3 text-base text-gray-600"
-                value={profile?.email || ""}
-                editable={false}
-              />
-              <Text className="text-xs text-gray-500 mt-1">
-                Email nelze změnit
-              </Text>
-            </View>
-
-            <View>
-              <Text className="text-sm font-medium text-gray-700 mb-1">
-                Telefon
-              </Text>
-              <TextInput
-                className={`bg-gray-100 rounded-lg px-4 py-3 text-base ${
-                  !isEditing ? "text-gray-600" : "text-gray-900"
-                }`}
-                placeholder="+420 123 456 789"
-                value={phone}
-                onChangeText={setPhone}
-                keyboardType="phone-pad"
-                editable={isEditing}
-              />
-            </View>
+            <InputField label="CELÉ JMÉNO" value={fullName} onChange={setFullName} placeholder="Jan Novák" />
+            <InputField label="EMAIL" value={profile?.email || ""} editable={false} placeholder="email" />
+            <InputField label="TELEFON" value={phone} onChange={setPhone} placeholder="+420 123 456 789" keyboardType="phone-pad" />
 
             {isEditing && (
-              <View className="flex-row space-x-3 mt-4">
+              <View style={{ flexDirection: 'row', marginTop: 8 }}>
                 <Pressable
                   onPress={handleCancel}
                   disabled={saving}
-                  className="flex-1 bg-gray-200 rounded-lg py-3 items-center"
+                  style={{
+                    flex: 1, backgroundColor: 'rgba(255,255,255,0.06)',
+                    borderRadius: 14, paddingVertical: 14, alignItems: 'center', marginRight: 10,
+                    borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)',
+                  }}
                 >
-                  <Text className="text-gray-700 font-semibold">Zrušit</Text>
+                  <Text style={{ color: '#9ca3af', fontWeight: '600' }}>Zrušit</Text>
                 </Pressable>
                 <Pressable
                   onPress={handleSave}
                   disabled={saving}
-                  className={`flex-1 bg-blue-500 rounded-lg py-3 items-center ${
-                    saving ? "opacity-50" : ""
-                  }`}
+                  style={{ flex: 1, borderRadius: 14, overflow: 'hidden', opacity: saving ? 0.6 : 1 }}
                 >
-                  {saving ? (
-                    <ActivityIndicator color="white" />
-                  ) : (
-                    <Text className="text-white font-semibold">Uložit</Text>
-                  )}
+                  <LinearGradient
+                    colors={['#6366f1', '#3b82f6']}
+                    start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+                    style={{ paddingVertical: 14, alignItems: 'center' }}
+                  >
+                    {saving ? <ActivityIndicator color="white" size="small" /> : (
+                      <Text style={{ color: 'white', fontWeight: '700' }}>Uložit</Text>
+                    )}
+                  </LinearGradient>
                 </Pressable>
               </View>
             )}
           </View>
-        </View>
 
-        {/* Current Subscription */}
-        <View className="bg-white px-6 py-6 mb-2">
-          <Text className="text-xl font-bold text-gray-900 mb-4">
-            Aktuální předplatné
-          </Text>
-
-          <View className="bg-blue-50 rounded-xl p-4 mb-4">
-            <View className="flex-row justify-between items-center mb-2">
-              <Text className="text-2xl font-bold text-blue-600">
-                {currentPlan.name}
-              </Text>
-              {currentPlan.price > 0 && (
-                <Text className="text-xl font-bold text-gray-900">
-                  {currentPlan.price} Kč/měsíc
+          {/* Current Subscription */}
+          <View style={{
+            borderRadius: 20, marginBottom: 16, overflow: 'hidden',
+          }}>
+            <LinearGradient
+              colors={['rgba(99,102,241,0.25)', 'rgba(59,130,246,0.15)']}
+              style={{
+                padding: 20,
+                borderWidth: 1, borderColor: 'rgba(99,102,241,0.35)',
+                borderRadius: 20,
+              }}
+            >
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                <Text style={{ fontSize: 18, fontWeight: '700', color: '#ffffff' }}>Aktuální plán</Text>
+                <Text style={{ color: '#9ca3af', fontSize: 15, fontWeight: '600' }}>
+                  {currentPlan.price === 0 ? 'Zdarma' : `${currentPlan.price} Kč/mes.`}
                 </Text>
-              )}
-            </View>
-
-            <View className="space-y-2">
-              {currentPlan.features.map((feature, index) => (
-                <View key={index} className="flex-row items-center">
-                  <Ionicons name="checkmark-circle" size={20} color="#3b82f6" />
-                  <Text className="text-sm text-gray-700 ml-2">{feature}</Text>
+              </View>
+              {currentPlan.features.map((feature, i) => (
+                <View key={i} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+                  <View style={{ backgroundColor: 'rgba(99,102,241,0.3)', borderRadius: 8, padding: 3, marginRight: 10 }}>
+                    <Ionicons name="checkmark" size={14} color="#818cf8" />
+                  </View>
+                  <Text style={{ color: '#c4b5fd', fontSize: 14 }}>{feature}</Text>
                 </View>
               ))}
-            </View>
+            </LinearGradient>
           </View>
-        </View>
 
-        {/* Available Plans */}
-        <View className="bg-white px-6 py-6 mb-2">
-          <Text className="text-xl font-bold text-gray-900 mb-4">
-            Dostupná předplatná
-          </Text>
-
-          {(Object.keys(SUBSCRIPTION_PLANS) as SubscriptionType[]).map((planType) => {
-            const plan = SUBSCRIPTION_PLANS[planType];
-            const isCurrent = planType === currentSubscription;
-
-            return (
-              <View
-                key={planType}
-                className={`border-2 rounded-xl p-4 mb-3 ${
-                  isCurrent ? "border-blue-500 bg-blue-50" : "border-gray-200"
-                }`}
-              >
-                <View className="flex-row justify-between items-center mb-2">
-                  <Text className="text-xl font-bold text-gray-900">
-                    {plan.name}
-                  </Text>
-                  <Text className="text-lg font-bold text-gray-900">
-                    {plan.price === 0 ? "Zdarma" : `${plan.price} Kč`}
-                  </Text>
-                </View>
-
-                <View className="space-y-2 mb-4">
-                  {plan.features.map((feature, index) => (
-                    <View key={index} className="flex-row items-center">
-                      <Ionicons
-                        name="checkmark-circle-outline"
-                        size={18}
-                        color="#6b7280"
-                      />
-                      <Text className="text-sm text-gray-600 ml-2">
-                        {feature}
-                      </Text>
-                    </View>
-                  ))}
-                </View>
-
-                {!isCurrent && (
-                  <Pressable
-                    onPress={() => handleSubscriptionChange(planType)}
-                    className="bg-blue-500 rounded-lg py-3 items-center"
-                  >
-                    <Text className="text-white font-semibold">
-                      Vybrat tento plán
+          {/* Available Plans */}
+          <View style={{
+            backgroundColor: 'rgba(255,255,255,0.04)',
+            borderRadius: 20, padding: 20, marginBottom: 16,
+            borderWidth: 1, borderColor: 'rgba(255,255,255,0.07)',
+          }}>
+            <Text style={{ fontSize: 18, fontWeight: '700', color: '#ffffff', marginBottom: 16 }}>
+              Dostupná předplatná
+            </Text>
+            {(Object.keys(SUBSCRIPTION_PLANS) as SubscriptionType[]).map((planType) => {
+              const plan = SUBSCRIPTION_PLANS[planType];
+              const isCurrent = planType === currentSubscription;
+              return (
+                <View
+                  key={planType}
+                  style={{
+                    borderRadius: 16, padding: 16, marginBottom: 12,
+                    backgroundColor: isCurrent ? 'rgba(99,102,241,0.15)' : 'rgba(255,255,255,0.03)',
+                    borderWidth: 1,
+                    borderColor: isCurrent ? 'rgba(99,102,241,0.4)' : 'rgba(255,255,255,0.07)',
+                  }}
+                >
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                    <Text style={{ fontSize: 17, fontWeight: '700', color: isCurrent ? '#818cf8' : '#ffffff' }}>
+                      {plan.name}
                     </Text>
-                  </Pressable>
-                )}
-
-                {isCurrent && (
-                  <View className="bg-blue-500 rounded-lg py-3 items-center">
-                    <Text className="text-white font-semibold">
-                      Aktuální plán
+                    <Text style={{ fontSize: 15, fontWeight: '700', color: isCurrent ? '#818cf8' : '#9ca3af' }}>
+                      {plan.price === 0 ? "Zdarma" : `${plan.price} Kč`}
                     </Text>
                   </View>
-                )}
-              </View>
-            );
-          })}
-        </View>
+                  <View style={{ marginBottom: 14 }}>
+                    {plan.features.map((feature, i) => (
+                      <View key={i} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
+                        <Ionicons name={isCurrent ? "checkmark-circle" : "checkmark-circle-outline"} size={16}
+                          color={isCurrent ? '#818cf8' : '#4b5563'} style={{ marginRight: 8 }} />
+                        <Text style={{ color: isCurrent ? '#c4b5fd' : '#6b7280', fontSize: 13 }}>{feature}</Text>
+                      </View>
+                    ))}
+                  </View>
+                  {!isCurrent ? (
+                    <Pressable
+                      onPress={() => handleSubscriptionChange(planType)}
+                      style={{ borderRadius: 12, overflow: 'hidden' }}
+                    >
+                      <LinearGradient
+                        colors={['#6366f1', '#3b82f6']}
+                        start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+                        style={{ paddingVertical: 12, alignItems: 'center' }}
+                      >
+                        <Text style={{ color: 'white', fontWeight: '700' }}>Vybrat tento plán</Text>
+                      </LinearGradient>
+                    </Pressable>
+                  ) : (
+                    <View style={{
+                      backgroundColor: 'rgba(99,102,241,0.2)',
+                      borderRadius: 12, paddingVertical: 12, alignItems: 'center',
+                    }}>
+                      <Text style={{ color: '#818cf8', fontWeight: '700' }}>Aktuální plán</Text>
+                    </View>
+                  )}
+                </View>
+              );
+            })}
+          </View>
 
-        {/* Account Actions */}
-        <View className="bg-white px-6 py-6 mb-2">
-          <Text className="text-xl font-bold text-gray-900 mb-4">
-            Nastavení účtu
-          </Text>
+          {/* Settings */}
+          <View style={{
+            backgroundColor: 'rgba(255,255,255,0.04)',
+            borderRadius: 20, paddingHorizontal: 20, paddingVertical: 8, marginBottom: 16,
+            borderWidth: 1, borderColor: 'rgba(255,255,255,0.07)',
+          }}>
+            <Text style={{ fontSize: 18, fontWeight: '700', color: '#ffffff', paddingVertical: 16 }}>
+              Nastavení účtu
+            </Text>
+            <SettingsRow icon="lock-closed-outline" label="Změnit heslo" />
+            <SettingsRow icon="notifications-outline" label="Notifikace" />
+            <SettingsRow icon="shield-outline" label="Ochrana soukromí" />
+            <SettingsRow icon="help-circle-outline" label="Nápověda a podpora" />
+            <SettingsRow icon="log-out-outline" label="Odhlásit se" color="#ef4444" onPress={handleLogout} />
+          </View>
 
-          <Pressable className="flex-row items-center justify-between py-4 border-b border-gray-200">
-            <View className="flex-row items-center">
-              <Ionicons name="lock-closed-outline" size={24} color="#6b7280" />
-              <Text className="text-base text-gray-900 ml-3">
-                Změnit heslo
-              </Text>
-            </View>
-            <Ionicons name="chevron-forward" size={24} color="#6b7280" />
-          </Pressable>
-
-          <Pressable className="flex-row items-center justify-between py-4 border-b border-gray-200">
-            <View className="flex-row items-center">
-              <Ionicons name="notifications-outline" size={24} color="#6b7280" />
-              <Text className="text-base text-gray-900 ml-3">
-                Notifikace
-              </Text>
-            </View>
-            <Ionicons name="chevron-forward" size={24} color="#6b7280" />
-          </Pressable>
-
-          <Pressable className="flex-row items-center justify-between py-4 border-b border-gray-200">
-            <View className="flex-row items-center">
-              <Ionicons name="shield-outline" size={24} color="#6b7280" />
-              <Text className="text-base text-gray-900 ml-3">
-                Ochrana soukromí
-              </Text>
-            </View>
-            <Ionicons name="chevron-forward" size={24} color="#6b7280" />
-          </Pressable>
-
-          <Pressable className="flex-row items-center justify-between py-4 border-b border-gray-200">
-            <View className="flex-row items-center">
-              <Ionicons name="help-circle-outline" size={24} color="#6b7280" />
-              <Text className="text-base text-gray-900 ml-3">
-                Nápověda a podpora
-              </Text>
-            </View>
-            <Ionicons name="chevron-forward" size={24} color="#6b7280" />
-          </Pressable>
-
-          {/* Logout Button */}
-          <Pressable 
-            onPress={handleLogout}
-            className="flex-row items-center justify-between py-4"
-          >
-            <View className="flex-row items-center">
-              <Ionicons name="log-out-outline" size={24} color="#ef4444" />
-              <Text className="text-base text-red-500 ml-3 font-semibold">
-                Odhlásit se
-              </Text>
-            </View>
-            <Ionicons name="chevron-forward" size={24} color="#ef4444" />
-          </Pressable>
-        </View>
-
-        {/* Version Info */}
-        <View className="px-6 py-4 items-center mb-8">
-          <Text className="text-sm text-gray-500">Reality v Kapse</Text>
-          <Text className="text-xs text-gray-400 mt-1">Verze 1.0.0</Text>
+          {/* Version */}
+          <View style={{ alignItems: 'center', paddingVertical: 20, marginBottom: 20 }}>
+            <Text style={{ color: '#374151', fontSize: 13 }}>Reality v Kapse · Verze 1.0.0</Text>
+          </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
