@@ -1,0 +1,15 @@
+{
+  "name": "sreality-scraper",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sreality.cz scraper for Reality v Kapse",
+  "main": "sreality-to-supabase.js",
+  "scripts": {
+    "scrape": "node sreality-to-supabase.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.0"
+  }
+}

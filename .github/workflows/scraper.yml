@@ -21,9 +21,9 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install scraper dependencies only
+      - name: Install scraper dependencies
         working-directory: scraper
-        run: npm install --no-save @supabase/supabase-js axios dotenv
+        run: npm install
 
       - name: Create log file and run scraper
         env:
